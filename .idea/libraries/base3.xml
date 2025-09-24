@@ -1,0 +1,9 @@
+<component name="libraryTable">
+  <library name="base3">
+    <CLASSES>
+      <root url="jar://$PROJECT_DIR$/app/build/intermediates/merged_java_res/nongpuDebug/mergeNongpuDebugJavaResource/base.jar!/" />
+    </CLASSES>
+    <JAVADOC />
+    <SOURCES />
+  </library>
+</component>

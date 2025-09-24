@@ -1,0 +1,9 @@
+<component name="libraryTable">
+  <library name="feature-app2">
+    <CLASSES>
+      <root url="jar://$PROJECT_DIR$/app/build/intermediates/merged_java_res/gpuDebugAndroidTest/mergeGpuDebugAndroidTestJavaResource/feature-app.jar!/" />
+    </CLASSES>
+    <JAVADOC />
+    <SOURCES />
+  </library>
+</component>
