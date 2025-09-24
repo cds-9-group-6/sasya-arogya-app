@@ -1,22 +1,51 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <!-- Earthly Plant Disease Detection App Dark Theme -->
-    <style name="Theme.Sasya_Chikitsa" parent="Theme.AppCompat.Light.NoActionBar">
-        <!-- Primary earth colors for dark mode -->
+    <!-- Earthly Plant Disease Detection App Dark Theme - Material Design 3 -->
+    <style name="Theme.Sasya_Chikitsa" parent="Theme.Material3.DayNight.NoActionBar">
+        <!-- MD3 Primary Colors - Dark Earth Theme -->
         <item name="colorPrimary">@color/sage_green_light</item>
-        <item name="colorPrimaryDark">@color/forest_green</item>
-        <item name="colorAccent">@color/warm_amber</item>
+        <item name="colorOnPrimary">@color/rich_brown</item>
+        <item name="colorPrimaryContainer">@color/forest_green_dark</item>
+        <item name="colorOnPrimaryContainer">@color/sage_green_light</item>
         
-        <!-- Dark background colors -->
-        <item name="android:windowBackground">@color/rich_brown</item>
+        <!-- MD3 Secondary Colors - Dark Natural Theme -->
+        <item name="colorSecondary">@color/sage_green</item>
+        <item name="colorOnSecondary">@color/rich_brown</item>
+        <item name="colorSecondaryContainer">@color/soil_brown</item>
+        <item name="colorOnSecondaryContainer">@color/sage_green_light</item>
+        
+        <!-- MD3 Tertiary Colors - Warm Earth Accents Dark -->
+        <item name="colorTertiary">@color/golden_harvest</item>
+        <item name="colorOnTertiary">@color/rich_brown</item>
+        <item name="colorTertiaryContainer">@color/soil_brown_light</item>
+        <item name="colorOnTertiaryContainer">@color/golden_harvest</item>
+        
+        <!-- MD3 Surface Colors - Dark Natural Background -->
         <item name="colorSurface">@color/bark_brown</item>
-        
-        <!-- Text colors for dark theme -->
         <item name="colorOnSurface">@color/soft_white</item>
+        <item name="colorSurfaceVariant">@color/soil_brown</item>
+        <item name="colorOnSurfaceVariant">@color/soft_white</item>
+        
+        <!-- MD3 Background Colors -->
+        <item name="android:colorBackground">@color/rich_brown</item>
         <item name="colorOnBackground">@color/soft_white</item>
         
-        <!-- Status bar for dark theme -->
+        <!-- MD3 Error Colors -->
+        <item name="colorError">@color/thumbs_down_selected</item>
+        <item name="colorOnError">@color/clean_white</item>
+        <item name="colorErrorContainer">#5D1A1A</item>
+        <item name="colorOnErrorContainer">#FFCDD2</item>
+        
+        <!-- MD3 Outline Colors -->
+        <item name="colorOutline">@color/soil_brown_light</item>
+        <item name="colorOutlineVariant">@color/soil_brown</item>
+        
+        <!-- Status bar - dark earth theme -->
         <item name="android:statusBarColor">@color/rich_brown</item>
         <item name="android:windowLightStatusBar">false</item>
+        
+        <!-- Navigation bar -->
+        <item name="android:navigationBarColor">@color/rich_brown</item>
+        <item name="android:windowLightNavigationBar">false</item>
     </style>
 </resources>

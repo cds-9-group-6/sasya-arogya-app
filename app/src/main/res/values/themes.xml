@@ -1,22 +1,51 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <!-- Earthly Plant Disease Detection App Theme -->
-    <style name="Theme.Sasya_Chikitsa" parent="Theme.AppCompat.Light.NoActionBar">
-        <!-- Primary earth colors -->
+    <!-- Earthly Plant Disease Detection App Theme - Material Design 3 -->
+    <style name="Theme.Sasya_Chikitsa" parent="Theme.Material3.DayNight.NoActionBar">
+        <!-- MD3 Primary Colors - Earth Green Theme -->
         <item name="colorPrimary">@color/forest_green</item>
-        <item name="colorPrimaryDark">@color/forest_green_dark</item>
-        <item name="colorAccent">@color/warm_amber</item>
+        <item name="colorOnPrimary">@color/clean_white</item>
+        <item name="colorPrimaryContainer">@color/sage_green_light</item>
+        <item name="colorOnPrimaryContainer">@color/forest_green_dark</item>
         
-        <!-- Background colors -->
-        <item name="android:windowBackground">@color/clean_white</item>
+        <!-- MD3 Secondary Colors - Natural Sage Theme -->
+        <item name="colorSecondary">@color/sage_green</item>
+        <item name="colorOnSecondary">@color/clean_white</item>
+        <item name="colorSecondaryContainer">@color/light_green_bg</item>
+        <item name="colorOnSecondaryContainer">@color/forest_green_dark</item>
+        
+        <!-- MD3 Tertiary Colors - Warm Earth Accents -->
+        <item name="colorTertiary">@color/warm_amber</item>
+        <item name="colorOnTertiary">@color/earth_text_primary</item>
+        <item name="colorTertiaryContainer">@color/golden_harvest</item>
+        <item name="colorOnTertiaryContainer">@color/earth_text_primary</item>
+        
+        <!-- MD3 Surface Colors - Clean Natural Background -->
         <item name="colorSurface">@color/clean_white</item>
-        
-        <!-- Text colors -->
         <item name="colorOnSurface">@color/earth_text_primary</item>
+        <item name="colorSurfaceVariant">@color/soft_white</item>
+        <item name="colorOnSurfaceVariant">@color/earth_text_secondary</item>
+        
+        <!-- MD3 Background Colors -->
+        <item name="android:colorBackground">@color/clean_white</item>
         <item name="colorOnBackground">@color/earth_text_primary</item>
         
-        <!-- Status bar -->
+        <!-- MD3 Error Colors -->
+        <item name="colorError">@color/thumbs_down_selected</item>
+        <item name="colorOnError">@color/clean_white</item>
+        <item name="colorErrorContainer">#FFEBEE</item>
+        <item name="colorOnErrorContainer">@color/thumbs_down_selected</item>
+        
+        <!-- MD3 Outline Colors -->
+        <item name="colorOutline">@color/sage_green</item>
+        <item name="colorOutlineVariant">@color/sage_green_light</item>
+        
+        <!-- Status bar - keeping earth theme -->
         <item name="android:statusBarColor">@color/forest_green_dark</item>
         <item name="android:windowLightStatusBar">false</item>
+        
+        <!-- Navigation bar -->
+        <item name="android:navigationBarColor">@color/clean_white</item>
+        <item name="android:windowLightNavigationBar">true</item>
     </style>
 </resources>
