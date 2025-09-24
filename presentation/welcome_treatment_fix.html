@@ -1,0 +1,412 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Sasya Arogya - Welcome & Treatment Logic Fixed</title>
+    <style>
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #E8F5E8, #F1F8E9);
+            margin: 0;
+            padding: 20px;
+            min-height: 100vh;
+        }
+        
+        .container {
+            max-width: 1000px;
+            margin: 0 auto;
+            background: white;
+            border-radius: 20px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.1);
+            padding: 30px;
+        }
+        
+        .header {
+            text-align: center;
+            margin-bottom: 30px;
+        }
+        
+        .app-title {
+            font-size: 2.5em;
+            color: #2E7D32;
+            margin-bottom: 10px;
+            font-weight: bold;
+        }
+        
+        .subtitle {
+            font-size: 1.2em;
+            color: #66BB6A;
+            margin-bottom: 30px;
+        }
+        
+        .problem-solution {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 30px;
+            margin: 30px 0;
+        }
+        
+        .problem-card, .solution-card {
+            padding: 25px;
+            border-radius: 15px;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.1);
+        }
+        
+        .problem-card {
+            background: linear-gradient(135deg, #FFEBEE, #FFCDD2);
+            border-left: 5px solid #F44336;
+        }
+        
+        .solution-card {
+            background: linear-gradient(135deg, #E8F5E8, #C8E6C9);
+            border-left: 5px solid #4CAF50;
+        }
+        
+        .card-title {
+            font-size: 20px;
+            font-weight: bold;
+            margin-bottom: 15px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+        
+        .problem-title {
+            color: #D32F2F;
+        }
+        
+        .solution-title {
+            color: #2E7D32;
+        }
+        
+        .issue-item {
+            background: white;
+            padding: 15px;
+            margin: 10px 0;
+            border-radius: 8px;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+        }
+        
+        .code-highlight {
+            background: #263238;
+            color: #E0E0E0;
+            padding: 15px;
+            border-radius: 8px;
+            margin: 15px 0;
+            font-family: 'Courier New', monospace;
+            font-size: 13px;
+            overflow-x: auto;
+        }
+        
+        .kotlin {
+            color: #FF7043;
+        }
+        
+        .comment {
+            color: #66BB6A;
+        }
+        
+        .string {
+            color: #FFA726;
+        }
+        
+        .before-after {
+            margin: 30px 0;
+        }
+        
+        .comparison-header {
+            font-size: 22px;
+            font-weight: bold;
+            color: #2E7D32;
+            margin-bottom: 20px;
+            text-align: center;
+        }
+        
+        .comparison-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 20px;
+        }
+        
+        .before-section, .after-section {
+            padding: 20px;
+            border-radius: 10px;
+        }
+        
+        .before-section {
+            background: #FFEBEE;
+            border: 2px solid #F44336;
+        }
+        
+        .after-section {
+            background: #E8F5E8;
+            border: 2px solid #4CAF50;
+        }
+        
+        .section-title {
+            font-weight: bold;
+            font-size: 16px;
+            margin-bottom: 15px;
+            text-align: center;
+            padding: 8px;
+            border-radius: 6px;
+        }
+        
+        .before-title {
+            background: #D32F2F;
+            color: white;
+        }
+        
+        .after-title {
+            background: #2E7D32;
+            color: white;
+        }
+        
+        .message-example {
+            background: white;
+            padding: 15px;
+            border-radius: 8px;
+            margin: 10px 0;
+            border-left: 4px solid #2196F3;
+            font-family: monospace;
+            font-size: 14px;
+        }
+        
+        .success-banner {
+            background: linear-gradient(135deg, #4CAF50, #2E7D32);
+            color: white;
+            padding: 25px;
+            border-radius: 15px;
+            text-align: center;
+            margin: 30px 0;
+        }
+        
+        .testing-section {
+            background: #E3F2FD;
+            border: 2px solid #2196F3;
+            border-radius: 15px;
+            padding: 25px;
+            margin: 30px 0;
+        }
+        
+        .test-case {
+            background: white;
+            padding: 15px;
+            margin: 15px 0;
+            border-radius: 8px;
+            border-left: 4px solid #FFA726;
+        }
+        
+        .test-result {
+            background: #E8F5E8;
+            padding: 10px;
+            border-radius: 6px;
+            margin-top: 10px;
+            color: #1B5E20;
+            font-weight: bold;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <h1 class="app-title">🔧 Critical Issues Fixed!</h1>
+            <p class="subtitle">Welcome Message & Treatment Logic Now Working Correctly</p>
+        </div>
+        
+        <div class="problem-solution">
+            <div class="problem-card">
+                <div class="card-title problem-title">
+                    ❌ <span>Problems Identified</span>
+                </div>
+                
+                <div class="issue-item">
+                    <strong>🏠 Welcome Message Issue:</strong><br>
+                    The welcome message containing "diagnose plant diseases" was incorrectly triggering the disease card layout instead of showing as a normal chat message.
+                </div>
+                
+                <div class="issue-item">
+                    <strong>🏥 Treatment Display Issue:</strong><br>
+                    Treatment recommendation sections were showing even when no actual treatment data was available from the AI.
+                </div>
+            </div>
+            
+            <div class="solution-card">
+                <div class="card-title solution-title">
+                    ✅ <span>Solutions Applied</span>
+                </div>
+                
+                <div class="issue-item">
+                    <strong>🎯 Precise Detection Logic:</strong><br>
+                    Enhanced message analysis to only trigger disease cards with actual disease data OR specific diagnostic phrases.
+                </div>
+                
+                <div class="issue-item">
+                    <strong>📋 Smart Treatment Display:</strong><br>
+                    Treatment sections now only appear when actual treatment recommendations are streamed from the AI.
+                </div>
+            </div>
+        </div>
+        
+        <div class="before-after">
+            <div class="comparison-header">🔍 Detection Logic Improvements</div>
+            
+            <div class="comparison-grid">
+                <div class="before-section">
+                    <div class="section-title before-title">BEFORE (Too Broad)</div>
+                    <div class="code-highlight">
+<span class="comment">// Too aggressive - triggered on any mention</span>
+<span class="kotlin">private fun</span> isDiseaseMessage(message: ChatMessage): Boolean {
+    <span class="kotlin">return</span> message.diseaseName != null || 
+           message.text.contains(<span class="string">"disease"</span>, ignoreCase = true) ||
+           message.text.contains(<span class="string">"blight"</span>, ignoreCase = true)
+}
+
+<span class="comment">// Result: Welcome message = disease card! ❌</span>
+                    </div>
+                </div>
+                
+                <div class="after-section">
+                    <div class="section-title after-title">AFTER (Precise)</div>
+                    <div class="code-highlight">
+<span class="comment">// Precise detection - requires actual diagnosis</span>
+<span class="kotlin">private fun</span> isDiseaseMessage(message: ChatMessage): Boolean {
+    <span class="kotlin">return</span> message.diseaseName != null || 
+           (message.confidence != null && message.confidence!! > 0.0 && 
+            (message.text.contains(<span class="string">"detected:"</span>, ignoreCase = true) ||
+             message.text.contains(<span class="string">"diagnosis:"</span>, ignoreCase = true) ||
+             message.text.contains(<span class="string">"identified as"</span>, ignoreCase = true)))
+}
+
+<span class="comment">// Result: Only actual diagnoses = disease cards! ✅</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+        <div class="before-after">
+            <div class="comparison-header">🏥 Treatment Display Logic</div>
+            
+            <div class="comparison-grid">
+                <div class="before-section">
+                    <div class="section-title before-title">BEFORE (Always Shown)</div>
+                    <div class="message-example">
+                        🍃 Disease Card Always Shows:<br>
+                        • Disease name: ✅<br>
+                        • Confidence: ✅<br>
+                        • Symptoms: ✅<br>
+                        • Treatment: ✅ <strong>(Even when none available!)</strong>
+                    </div>
+                </div>
+                
+                <div class="after-section">
+                    <div class="section-title after-title">AFTER (Smart Display)</div>
+                    <div class="message-example">
+                        🍃 Disease Card Only Shows Treatment When Available:<br>
+                        • Disease name: ✅<br>
+                        • Confidence: ✅<br>
+                        • Symptoms: ✅<br>
+                        • Treatment: <strong>Only if recommendations streamed!</strong>
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+        <div class="testing-section">
+            <h3 style="color: #1976D2; text-align: center;">🧪 Test Cases & Expected Results</h3>
+            
+            <div class="test-case">
+                <strong>Test 1: Welcome Message</strong>
+                <div class="message-example">
+                    "🌿 Welcome to Sasya Arogya! I can help you diagnose plant diseases..."
+                </div>
+                <div class="test-result">
+                    ✅ EXPECTED: Normal assistant chat card (NOT disease card)
+                </div>
+            </div>
+            
+            <div class="test-case">
+                <strong>Test 2: Actual Disease Detection</strong>
+                <div class="message-example">
+                    "Analysis complete. Detected: Apple Alternaria Early Blight with 89% confidence..."
+                </div>
+                <div class="test-result">
+                    ✅ EXPECTED: Orange disease card with symptoms + treatment (if available)
+                </div>
+            </div>
+            
+            <div class="test-case">
+                <strong>Test 3: Disease Without Treatment</strong>
+                <div class="message-example">
+                    ChatMessage(diseaseName="Early Blight", confidence=0.89, text="Disease identified...")
+                </div>
+                <div class="test-result">
+                    ✅ EXPECTED: Disease card with NO treatment section (hidden until recommendations arrive)
+                </div>
+            </div>
+            
+            <div class="test-case">
+                <strong>Test 4: Disease With Treatment</strong>
+                <div class="message-example">
+                    "Disease detected. Treatment: Apply copper fungicide every 10-14 days..."
+                </div>
+                <div class="test-result">
+                    ✅ EXPECTED: Disease card with treatment section visible and populated
+                </div>
+            </div>
+            
+            <div class="test-case">
+                <strong>Test 5: Healthy Plant</strong>
+                <div class="message-example">
+                    ChatMessage(confidence=0.94, text="Analysis complete. Plant appears healthy...")
+                </div>
+                <div class="test-result">
+                    ✅ EXPECTED: Green healthy card with care recommendations
+                </div>
+            </div>
+        </div>
+        
+        <div class="code-highlight">
+            <div class="comparison-header" style="color: #E0E0E0; margin-bottom: 20px;">🔧 New Treatment Detection Logic</div>
+<span class="kotlin">private fun</span> hasTreatmentRecommendations(message: ChatMessage): Boolean {
+    <span class="comment">// Only show treatment if actual recommendations are present</span>
+    <span class="kotlin">return</span> message.text.contains(<span class="string">"treatment:"</span>, ignoreCase = true) ||
+           message.text.contains(<span class="string">"apply"</span>, ignoreCase = true) ||
+           message.text.contains(<span class="string">"fungicide"</span>, ignoreCase = true) ||
+           message.text.contains(<span class="string">"spray"</span>, ignoreCase = true) ||
+           message.text.contains(<span class="string">"remove affected"</span>, ignoreCase = true) ||
+           message.text.contains(<span class="string">"recommendations:"</span>, ignoreCase = true)
+}
+
+<span class="comment">// Usage in ViewHolders:</span>
+<span class="kotlin">if</span> (hasTreatmentRecommendations(message)) {
+    treatmentSection.visibility = View.VISIBLE
+    <span class="comment">// Show actual treatment content</span>
+} <span class="kotlin">else</span> {
+    treatmentSection.visibility = View.GONE
+    <span class="comment">// Hide until recommendations arrive</span>
+}
+        </div>
+        
+        <div class="success-banner">
+            <h2 style="margin: 0 0 15px 0;">🎉 Issues Resolved!</h2>
+            <div style="font-size: 18px;">
+                ✅ Welcome messages show as normal chat cards<br>
+                ✅ Disease cards only appear for actual diagnoses<br>
+                ✅ Treatment sections only show when recommendations are available<br>
+                ✅ Smart detection prevents false positives<br>
+                ✅ All builds successful with zero errors
+            </div>
+        </div>
+        
+        <div style="text-align: center; margin-top: 30px; padding: 20px; background: #F5F5F5; border-radius: 10px;">
+            <h3 style="color: #2E7D32;">🚀 Ready for Testing!</h3>
+            <p style="color: #1B5E20; margin: 0;">
+                The Sasya Arogya app now correctly handles welcome messages and treatment displays. 
+                Test with different scenarios to see the improved logic in action!
+            </p>
+        </div>
+    </div>
+</body>
+</html>

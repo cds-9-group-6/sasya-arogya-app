@@ -1,0 +1,303 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Sasya Arogya - Logo Showcase</title>
+    <style>
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #E8F5E8, #F1F8E9);
+            margin: 0;
+            padding: 20px;
+            min-height: 100vh;
+        }
+        
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            background: white;
+            border-radius: 20px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.1);
+            padding: 40px;
+        }
+        
+        .header {
+            text-align: center;
+            margin-bottom: 50px;
+        }
+        
+        .app-title {
+            font-size: 3em;
+            color: #2E7D32;
+            margin: 20px 0;
+            font-weight: bold;
+        }
+        
+        .subtitle {
+            font-size: 1.5em;
+            color: #66BB6A;
+            margin-bottom: 10px;
+        }
+        
+        .tagline {
+            font-size: 1.2em;
+            color: #795548;
+            font-style: italic;
+        }
+        
+        .logo-showcase {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 40px;
+            margin: 50px 0;
+        }
+        
+        .logo-card {
+            background: #FAFAFA;
+            border-radius: 15px;
+            padding: 30px;
+            text-align: center;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.05);
+        }
+        
+        .logo-card h3 {
+            color: #2E7D32;
+            margin-bottom: 20px;
+            font-size: 1.3em;
+        }
+        
+        .logo-large {
+            width: 120px;
+            height: 120px;
+            margin: 20px auto;
+            background: #E8F5E8;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            position: relative;
+            overflow: hidden;
+        }
+        
+        .logo-medium {
+            width: 80px;
+            height: 80px;
+            margin: 15px auto;
+        }
+        
+        .logo-small {
+            width: 48px;
+            height: 48px;
+            margin: 10px auto;
+        }
+        
+        .logo-svg {
+            width: 100%;
+            height: 100%;
+        }
+        
+        .app-mockup {
+            background: #2E7D32;
+            border-radius: 20px;
+            padding: 20px;
+            color: white;
+            margin: 30px 0;
+        }
+        
+        .mockup-header {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+            margin-bottom: 20px;
+        }
+        
+        .mockup-icon {
+            width: 56px;
+            height: 56px;
+            background: white;
+            border-radius: 12px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+        
+        .features {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 20px;
+            margin: 40px 0;
+        }
+        
+        .feature {
+            background: #F1F8E9;
+            border-radius: 10px;
+            padding: 20px;
+            text-align: center;
+        }
+        
+        .feature-icon {
+            font-size: 2em;
+            margin-bottom: 10px;
+        }
+        
+        .feature h4 {
+            color: #2E7D32;
+            margin-bottom: 10px;
+        }
+        
+        .feature p {
+            color: #5D4037;
+            margin: 0;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <!-- Header Section -->
+        <div class="header">
+            <div class="logo-large">
+                <svg class="logo-svg" viewBox="0 0 108 108">
+                    <!-- Background -->
+                    <path fill="#E8F5E8" d="M0,0h108v108h-108z" />
+                    
+                    <!-- Main Leaf Shape -->
+                    <path fill="#4CAF50" d="M54,25C45,25 35,32 35,45C35,58 45,72 54,75C63,72 73,58 73,45C73,32 63,25 54,25Z" />
+                    
+                    <!-- Leaf Vein -->
+                    <path stroke="#1B5E20" stroke-width="1.5" stroke-linecap="round" fill="none" d="M54,25L54,75" />
+                    
+                    <!-- Side Veins -->
+                    <path stroke="#1B5E20" stroke-width="1" stroke-linecap="round" fill="none" d="M54,35L45,42" />
+                    <path stroke="#1B5E20" stroke-width="1" stroke-linecap="round" fill="none" d="M54,35L63,42" />
+                    <path stroke="#1B5E20" stroke-width="1" stroke-linecap="round" fill="none" d="M54,50L42,55" />
+                    <path stroke="#1B5E20" stroke-width="1" stroke-linecap="round" fill="none" d="M54,50L66,55" />
+                    
+                    <!-- Health Cross -->
+                    <g transform="translate(72, 32)">
+                        <path fill="#FFA726" d="M0,3L12,3L12,6L0,6Z" />
+                        <path fill="#FFA726" d="M4.5,0L7.5,0L7.5,9L4.5,9Z" />
+                    </g>
+                    
+                    <!-- Diagnostic Dots -->
+                    <path fill="#66BB6A" d="M40,45m-1.5,0a1.5,1.5 0,1 1,3 0a1.5,1.5 0,1 1,-3 0" />
+                    <path fill="#81C784" d="M68,52m-1.2,0a1.2,1.2 0,1 1,2.4 0a1.2,1.2 0,1 1,-2.4 0" />
+                    <path fill="#FFA726" fill-opacity="0.8" d="M75,75m-3,0a3,3 0,1 1,6 0a3,3 0,1 1,-6 0" />
+                </svg>
+            </div>
+            
+            <h1 class="app-title">Sasya Arogya</h1>
+            <p class="subtitle">Plant Disease Detection</p>
+            <p class="tagline">AI-Powered Agricultural Health Care</p>
+        </div>
+        
+        <!-- Logo Variations -->
+        <div class="logo-showcase">
+            <div class="logo-card">
+                <h3>🌿 Main App Icon</h3>
+                <div class="logo-large">
+                    <svg class="logo-svg" viewBox="0 0 108 108">
+                        <path fill="#E8F5E8" d="M0,0h108v108h-108z" />
+                        <path fill="#4CAF50" d="M54,25C45,25 35,32 35,45C35,58 45,72 54,75C63,72 73,58 73,45C73,32 63,25 54,25Z" />
+                        <path stroke="#1B5E20" stroke-width="1.5" stroke-linecap="round" fill="none" d="M54,25L54,75" />
+                        <path stroke="#1B5E20" stroke-width="1" stroke-linecap="round" fill="none" d="M54,35L45,42 M54,35L63,42 M54,50L42,55 M54,50L66,55" />
+                        <g transform="translate(72, 32)">
+                            <path fill="#FFA726" d="M0,3L12,3L12,6L0,6Z M4.5,0L7.5,0L7.5,9L4.5,9Z" />
+                        </g>
+                        <path fill="#66BB6A" d="M40,45m-1.5,0a1.5,1.5 0,1 1,3 0a1.5,1.5 0,1 1,-3 0" />
+                    </svg>
+                </div>
+                <p>Primary app icon for home screen</p>
+            </div>
+            
+            <div class="logo-card">
+                <h3>🚀 GPU Variant</h3>
+                <div class="logo-medium">
+                    <svg class="logo-svg" viewBox="0 0 108 108">
+                        <path fill="#E8F5E8" d="M0,0h108v108h-108z" />
+                        <path fill="#4CAF50" d="M54,25C45,25 35,32 35,45C35,58 45,72 54,75C63,72 73,58 73,45C73,32 63,25 54,25Z" />
+                        <path stroke="#1B5E20" stroke-width="1.5" stroke-linecap="round" fill="none" d="M54,25L54,75" />
+                        <g transform="translate(72, 32)">
+                            <path fill="#FFA726" d="M0,3L12,3L12,6L0,6Z M4.5,0L7.5,0L7.5,9L4.5,9Z" />
+                        </g>
+                    </svg>
+                </div>
+                <p><strong>Sasya Chikitsa (GPU)</strong><br>High-performance processing</p>
+            </div>
+            
+            <div class="logo-card">
+                <h3>⚡ Non-GPU Variant</h3>
+                <div class="logo-medium">
+                    <svg class="logo-svg" viewBox="0 0 108 108">
+                        <path fill="#E8F5E8" d="M0,0h108v108h-108z" />
+                        <path fill="#4CAF50" d="M54,25C45,25 35,32 35,45C35,58 45,72 54,75C63,72 73,58 73,45C73,32 63,25 54,25Z" />
+                        <path stroke="#1B5E20" stroke-width="1.5" stroke-linecap="round" fill="none" d="M54,25L54,75" />
+                        <g transform="translate(72, 32)">
+                            <path fill="#FFA726" d="M0,3L12,3L12,6L0,6Z M4.5,0L7.5,0L7.5,9L4.5,9Z" />
+                        </g>
+                    </svg>
+                </div>
+                <p><strong>Sasya Chikitsa (Non-GPU)</strong><br>Standard processing</p>
+            </div>
+            
+            <div class="logo-card">
+                <h3>🏪 Play Store Ready</h3>
+                <div class="logo-small">
+                    <svg class="logo-svg" viewBox="0 0 108 108">
+                        <path fill="#4CAF50" d="M54,25C45,25 35,32 35,45C35,58 45,72 54,75C63,72 73,58 73,45C73,32 63,25 54,25Z" />
+                        <g transform="translate(72, 32)">
+                            <path fill="#FFA726" d="M0,3L12,3L12,6L0,6Z M4.5,0L7.5,0L7.5,9L4.5,9Z" />
+                        </g>
+                    </svg>
+                </div>
+                <p>Scalable for all store sizes<br>512px to 48px</p>
+            </div>
+        </div>
+        
+        <!-- App Mockup -->
+        <div class="app-mockup">
+            <div class="mockup-header">
+                <div class="mockup-icon">
+                    <svg width="40" height="40" viewBox="0 0 108 108">
+                        <path fill="#4CAF50" d="M54,25C45,25 35,32 35,45C35,58 45,72 54,75C63,72 73,58 73,45C73,32 63,25 54,25Z" />
+                        <g transform="translate(72, 32)">
+                            <path fill="#FFA726" d="M0,3L12,3L12,6L0,6Z M4.5,0L7.5,0L7.5,9L4.5,9Z" />
+                        </g>
+                    </svg>
+                </div>
+                <div>
+                    <h3 style="margin: 0; font-size: 1.2em;">Sasya Chikitsa</h3>
+                    <p style="margin: 5px 0 0 0; opacity: 0.8;">Plant Disease Detection</p>
+                </div>
+            </div>
+            <p>🔬 AI-powered plant health analysis<br>
+            📱 Instant disease identification<br>
+            🌾 Professional agricultural care</p>
+        </div>
+        
+        <!-- Features -->
+        <div class="features">
+            <div class="feature">
+                <div class="feature-icon">🌿</div>
+                <h4>Agricultural Focus</h4>
+                <p>Leaf design instantly identifies plant health purpose</p>
+            </div>
+            <div class="feature">
+                <div class="feature-icon">🏥</div>
+                <h4>Medical Authority</h4>
+                <p>Health cross symbol shows diagnostic expertise</p>
+            </div>
+            <div class="feature">
+                <div class="feature-icon">🔬</div>
+                <h4>AI Technology</h4>
+                <p>Subtle tech elements represent advanced analysis</p>
+            </div>
+            <div class="feature">
+                <div class="feature-icon">🌍</div>
+                <h4>Earth-Friendly</h4>
+                <p>Natural color palette appeals to farmers</p>
+            </div>
+        </div>
+    </div>
+</body>
+</html>

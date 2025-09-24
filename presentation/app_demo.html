@@ -1,0 +1,591 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Sasya Arogya - App Demo</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #E8F5E8, #F1F8E9);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+            padding: 20px;
+        }
+
+        .phone-container {
+            width: 375px;
+            height: 667px;
+            background: #2E7D32;
+            border-radius: 30px;
+            padding: 20px;
+            box-shadow: 0 20px 40px rgba(0,0,0,0.3);
+            position: relative;
+            overflow: hidden;
+        }
+
+        .status-bar {
+            height: 24px;
+            background: transparent;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            color: white;
+            font-size: 14px;
+            font-weight: 600;
+            margin-bottom: 10px;
+        }
+
+        .app-screen {
+            width: 100%;
+            height: calc(100% - 34px);
+            background: white;
+            border-radius: 20px;
+            overflow: hidden;
+            position: relative;
+            display: none;
+        }
+
+        .app-screen.active {
+            display: block;
+        }
+
+        /* Header */
+        .app-header {
+            background: linear-gradient(135deg, #2E7D32, #4CAF50);
+            color: white;
+            padding: 20px;
+            display: flex;
+            align-items: center;
+            gap: 15px;
+        }
+
+        .app-logo {
+            width: 40px;
+            height: 40px;
+            background: white;
+            border-radius: 10px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .app-title {
+            font-size: 20px;
+            font-weight: bold;
+        }
+
+        .app-subtitle {
+            font-size: 14px;
+            opacity: 0.9;
+        }
+
+        /* Chat Interface */
+        .chat-container {
+            flex: 1;
+            padding: 20px;
+            overflow-y: auto;
+            max-height: 400px;
+        }
+
+        .message {
+            margin-bottom: 15px;
+            display: flex;
+        }
+
+        .message.user {
+            justify-content: flex-end;
+        }
+
+        .message-bubble {
+            max-width: 80%;
+            padding: 12px 16px;
+            border-radius: 18px;
+            font-size: 14px;
+            line-height: 1.4;
+        }
+
+        .message.user .message-bubble {
+            background: #C8E6C9;
+            color: #1B5E20;
+        }
+
+        .message.assistant .message-bubble {
+            background: #F5F5F5;
+            color: #2E2E2E;
+        }
+
+        /* Input Area */
+        .input-area {
+            padding: 15px 20px;
+            border-top: 1px solid #E0E0E0;
+            background: white;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .camera-btn {
+            width: 40px;
+            height: 40px;
+            background: #4CAF50;
+            border: none;
+            border-radius: 20px;
+            color: white;
+            font-size: 18px;
+            cursor: pointer;
+        }
+
+        .input-field {
+            flex: 1;
+            padding: 10px 15px;
+            border: 1px solid #E0E0E0;
+            border-radius: 20px;
+            font-size: 14px;
+            outline: none;
+        }
+
+        .send-btn {
+            width: 40px;
+            height: 40px;
+            background: #FFA726;
+            border: none;
+            border-radius: 20px;
+            color: white;
+            cursor: pointer;
+        }
+
+        /* Upload Screen */
+        .upload-area {
+            text-align: center;
+            padding: 40px 20px;
+        }
+
+        .upload-zone {
+            border: 2px dashed #4CAF50;
+            border-radius: 15px;
+            padding: 40px 20px;
+            margin: 20px 0;
+            background: #F1F8E9;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .upload-zone:hover {
+            background: #E8F5E8;
+            transform: translateY(-2px);
+        }
+
+        .upload-icon {
+            font-size: 48px;
+            color: #4CAF50;
+            margin-bottom: 15px;
+        }
+
+        /* Analysis Screen */
+        .analysis-screen {
+            text-align: center;
+            padding: 40px 20px;
+        }
+
+        .analysis-icon {
+            font-size: 64px;
+            color: #4CAF50;
+            margin-bottom: 20px;
+            animation: pulse 2s infinite;
+        }
+
+        @keyframes pulse {
+            0% { transform: scale(1); }
+            50% { transform: scale(1.1); }
+            100% { transform: scale(1); }
+        }
+
+        .progress-bar {
+            width: 100%;
+            height: 6px;
+            background: #E0E0E0;
+            border-radius: 3px;
+            margin: 20px 0;
+            overflow: hidden;
+        }
+
+        .progress-fill {
+            height: 100%;
+            background: linear-gradient(90deg, #4CAF50, #2E7D32);
+            border-radius: 3px;
+            animation: progress 3s ease-in-out;
+        }
+
+        @keyframes progress {
+            0% { width: 0%; }
+            100% { width: 100%; }
+        }
+
+        /* Results Screen */
+        .results-container {
+            padding: 20px;
+        }
+
+        .disease-card {
+            background: linear-gradient(135deg, #FFEBEE, #FFF3E0);
+            border-radius: 15px;
+            padding: 20px;
+            margin-bottom: 20px;
+            border-left: 5px solid #FFA726;
+        }
+
+        .disease-name {
+            font-size: 18px;
+            font-weight: bold;
+            color: #D84315;
+            margin-bottom: 5px;
+        }
+
+        .confidence {
+            font-size: 14px;
+            color: #795548;
+            margin-bottom: 15px;
+        }
+
+        .confidence-bar {
+            width: 100%;
+            height: 8px;
+            background: #E0E0E0;
+            border-radius: 4px;
+            overflow: hidden;
+            margin-bottom: 15px;
+        }
+
+        .confidence-fill {
+            height: 100%;
+            background: linear-gradient(90deg, #FFA726, #FF8F00);
+            border-radius: 4px;
+            width: 89%;
+        }
+
+        .treatment {
+            background: #E8F5E8;
+            border-radius: 10px;
+            padding: 15px;
+            margin-top: 15px;
+        }
+
+        .treatment-title {
+            font-weight: bold;
+            color: #2E7D32;
+            margin-bottom: 8px;
+        }
+
+        /* Navigation Buttons */
+        .demo-controls {
+            position: fixed;
+            bottom: 30px;
+            left: 50%;
+            transform: translateX(-50%);
+            display: flex;
+            gap: 15px;
+            background: rgba(0,0,0,0.8);
+            padding: 10px 20px;
+            border-radius: 25px;
+        }
+
+        .demo-btn {
+            padding: 8px 16px;
+            background: #4CAF50;
+            color: white;
+            border: none;
+            border-radius: 20px;
+            cursor: pointer;
+            font-size: 12px;
+            transition: background 0.3s;
+        }
+
+        .demo-btn:hover {
+            background: #2E7D32;
+        }
+
+        .demo-btn.active {
+            background: #FFA726;
+        }
+
+        .btn {
+            padding: 12px 24px;
+            border: none;
+            border-radius: 25px;
+            font-weight: bold;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            margin: 10px;
+        }
+
+        .btn-primary {
+            background: #4CAF50;
+            color: white;
+        }
+
+        .btn-primary:hover {
+            background: #2E7D32;
+            transform: translateY(-2px);
+        }
+
+        .btn-secondary {
+            background: #FFA726;
+            color: white;
+        }
+
+        .server-indicator {
+            position: absolute;
+            top: 15px;
+            right: 15px;
+            background: rgba(255,255,255,0.2);
+            padding: 5px 10px;
+            border-radius: 10px;
+            font-size: 10px;
+            color: white;
+        }
+    </style>
+</head>
+<body>
+    <div class="phone-container">
+        <div class="status-bar">
+            <span>9:41</span>
+            <span>●●●●●</span>
+            <span>100%</span>
+        </div>
+
+        <!-- Home Screen -->
+        <div class="app-screen active" id="home-screen">
+            <div class="app-header">
+                <div class="app-logo">
+                    <svg width="24" height="24" viewBox="0 0 108 108">
+                        <path fill="#4CAF50" d="M54,25C45,25 35,32 35,45C35,58 45,72 54,75C63,72 73,58 73,45C73,32 63,25 54,25Z" />
+                        <g transform="translate(72, 32)">
+                            <path fill="#FFA726" d="M0,3L12,3L12,6L0,6Z M4.5,0L7.5,0L7.5,9L4.5,9Z" />
+                        </g>
+                    </svg>
+                </div>
+                <div>
+                    <div class="app-title">Sasya Chikitsa</div>
+                    <div class="app-subtitle">Plant Disease Detection</div>
+                </div>
+                <div class="server-indicator">GPU</div>
+            </div>
+            
+            <div class="chat-container">
+                <div class="message assistant">
+                    <div class="message-bubble">
+                        🌱 Welcome to Sasya Chikitsa! I'm here to help diagnose plant diseases using AI. 
+                        <br><br>📸 Take a photo of affected plant leaves to get started, or ask me any questions about plant health!
+                    </div>
+                </div>
+            </div>
+
+            <div class="input-area">
+                <button class="camera-btn" onclick="showScreen('upload-screen')">📷</button>
+                <input type="text" class="input-field" placeholder="Ask about plant health..." readonly>
+                <button class="send-btn">➤</button>
+            </div>
+        </div>
+
+        <!-- Upload Screen -->
+        <div class="app-screen" id="upload-screen">
+            <div class="app-header">
+                <button onclick="showScreen('home-screen')" style="background: none; border: none; color: white; font-size: 18px;">←</button>
+                <div style="flex: 1;">
+                    <div class="app-title">Capture Image</div>
+                    <div class="app-subtitle">Take a clear photo of affected leaves</div>
+                </div>
+            </div>
+
+            <div class="upload-area">
+                <div class="upload-icon">📸</div>
+                <h3 style="color: #2E7D32; margin-bottom: 15px;">Photo Guidelines</h3>
+                <ul style="text-align: left; color: #795548; margin-bottom: 30px;">
+                    <li style="margin-bottom: 8px;">🍃 Focus on affected leaves</li>
+                    <li style="margin-bottom: 8px;">☀️ Use good natural lighting</li>
+                    <li style="margin-bottom: 8px;">🔍 Capture disease symptoms clearly</li>
+                    <li style="margin-bottom: 8px;">📱 Hold camera steady</li>
+                </ul>
+
+                <div class="upload-zone" onclick="showScreen('analysis-screen')">
+                    <div class="upload-icon">🌿</div>
+                    <h3 style="color: #4CAF50;">Tap to Take Photo</h3>
+                    <p style="color: #795548; margin-top: 10px;">Or choose from gallery</p>
+                </div>
+
+                <button class="btn btn-secondary" onclick="showDemoImage()">📁 Use Demo Image</button>
+            </div>
+        </div>
+
+        <!-- Analysis Screen -->
+        <div class="app-screen" id="analysis-screen">
+            <div class="app-header">
+                <div style="flex: 1;">
+                    <div class="app-title">Analyzing Image</div>
+                    <div class="app-subtitle">AI processing in progress...</div>
+                </div>
+            </div>
+
+            <div class="analysis-screen">
+                <div class="analysis-icon">🔬</div>
+                <h3 style="color: #2E7D32; margin-bottom: 10px;">AI Analysis in Progress</h3>
+                <p style="color: #795548; margin-bottom: 20px;">Our advanced machine learning models are examining your plant image...</p>
+                
+                <div class="progress-bar">
+                    <div class="progress-fill"></div>
+                </div>
+                
+                <div style="color: #4CAF50; font-weight: bold; margin-bottom: 30px;">Processing: 89% Complete</div>
+                
+                <div style="text-align: left; color: #795548; font-size: 14px;">
+                    <p>🔍 Analyzing leaf patterns...</p>
+                    <p>🧬 Comparing with disease database...</p>
+                    <p>📊 Calculating confidence scores...</p>
+                    <p>💡 Preparing treatment recommendations...</p>
+                </div>
+                
+                <button class="btn btn-primary" onclick="showScreen('results-screen')" style="margin-top: 30px;">View Results</button>
+            </div>
+        </div>
+
+        <!-- Results Screen -->
+        <div class="app-screen" id="results-screen">
+            <div class="app-header">
+                <button onclick="showScreen('home-screen')" style="background: none; border: none; color: white; font-size: 18px;">←</button>
+                <div style="flex: 1;">
+                    <div class="app-title">Diagnosis Complete</div>
+                    <div class="app-subtitle">Analysis Results</div>
+                </div>
+            </div>
+
+            <div class="results-container">
+                <div class="disease-card">
+                    <div class="disease-name">🍃 Apple Alternaria Early Blight</div>
+                    <div class="confidence">Confidence: 89%</div>
+                    <div class="confidence-bar">
+                        <div class="confidence-fill"></div>
+                    </div>
+                    
+                    <div style="color: #795548; margin-bottom: 15px; font-size: 14px;">
+                        <strong>Symptoms Detected:</strong><br>
+                        • Dark brown spots with concentric rings<br>
+                        • Yellowing around affected areas<br>
+                        • Leaf tissue deterioration
+                    </div>
+
+                    <div class="treatment">
+                        <div class="treatment-title">🏥 Recommended Treatment</div>
+                        <div style="color: #5D4037; font-size: 14px; line-height: 1.4;">
+                            1. <strong>Fungicide Application:</strong> Apply copper-based fungicide every 10-14 days<br>
+                            2. <strong>Cultural Practices:</strong> Improve air circulation, avoid overhead watering<br>
+                            3. <strong>Preventive Care:</strong> Remove affected leaves, maintain proper spacing<br>
+                            4. <strong>Monitoring:</strong> Check weekly for symptom progression
+                        </div>
+                    </div>
+                </div>
+
+                <div style="display: flex; gap: 10px;">
+                    <button class="btn btn-primary" onclick="showChat()">💬 Ask Follow-up</button>
+                    <button class="btn btn-secondary" onclick="showScreen('upload-screen')">📸 New Photo</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Demo Controls -->
+    <div class="demo-controls">
+        <button class="demo-btn active" onclick="showScreen('home-screen')">Chat</button>
+        <button class="demo-btn" onclick="showScreen('upload-screen')">Camera</button>
+        <button class="demo-btn" onclick="showScreen('analysis-screen')">Analysis</button>
+        <button class="demo-btn" onclick="showScreen('results-screen')">Results</button>
+    </div>
+
+    <script>
+        function showScreen(screenId) {
+            // Hide all screens
+            document.querySelectorAll('.app-screen').forEach(screen => {
+                screen.classList.remove('active');
+            });
+            
+            // Show selected screen
+            document.getElementById(screenId).classList.add('active');
+            
+            // Update demo controls
+            document.querySelectorAll('.demo-btn').forEach(btn => {
+                btn.classList.remove('active');
+            });
+            
+            // Set active button based on screen
+            const screenMap = {
+                'home-screen': 0,
+                'upload-screen': 1,
+                'analysis-screen': 2,
+                'results-screen': 3
+            };
+            
+            const btnIndex = screenMap[screenId];
+            if (btnIndex !== undefined) {
+                document.querySelectorAll('.demo-btn')[btnIndex].classList.add('active');
+            }
+        }
+
+        function showDemoImage() {
+            setTimeout(() => {
+                showScreen('analysis-screen');
+            }, 500);
+        }
+
+        function showChat() {
+            showScreen('home-screen');
+            
+            // Add follow-up message
+            setTimeout(() => {
+                const chatContainer = document.querySelector('.chat-container');
+                const newMessage = document.createElement('div');
+                newMessage.className = 'message assistant';
+                newMessage.innerHTML = `
+                    <div class="message-bubble">
+                        🎯 Great! I detected Apple Alternaria Early Blight with 89% confidence. 
+                        <br><br>📋 Would you like more details about:
+                        <br>• Preventive measures
+                        <br>• Organic treatment options  
+                        <br>• Disease progression timeline
+                        <br>• Similar diseases to watch for?
+                    </div>
+                `;
+                chatContainer.appendChild(newMessage);
+                chatContainer.scrollTop = chatContainer.scrollHeight;
+            }, 1000);
+        }
+
+        // Auto-demo mode
+        let autoDemo = false;
+        
+        function startAutoDemo() {
+            const screens = ['home-screen', 'upload-screen', 'analysis-screen', 'results-screen'];
+            let currentIndex = 0;
+            
+            setInterval(() => {
+                if (autoDemo) {
+                    currentIndex = (currentIndex + 1) % screens.length;
+                    showScreen(screens[currentIndex]);
+                }
+            }, 4000);
+        }
+
+        // Initialize
+        document.addEventListener('DOMContentLoaded', () => {
+            showScreen('home-screen');
+        });
+    </script>
+</body>
+</html>

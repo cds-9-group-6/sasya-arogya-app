@@ -1,0 +1,77 @@
+<?xml version="1.0" encoding="utf-8"?>
+<vector xmlns:android="http://schemas.android.com/apk/res/android"
+    android:width="108dp"
+    android:height="108dp"
+    android:viewportWidth="108"
+    android:viewportHeight="108">
+    
+    <!-- Main Leaf Shape - Centered -->
+    <group android:translateX="54" android:translateY="54">
+        <!-- Primary Leaf -->
+        <path
+            android:fillColor="#2E7D32"
+            android:pathData="M0,-22C-8,-22 -16,-16 -16,-6C-16,6 -8,18 0,20C8,18 16,6 16,-6C16,-16 8,-22 0,-22Z" />
+        
+        <!-- Leaf Highlight -->
+        <path
+            android:fillColor="#4CAF50"
+            android:pathData="M0,-22C-6,-22 -12,-17 -12,-8C-12,4 -6,16 0,18C6,16 12,4 12,-8C12,-17 6,-22 0,-22Z" />
+        
+        <!-- Central Vein -->
+        <path
+            android:strokeColor="#1B5E20"
+            android:strokeWidth="1.2"
+            android:strokeLineCap="round"
+            android:pathData="M0,-22L0,20" />
+        
+        <!-- Side Veins -->
+        <path
+            android:strokeColor="#1B5E20"
+            android:strokeWidth="0.8"
+            android:strokeLineCap="round"
+            android:pathData="M0,-12L-6,-6" />
+            
+        <path
+            android:strokeColor="#1B5E20"
+            android:strokeWidth="0.8"
+            android:strokeLineCap="round"
+            android:pathData="M0,-12L6,-6" />
+            
+        <path
+            android:strokeColor="#1B5E20"
+            android:strokeWidth="0.8"
+            android:strokeLineCap="round"
+            android:pathData="M0,0L-8,4" />
+            
+        <path
+            android:strokeColor="#1B5E20"
+            android:strokeWidth="0.8"
+            android:strokeLineCap="round"
+            android:pathData="M0,0L8,4" />
+        
+        <!-- Health Plus Symbol -->
+        <group android:translateX="12" android:translateY="-18">
+            <!-- Horizontal bar -->
+            <path
+                android:fillColor="#FFA726"
+                android:pathData="M-3,-1.5L3,-1.5L3,1.5L-3,1.5Z" />
+            <!-- Vertical bar -->
+            <path
+                android:fillColor="#FFA726"
+                android:pathData="M-1.5,-3L1.5,-3L1.5,3L-1.5,3Z" />
+        </group>
+        
+        <!-- AI Detection Dots -->
+        <path
+            android:fillColor="#66BB6A"
+            android:pathData="M-8,2m-1.2,0a1.2,1.2 0,1 1,2.4 0a1.2,1.2 0,1 1,-2.4 0" />
+            
+        <path
+            android:fillColor="#81C784"
+            android:pathData="M10,6m-1,0a1,1 0,1 1,2 0a1,1 0,1 1,-2 0" />
+            
+        <path
+            android:fillColor="#FFA726"
+            android:pathData="M-4,12m-0.8,0a0.8,0.8 0,1 1,1.6 0a0.8,0.8 0,1 1,-1.6 0" />
+    </group>
+</vector>

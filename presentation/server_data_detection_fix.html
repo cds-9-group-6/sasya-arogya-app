@@ -1,0 +1,506 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Sasya Arogya - Server Data & Detection Logic Fixed</title>
+    <style>
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #E8F5E8, #F1F8E9);
+            margin: 0;
+            padding: 20px;
+            min-height: 100vh;
+        }
+        
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            background: white;
+            border-radius: 20px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.1);
+            padding: 30px;
+        }
+        
+        .header {
+            text-align: center;
+            margin-bottom: 30px;
+        }
+        
+        .app-title {
+            font-size: 2.5em;
+            color: #2E7D32;
+            margin-bottom: 10px;
+            font-weight: bold;
+        }
+        
+        .subtitle {
+            font-size: 1.2em;
+            color: #66BB6A;
+            margin-bottom: 30px;
+        }
+        
+        .critical-fixes {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 30px;
+            margin: 30px 0;
+        }
+        
+        .fix-card {
+            padding: 25px;
+            border-radius: 15px;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.1);
+        }
+        
+        .fix1-card {
+            background: linear-gradient(135deg, #FFF8E1, #FFECB3);
+            border-left: 5px solid #FFA726;
+        }
+        
+        .fix2-card {
+            background: linear-gradient(135deg, #E8F5E8, #C8E6C9);
+            border-left: 5px solid #4CAF50;
+        }
+        
+        .fix-title {
+            font-size: 20px;
+            font-weight: bold;
+            margin-bottom: 15px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+        
+        .fix1-title {
+            color: #E65100;
+        }
+        
+        .fix2-title {
+            color: #1B5E20;
+        }
+        
+        .fix-content {
+            background: white;
+            padding: 15px;
+            margin: 10px 0;
+            border-radius: 8px;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+        }
+        
+        .code-block {
+            background: #263238;
+            color: #E0E0E0;
+            padding: 15px;
+            border-radius: 8px;
+            margin: 15px 0;
+            font-family: 'Courier New', monospace;
+            font-size: 13px;
+            overflow-x: auto;
+        }
+        
+        .kotlin {
+            color: #FF7043;
+        }
+        
+        .comment {
+            color: #66BB6A;
+        }
+        
+        .string {
+            color: #FFA726;
+        }
+        
+        .before-after {
+            margin: 30px 0;
+        }
+        
+        .comparison-header {
+            font-size: 22px;
+            font-weight: bold;
+            color: #2E7D32;
+            margin-bottom: 20px;
+            text-align: center;
+        }
+        
+        .comparison-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 20px;
+        }
+        
+        .before-section, .after-section {
+            padding: 20px;
+            border-radius: 10px;
+        }
+        
+        .before-section {
+            background: #FFEBEE;
+            border: 2px solid #F44336;
+        }
+        
+        .after-section {
+            background: #E8F5E8;
+            border: 2px solid #4CAF50;
+        }
+        
+        .section-title {
+            font-weight: bold;
+            font-size: 16px;
+            margin-bottom: 15px;
+            text-align: center;
+            padding: 8px;
+            border-radius: 6px;
+        }
+        
+        .before-title {
+            background: #D32F2F;
+            color: white;
+        }
+        
+        .after-title {
+            background: #2E7D32;
+            color: white;
+        }
+        
+        .detection-examples {
+            margin: 30px 0;
+        }
+        
+        .example-card {
+            background: #F5F5F5;
+            border-radius: 10px;
+            margin: 15px 0;
+            overflow: hidden;
+        }
+        
+        .example-header {
+            padding: 15px;
+            font-weight: bold;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+        
+        .welcome-example {
+            background: #E3F2FD;
+        }
+        
+        .healthy-example {
+            background: #E8F5E8;
+        }
+        
+        .disease-example {
+            background: #FFF8E1;
+        }
+        
+        .severe-example {
+            background: #FFEBEE;
+        }
+        
+        .example-content {
+            padding: 15px;
+            background: white;
+            border-top: 1px solid #E0E0E0;
+        }
+        
+        .message-text {
+            font-family: monospace;
+            font-size: 14px;
+            background: #F8F9FA;
+            padding: 10px;
+            border-radius: 6px;
+            margin: 10px 0;
+            border-left: 4px solid #2196F3;
+        }
+        
+        .expected-result {
+            font-weight: bold;
+            color: #2E7D32;
+            padding: 10px;
+            background: #E8F5E8;
+            border-radius: 6px;
+            margin-top: 10px;
+        }
+        
+        .server-parsing {
+            background: #E1F5FE;
+            border: 2px solid #0288D1;
+            border-radius: 15px;
+            padding: 25px;
+            margin: 30px 0;
+        }
+        
+        .success-banner {
+            background: linear-gradient(135deg, #4CAF50, #2E7D32);
+            color: white;
+            padding: 25px;
+            border-radius: 15px;
+            text-align: center;
+            margin: 30px 0;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <h1 class="app-title">🔧 Critical Issues Resolved!</h1>
+            <p class="subtitle">Server Data Integration & Detection Logic Now Working Correctly</p>
+        </div>
+        
+        <div class="critical-fixes">
+            <div class="fix-card fix1-card">
+                <div class="fix-title fix1-title">
+                    🏥 <span>Fix 1: Server Data Integration</span>
+                </div>
+                
+                <div class="fix-content">
+                    <strong>❌ Problem:</strong> Treatment recommendations were hardcoded static text instead of using actual server responses from AI.
+                </div>
+                
+                <div class="fix-content">
+                    <strong>✅ Solution:</strong> Implemented dynamic parsing of server responses to extract actual treatment and symptoms data.
+                </div>
+            </div>
+            
+            <div class="fix-card fix2-card">
+                <div class="fix-title fix2-title">
+                    🎯 <span>Fix 2: Detection Logic</span>
+                </div>
+                
+                <div class="fix-content">
+                    <strong>❌ Problem:</strong> Everything was showing as critical disease cards - healthy plants, low confidence, welcome messages.
+                </div>
+                
+                <div class="fix-content">
+                    <strong>✅ Solution:</strong> Fixed precise detection conditions for proper card categorization.
+                </div>
+            </div>
+        </div>
+        
+        <div class="before-after">
+            <div class="comparison-header">🏥 Treatment Data: Hardcoded vs Server Data</div>
+            
+            <div class="comparison-grid">
+                <div class="before-section">
+                    <div class="section-title before-title">BEFORE (Static/Hardcoded)</div>
+                    <div class="code-block">
+<span class="comment">// Always returned same static text</span>
+<span class="kotlin">private fun</span> extractTreatment(text: String): String {
+    <span class="kotlin">return</span> <span class="string">"1. Fungicide Application: Apply...</span>
+           <span class="string">2. Cultural Practices: Improve...</span>
+           <span class="string">3. Preventive Care: Remove..."</span>
+}
+
+<span class="comment">// Result: Same generic treatment for everything! ❌</span>
+                    </div>
+                </div>
+                
+                <div class="after-section">
+                    <div class="section-title after-title">AFTER (Dynamic Server Data)</div>
+                    <div class="code-block">
+<span class="comment">// Parses actual AI response from server</span>
+<span class="kotlin">private fun</span> extractTreatment(text: String): String {
+    <span class="kotlin">return when</span> {
+        text.contains(<span class="string">"treatment:"</span>, ignoreCase = true) -> {
+            <span class="comment">// Extract everything after "treatment:"</span>
+            val treatmentIndex = text.lowercase().indexOf(<span class="string">"treatment:"</span>)
+            val afterTreatment = text.substring(treatmentIndex)
+            <span class="comment">// Parse until next section</span>
+            parseSection(afterTreatment)
+        }
+        <span class="kotlin">else</span> -> <span class="string">""</span> <span class="comment">// Return empty if no treatment</span>
+    }
+}
+
+<span class="comment">// Result: Actual AI recommendations! ✅</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+        <div class="before-after">
+            <div class="comparison-header">🎯 Detection Logic: Broken vs Fixed</div>
+            
+            <div class="comparison-grid">
+                <div class="before-section">
+                    <div class="section-title before-title">BEFORE (Broken Logic)</div>
+                    <div class="code-block">
+<span class="comment">// Broken: OR condition made everything severe</span>
+<span class="kotlin">private fun</span> isSevereDisease(message: ChatMessage): Boolean {
+    <span class="kotlin">return</span> (message.confidence != null && message.confidence!! > 0.95) ||
+           <span class="comment">// ↑ This OR made low confidence = severe! ❌</span>
+           (message.diseaseName != null && severityKeywords())
+}
+
+<span class="comment">// Result: Everything = severe disease! ❌</span>
+                    </div>
+                </div>
+                
+                <div class="after-section">
+                    <div class="section-title after-title">AFTER (Precise Logic)</div>
+                    <div class="code-block">
+<span class="comment">// Fixed: AND conditions for precision</span>
+<span class="kotlin">private fun</span> isSevereDisease(message: ChatMessage): Boolean {
+    <span class="kotlin">return</span> message.diseaseName != null && 
+           <span class="comment">// ↑ Must have disease name AND</span>
+           (message.confidence != null && message.confidence!! > 0.95) &&
+           <span class="comment">// ↑ Must have high confidence AND</span>
+           severityKeywords()
+           <span class="comment">// ↑ Must have severity indicators</span>
+}
+
+<span class="comment">// Result: Only actual severe cases! ✅</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+        <div class="server-parsing">
+            <h3 style="color: #0277BD; text-align: center; margin-bottom: 20px;">🔍 Server Response Parsing Logic</h3>
+            
+            <div class="code-block">
+<span class="comment">// Smart extraction from AI server responses</span>
+<span class="kotlin">private fun</span> extractTreatment(text: String): String {
+    <span class="kotlin">return when</span> {
+        <span class="comment">// Look for "Treatment:" section</span>
+        text.contains(<span class="string">"treatment:"</span>, ignoreCase = true) -> {
+            val treatmentIndex = text.lowercase().indexOf(<span class="string">"treatment:"</span>)
+            val afterTreatment = text.substring(treatmentIndex)
+            
+            <span class="comment">// Parse until next major section</span>
+            val endMarkers = listOf(<span class="string">"\n\nfollow-up:"</span>, <span class="string">"\n\nrecommendations:"</span>, <span class="string">"action_items:"</span>)
+            var endIndex = afterTreatment.length
+            <span class="kotlin">for</span> (marker <span class="kotlin">in</span> endMarkers) {
+                val markerIndex = afterTreatment.lowercase().indexOf(marker.lowercase())
+                <span class="kotlin">if</span> (markerIndex > 0 && markerIndex < endIndex) {
+                    endIndex = markerIndex
+                }
+            }
+            afterTreatment.substring(0, endIndex).trim()
+        }
+        
+        <span class="comment">// Look for "Recommendations:" section</span>  
+        text.contains(<span class="string">"recommendations:"</span>, ignoreCase = true) -> {
+            <span class="comment">// Similar parsing logic for recommendations</span>
+            parseRecommendationsSection(text)
+        }
+        
+        <span class="kotlin">else</span> -> <span class="string">""</span> <span class="comment">// No treatment found</span>
+    }
+}
+
+<span class="comment">// Also extracts actual symptoms from server</span>
+<span class="kotlin">private fun</span> extractSymptoms(text: String): String {
+    <span class="kotlin">return when</span> {
+        text.contains(<span class="string">"symptoms:"</span>, ignoreCase = true) -> parseSymptoms(text)
+        text.contains(<span class="string">"observed:"</span>, ignoreCase = true) -> parseObserved(text)  
+        <span class="kotlin">else</span> -> analyzeForSymptoms(text) <span class="comment">// Smart fallback</span>
+    }
+}
+            </div>
+        </div>
+        
+        <div class="detection-examples">
+            <h3 style="color: #2E7D32; text-align: center; margin-bottom: 20px;">🧪 Detection Examples & Expected Results</h3>
+            
+            <div class="example-card">
+                <div class="example-header welcome-example">
+                    💬 <span>Welcome Message Test</span>
+                </div>
+                <div class="example-content">
+                    <div class="message-text">
+                        ChatMessage(text="🌿 Welcome to Sasya Arogya! I can help you diagnose plant diseases...", 
+                        diseaseName=null, confidence=null)
+                    </div>
+                    <div class="expected-result">
+                        ✅ EXPECTED: Normal assistant chat card (NOT disease card)
+                    </div>
+                </div>
+            </div>
+            
+            <div class="example-card">
+                <div class="example-header healthy-example">
+                    🌱 <span>Healthy Plant Test</span>
+                </div>
+                <div class="example-content">
+                    <div class="message-text">
+                        ChatMessage(text="Analysis complete. Plant appears healthy with good leaf structure...", 
+                        diseaseName=null, confidence=0.94)
+                    </div>
+                    <div class="expected-result">
+                        ✅ EXPECTED: Green healthy card with care recommendations
+                    </div>
+                </div>
+            </div>
+            
+            <div class="example-card">
+                <div class="example-header disease-example">
+                    🍃 <span>Disease Detection Test</span>
+                </div>
+                <div class="example-content">
+                    <div class="message-text">
+                        ChatMessage(text="Analysis complete. Detected: Apple Early Blight. Treatment: Apply copper fungicide...", 
+                        diseaseName="Apple Early Blight", confidence=0.89)
+                    </div>
+                    <div class="expected-result">
+                        ✅ EXPECTED: Orange disease card with server treatment data
+                    </div>
+                </div>
+            </div>
+            
+            <div class="example-card">
+                <div class="example-header severe-example">
+                    🚨 <span>Severe Disease Test</span>
+                </div>
+                <div class="example-content">
+                    <div class="message-text">
+                        ChatMessage(text="Critical diagnosis. Severe Late Blight detected. Immediate action required...", 
+                        diseaseName="Late Blight", confidence=0.97)
+                    </div>
+                    <div class="expected-result">
+                        ✅ EXPECTED: Red critical card with emergency server treatment
+                    </div>
+                </div>
+            </div>
+            
+            <div class="example-card">
+                <div class="example-header">
+                    🔍 <span>Low Confidence Disease Test</span>
+                </div>
+                <div class="example-content">
+                    <div class="message-text">
+                        ChatMessage(text="Possible disease detected but confidence is low...", 
+                        diseaseName="Unknown Disease", confidence=0.45)
+                    </div>
+                    <div class="expected-result">
+                        ✅ EXPECTED: Normal orange disease card (NOT severe/critical)
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+        <div class="success-banner">
+            <h2 style="margin: 0 0 15px 0;">🎉 Both Critical Issues Resolved!</h2>
+            <div style="font-size: 18px;">
+                ✅ Treatment recommendations now use actual server AI data<br>
+                ✅ Symptoms extraction parses real AI responses<br>
+                ✅ Detection logic correctly categorizes message types<br>
+                ✅ Healthy plants show green cards (not critical)<br>
+                ✅ Low confidence shows appropriate cards (not severe)<br>
+                ✅ Only actual severe cases trigger critical cards<br>
+                ✅ Welcome messages stay as normal chat cards
+            </div>
+        </div>
+        
+        <div style="text-align: center; margin-top: 30px; padding: 20px; background: #F5F5F5; border-radius: 10px;">
+            <h3 style="color: #2E7D32;">🚀 Server Integration Complete!</h3>
+            <p style="color: #1B5E20; margin: 0;">
+                The Sasya Arogya app now correctly integrates with server AI responses and 
+                displays the appropriate card types based on actual diagnosis data.
+                Ready for real-world testing with AI backend!
+            </p>
+        </div>
+    </div>
+</body>
+</html>

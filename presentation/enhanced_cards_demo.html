@@ -1,0 +1,532 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Sasya Arogya - Enhanced Disease Cards</title>
+    <style>
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #E8F5E8, #F1F8E9);
+            margin: 0;
+            padding: 20px;
+            min-height: 100vh;
+        }
+
+        .container {
+            max-width: 800px;
+            margin: 0 auto;
+            background: white;
+            border-radius: 20px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.1);
+            padding: 30px;
+        }
+
+        .header {
+            text-align: center;
+            margin-bottom: 30px;
+        }
+
+        .app-title {
+            font-size: 2.5em;
+            color: #2E7D32;
+            margin-bottom: 10px;
+            font-weight: bold;
+        }
+
+        .subtitle {
+            font-size: 1.2em;
+            color: #66BB6A;
+            margin-bottom: 30px;
+        }
+
+        /* Disease Card Styles */
+        .disease-card {
+            background: linear-gradient(135deg, #FFF8E1, #FFECB3);
+            border: 2px solid #FFA726;
+            border-radius: 16px;
+            margin: 20px 0;
+            overflow: hidden;
+            box-shadow: 0 4px 12px rgba(255, 167, 38, 0.2);
+            transition: transform 0.3s ease;
+        }
+
+        .disease-card:hover {
+            transform: translateY(-2px);
+        }
+
+        .healthy-card {
+            background: linear-gradient(135deg, #E8F5E8, #C8E6C9);
+            border: 2px solid #4CAF50;
+            border-radius: 16px;
+            margin: 20px 0;
+            overflow: hidden;
+            box-shadow: 0 4px 12px rgba(76, 175, 80, 0.2);
+            transition: transform 0.3s ease;
+        }
+
+        .healthy-card:hover {
+            transform: translateY(-2px);
+        }
+
+        .severe-card {
+            background: linear-gradient(135deg, #FFEBEE, #FFCDD2);
+            border: 2px solid #F44336;
+            border-radius: 16px;
+            margin: 20px 0;
+            overflow: hidden;
+            box-shadow: 0 4px 12px rgba(244, 67, 54, 0.2);
+        }
+
+        .card-header {
+            display: flex;
+            align-items: center;
+            padding: 16px;
+            gap: 12px;
+        }
+
+        .disease-icon {
+            width: 48px;
+            height: 48px;
+            border-radius: 24px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 24px;
+        }
+
+        .disease-icon.warning {
+            background: #FFF3E0;
+            border: 1px solid #FFB74D;
+        }
+
+        .disease-icon.healthy {
+            background: #E8F5E8;
+            border: 1px solid #81C784;
+        }
+
+        .disease-icon.severe {
+            background: #FFEBEE;
+            border: 1px solid #EF5350;
+        }
+
+        .card-info {
+            flex: 1;
+        }
+
+        .disease-name {
+            font-size: 18px;
+            font-weight: bold;
+            margin-bottom: 4px;
+        }
+
+        .confidence {
+            font-size: 14px;
+            opacity: 0.8;
+        }
+
+        .status-badge {
+            padding: 4px 10px;
+            border-radius: 12px;
+            font-size: 12px;
+            font-weight: bold;
+            color: white;
+        }
+
+        .status-badge.disease {
+            background: #F44336;
+        }
+
+        .status-badge.healthy {
+            background: #4CAF50;
+        }
+
+        .status-badge.severe {
+            background: #D32F2F;
+        }
+
+        .confidence-bar {
+            margin: 0 16px 16px 16px;
+            height: 8px;
+            background: #E0E0E0;
+            border-radius: 4px;
+            overflow: hidden;
+        }
+
+        .confidence-fill {
+            height: 100%;
+            border-radius: 4px;
+            transition: width 2s ease;
+        }
+
+        .confidence-fill.warning {
+            background: linear-gradient(90deg, #FFA726, #FF8F00);
+        }
+
+        .confidence-fill.healthy {
+            background: linear-gradient(90deg, #4CAF50, #2E7D32);
+        }
+
+        .confidence-fill.severe {
+            background: linear-gradient(90deg, #F44336, #D32F2F);
+        }
+
+        .symptoms-section, .indicators-section {
+            padding: 0 16px 12px 16px;
+        }
+
+        .section-title {
+            font-size: 16px;
+            font-weight: bold;
+            margin-bottom: 8px;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .symptoms-list {
+            font-size: 14px;
+            line-height: 1.6;
+            opacity: 0.8;
+        }
+
+        .treatment-section {
+            background: #F1F8E9;
+            border: 1px solid #C8E6C9;
+            border-radius: 12px;
+            margin: 12px;
+            padding: 16px;
+        }
+
+        .treatment-header {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            margin-bottom: 12px;
+        }
+
+        .treatment-title {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            font-weight: bold;
+            color: #2E7D32;
+        }
+
+        .expand-btn {
+            background: #FFF3E0;
+            border: 1px solid #FFB74D;
+            border-radius: 8px;
+            padding: 2px 6px;
+            font-size: 10px;
+            font-weight: bold;
+            color: #FFA726;
+        }
+
+        .treatment-text {
+            font-size: 14px;
+            line-height: 1.6;
+            color: #2E2E2E;
+        }
+
+        .action-buttons {
+            display: flex;
+            gap: 8px;
+            justify-content: center;
+            margin-top: 16px;
+        }
+
+        .action-btn {
+            padding: 8px 16px;
+            border-radius: 20px;
+            font-size: 12px;
+            font-weight: bold;
+            color: white;
+            border: none;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            gap: 4px;
+        }
+
+        .btn-save {
+            background: #FFA726;
+        }
+
+        .btn-followup {
+            background: #4CAF50;
+        }
+
+        .feedback-section {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 16px;
+            font-size: 12px;
+            opacity: 0.7;
+        }
+
+        .feedback-buttons {
+            display: flex;
+            gap: 8px;
+        }
+
+        .feedback-btn {
+            width: 32px;
+            height: 32px;
+            border: none;
+            border-radius: 16px;
+            background: #F5F5F5;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .demo-section {
+            margin: 40px 0;
+        }
+
+        .section-header {
+            font-size: 20px;
+            font-weight: bold;
+            color: #2E7D32;
+            margin-bottom: 20px;
+            text-align: center;
+        }
+
+        .comparison {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 20px;
+            margin: 30px 0;
+        }
+
+        .comparison-label {
+            text-align: center;
+            font-weight: bold;
+            margin-bottom: 15px;
+            padding: 8px;
+            border-radius: 8px;
+        }
+
+        .comparison-label.before {
+            background: #FFEBEE;
+            color: #D32F2F;
+        }
+
+        .comparison-label.after {
+            background: #E8F5E8;
+            color: #2E7D32;
+        }
+
+        .old-card {
+            background: #F5F5F5;
+            border: 1px solid #E0E0E0;
+            border-radius: 8px;
+            padding: 16px;
+            font-size: 14px;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <h1 class="app-title">Sasya Arogya</h1>
+            <p class="subtitle">Enhanced Disease Detection Cards</p>
+        </div>
+
+        <div class="demo-section">
+            <h2 class="section-header">🔬 Disease Detection Card</h2>
+            
+            <div class="disease-card">
+                <div class="card-header">
+                    <div class="disease-icon warning">🍃</div>
+                    <div class="card-info">
+                        <div class="disease-name" style="color: #D84315;">Apple Alternaria Early Blight</div>
+                        <div class="confidence" style="color: #795548;">Confidence: 89%</div>
+                    </div>
+                    <div class="status-badge disease">DETECTED</div>
+                </div>
+
+                <div class="confidence-bar">
+                    <div class="confidence-fill warning" style="width: 89%;"></div>
+                </div>
+
+                <div class="symptoms-section">
+                    <div class="section-title" style="color: #D84315;">
+                        🔍 <span>Symptoms Detected:</span>
+                    </div>
+                    <div class="symptoms-list">
+                        • Dark brown spots with concentric rings<br>
+                        • Yellowing around affected areas<br>
+                        • Leaf tissue deterioration
+                    </div>
+                </div>
+
+                <div class="treatment-section">
+                    <div class="treatment-header">
+                        <div class="treatment-title">
+                            🏥 <span>Recommended Treatment</span>
+                        </div>
+                        <button class="expand-btn">EXPAND</button>
+                    </div>
+                    <div class="treatment-text">
+                        <strong>1. Fungicide Application:</strong> Apply copper-based fungicide every 10-14 days<br><br>
+                        <strong>2. Cultural Practices:</strong> Improve air circulation, avoid overhead watering<br><br>
+                        <strong>3. Preventive Care:</strong> Remove affected leaves, maintain proper spacing<br><br>
+                        <strong>4. Monitoring:</strong> Check weekly for symptom progression
+                    </div>
+                    <div class="action-buttons">
+                        <button class="action-btn btn-save">📋 Save Treatment</button>
+                        <button class="action-btn btn-followup">💬 Ask Follow-up</button>
+                    </div>
+                </div>
+
+                <div class="feedback-section">
+                    <span>Was this diagnosis helpful?</span>
+                    <div class="feedback-buttons">
+                        <button class="feedback-btn">👍</button>
+                        <button class="feedback-btn">👎</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="demo-section">
+            <h2 class="section-header">🌱 Healthy Plant Card</h2>
+            
+            <div class="healthy-card">
+                <div class="card-header">
+                    <div class="disease-icon healthy">🌱</div>
+                    <div class="card-info">
+                        <div class="disease-name" style="color: #1B5E20;">Plant Looks Healthy!</div>
+                        <div class="confidence" style="color: #2E7D32;">Confidence: 94%</div>
+                    </div>
+                    <div class="status-badge healthy">HEALTHY</div>
+                </div>
+
+                <div class="confidence-bar">
+                    <div class="confidence-fill healthy" style="width: 94%;"></div>
+                </div>
+
+                <div class="indicators-section">
+                    <div class="section-title" style="color: #1B5E20;">
+                        ✅ <span>Health Indicators:</span>
+                    </div>
+                    <div class="symptoms-list" style="color: #2E7D32;">
+                        • Vibrant green coloration<br>
+                        • Strong leaf structure<br>
+                        • No visible disease symptoms<br>
+                        • Good leaf density
+                    </div>
+                </div>
+
+                <div class="treatment-section">
+                    <div class="treatment-header">
+                        <div class="treatment-title">
+                            🌿 <span>Maintain Plant Health</span>
+                        </div>
+                    </div>
+                    <div class="treatment-text">
+                        <strong>1. 💧 Continue regular watering schedule</strong><br><br>
+                        <strong>2. ☀️ Ensure adequate sunlight exposure</strong><br><br>
+                        <strong>3. 🌱 Apply balanced fertilizer monthly</strong><br><br>
+                        <strong>4. 🔍 Monitor for any changes in appearance</strong>
+                    </div>
+                    <div class="action-buttons">
+                        <button class="action-btn btn-followup">📋 Care Schedule</button>
+                        <button class="action-btn btn-save">📸 Check Again</button>
+                    </div>
+                </div>
+
+                <div class="feedback-section">
+                    <span style="color: #2E7D32;">Was this assessment helpful?</span>
+                    <div class="feedback-buttons">
+                        <button class="feedback-btn">👍</button>
+                        <button class="feedback-btn">👎</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="demo-section">
+            <h2 class="section-header">⚠️ Severe Disease Card</h2>
+            
+            <div class="severe-card">
+                <div class="card-header">
+                    <div class="disease-icon severe">🚨</div>
+                    <div class="card-info">
+                        <div class="disease-name" style="color: #B71C1C;">Tomato Late Blight - Severe</div>
+                        <div class="confidence" style="color: #5D4037;">Confidence: 96%</div>
+                    </div>
+                    <div class="status-badge severe">CRITICAL</div>
+                </div>
+
+                <div class="confidence-bar">
+                    <div class="confidence-fill severe" style="width: 96%;"></div>
+                </div>
+
+                <div class="symptoms-section">
+                    <div class="section-title" style="color: #B71C1C;">
+                        🚨 <span>Critical Symptoms:</span>
+                    </div>
+                    <div class="symptoms-list" style="color: #5D4037;">
+                        • Large brown lesions spreading rapidly<br>
+                        • White fungal growth on leaf undersides<br>
+                        • Fruit rot and plant collapse<br>
+                        • Immediate action required
+                    </div>
+                </div>
+
+                <div class="treatment-section" style="background: #FFEBEE; border-color: #FFCDD2;">
+                    <div class="treatment-header">
+                        <div class="treatment-title" style="color: #B71C1C;">
+                            🚨 <span>Emergency Treatment</span>
+                        </div>
+                    </div>
+                    <div class="treatment-text" style="color: #B71C1C;">
+                        <strong>IMMEDIATE ACTION REQUIRED:</strong><br><br>
+                        <strong>1. 🔥 Remove all infected plants immediately</strong><br><br>
+                        <strong>2. 💊 Apply systemic fungicide within 24 hours</strong><br><br>
+                        <strong>3. 🚫 Quarantine area to prevent spread</strong><br><br>
+                        <strong>4. 👨‍🌾 Contact agricultural extension service</strong>
+                    </div>
+                    <div class="action-buttons">
+                        <button class="action-btn" style="background: #D32F2F;">🚨 Emergency Protocol</button>
+                        <button class="action-btn" style="background: #F44336;">📞 Expert Help</button>
+                    </div>
+                </div>
+
+                <div class="feedback-section">
+                    <span style="color: #B71C1C;">Critical diagnosis - contact expert immediately</span>
+                    <div class="feedback-buttons">
+                        <button class="feedback-btn">👍</button>
+                        <button class="feedback-btn">👎</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="comparison">
+            <div>
+                <div class="comparison-label before">BEFORE - Generic Cards</div>
+                <div class="old-card">
+                    Simple text message: "Disease detected: Apple Alternaria Early Blight with 89% confidence. Apply fungicide treatment."
+                </div>
+            </div>
+            <div>
+                <div class="comparison-label after">AFTER - Enhanced Cards</div>
+                <div style="font-size: 14px; color: #2E7D32; padding: 16px; background: #E8F5E8; border-radius: 8px;">
+                    ✅ <strong>Color-coded for instant recognition</strong><br>
+                    ✅ <strong>Visual confidence indicators</strong><br>
+                    ✅ <strong>Detailed symptoms breakdown</strong><br>
+                    ✅ <strong>Integrated treatment protocols</strong><br>
+                    ✅ <strong>Actionable farmer-friendly buttons</strong><br>
+                    ✅ <strong>Professional medical appearance</strong>
+                </div>
+            </div>
+        </div>
+    </div>
+</body>
+</html>

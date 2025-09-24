@@ -1,0 +1,346 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.cardview.widget.CardView xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:layout_margin="8dp"
+    app:cardCornerRadius="16dp"
+    app:cardElevation="4dp"
+    android:id="@+id/diseaseCard">
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        android:background="@drawable/disease_card_background"
+        android:id="@+id/cardBackground">
+
+        <!-- Disease Header -->
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            android:padding="16dp"
+            android:gravity="center_vertical">
+
+            <!-- Disease Icon -->
+            <LinearLayout
+                android:layout_width="48dp"
+                android:layout_height="48dp"
+                android:background="@drawable/disease_icon_background"
+                android:gravity="center"
+                android:layout_marginEnd="12dp"
+                android:id="@+id/diseaseIconContainer">
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="🍃"
+                    android:textSize="24sp"
+                    android:id="@+id/diseaseIcon" />
+            </LinearLayout>
+
+            <!-- Disease Info -->
+            <LinearLayout
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:orientation="vertical">
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="Apple Alternaria Early Blight"
+                    android:textSize="18sp"
+                    android:textStyle="bold"
+                    android:textColor="@color/earth_text_primary"
+                    android:id="@+id/diseaseName" />
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="Confidence: 89%"
+                    android:textSize="14sp"
+                    android:textColor="@color/earth_text_secondary"
+                    android:layout_marginTop="2dp"
+                    android:id="@+id/confidenceText" />
+            </LinearLayout>
+
+            <!-- Status Badge -->
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="DETECTED"
+                android:textSize="12sp"
+                android:textStyle="bold"
+                android:textColor="@color/clean_white"
+                android:background="@drawable/status_badge_disease"
+                android:paddingHorizontal="8dp"
+                android:paddingVertical="4dp"
+                android:id="@+id/statusBadge" />
+        </LinearLayout>
+
+        <!-- Confidence Bar -->
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:paddingHorizontal="16dp"
+            android:paddingBottom="16dp">
+
+            <ProgressBar
+                android:layout_width="match_parent"
+                android:layout_height="8dp"
+                android:layout_marginTop="8dp"
+                style="@style/Widget.AppCompat.ProgressBar.Horizontal"
+                android:progress="89"
+                android:max="100"
+                android:progressDrawable="@drawable/confidence_progress_bar"
+                android:id="@+id/confidenceBar" />
+        </LinearLayout>
+
+        <!-- Symptoms Section -->
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical"
+            android:paddingHorizontal="16dp"
+            android:paddingBottom="12dp"
+            android:id="@+id/symptomsSection"
+            android:visibility="visible">
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="🔍 Symptoms Detected:"
+                android:textSize="16sp"
+                android:textStyle="bold"
+                android:textColor="@color/forest_green_dark"
+                android:layout_marginBottom="8dp" />
+
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="• Dark brown spots with concentric rings\n• Yellowing around affected areas\n• Leaf tissue deterioration"
+                android:textSize="14sp"
+                android:textColor="@color/earth_text_secondary"
+                android:lineSpacingExtra="2dp"
+                android:id="@+id/symptomsText" />
+        </LinearLayout>
+
+        <!-- AI Attention Overlay Section -->
+        <LinearLayout
+            android:id="@+id/attentionOverlayContainer"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical"
+            android:paddingHorizontal="16dp"
+            android:paddingBottom="12dp"
+            android:visibility="gone">
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="🎯 AI Diagnostic Visualization"
+                android:textSize="16sp"
+                android:textStyle="bold"
+                android:textColor="@color/forest_green_dark"
+                android:layout_marginBottom="8dp" />
+
+            <TextView
+                android:id="@+id/overlayDescription"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="AI attention heatmap showing diagnostic focus areas • Tap to zoom &amp; inspect"
+                android:textSize="12sp"
+                android:textColor="@color/earth_text_secondary"
+                android:layout_marginBottom="8dp" />
+
+            <!-- Attention Overlay Image -->
+            <androidx.cardview.widget.CardView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                app:cardCornerRadius="12dp"
+                app:cardElevation="4dp"
+                android:layout_marginBottom="8dp">
+
+                <ImageView
+                    android:id="@+id/attentionOverlayImage"
+                    android:layout_width="match_parent"
+                    android:layout_height="200dp"
+                    android:background="@drawable/modern_card_background"
+                    android:scaleType="centerCrop"
+                    android:contentDescription="AI attention overlay showing diagnostic focus areas" />
+            </androidx.cardview.widget.CardView>
+        </LinearLayout>
+
+        <!-- Treatment Section -->
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical"
+            android:background="@drawable/treatment_section_background"
+            android:padding="16dp"
+            android:layout_margin="12dp"
+            android:id="@+id/treatmentSection"
+            android:visibility="gone">
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal"
+                android:gravity="center_vertical"
+                android:layout_marginBottom="12dp">
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="🏥"
+                    android:textSize="18sp"
+                    android:layout_marginEnd="8dp" />
+
+                <TextView
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:text="Recommended Treatment"
+                    android:textSize="16sp"
+                    android:textStyle="bold"
+                    android:textColor="@color/forest_green" />
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="EXPAND"
+                    android:textSize="10sp"
+                    android:textStyle="bold"
+                    android:textColor="@color/warm_amber"
+                    android:background="@drawable/expand_button_background"
+                    android:paddingHorizontal="6dp"
+                    android:paddingVertical="2dp"
+                    android:id="@+id/expandTreatment" />
+            </LinearLayout>
+
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="1. Fungicide Application: Apply copper-based fungicide every 10-14 days\n\n2. Cultural Practices: Improve air circulation, avoid overhead watering\n\n3. Preventive Care: Remove affected leaves, maintain proper spacing\n\n4. Monitoring: Check weekly for symptom progression"
+                android:textSize="14sp"
+                android:textColor="@color/earth_text_primary"
+                android:lineSpacingExtra="4dp"
+                android:id="@+id/treatmentText" />
+
+            <!-- Action Buttons -->
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal"
+                android:layout_marginTop="16dp"
+                android:gravity="center">
+
+                <androidx.cardview.widget.CardView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    app:cardCornerRadius="20dp"
+                    app:cardElevation="2dp"
+                    android:layout_marginEnd="8dp">
+
+                    <LinearLayout
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:orientation="horizontal"
+                        android:background="@color/warm_amber"
+                        android:paddingHorizontal="16dp"
+                        android:paddingVertical="8dp"
+                        android:gravity="center_vertical">
+
+                        <TextView
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:text="📋"
+                            android:layout_marginEnd="4dp" />
+
+                        <TextView
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:text="Save Treatment"
+                            android:textSize="12sp"
+                            android:textStyle="bold"
+                            android:textColor="@color/clean_white" />
+                    </LinearLayout>
+                </androidx.cardview.widget.CardView>
+
+                <androidx.cardview.widget.CardView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    app:cardCornerRadius="20dp"
+                    app:cardElevation="2dp">
+
+                    <LinearLayout
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:orientation="horizontal"
+                        android:background="@color/forest_green"
+                        android:paddingHorizontal="16dp"
+                        android:paddingVertical="8dp"
+                        android:gravity="center_vertical">
+
+                        <TextView
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:text="💬"
+                            android:layout_marginEnd="4dp" />
+
+                        <TextView
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:text="Ask Follow-up"
+                            android:textSize="12sp"
+                            android:textStyle="bold"
+                            android:textColor="@color/clean_white" />
+                    </LinearLayout>
+                </androidx.cardview.widget.CardView>
+            </LinearLayout>
+        </LinearLayout>
+
+        <!-- Feedback Section -->
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            android:paddingHorizontal="16dp"
+            android:paddingBottom="16dp"
+            android:gravity="center_vertical">
+
+            <TextView
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:text="Was this diagnosis helpful?"
+                android:textSize="12sp"
+                android:textColor="@color/earth_text_secondary" />
+
+            <LinearLayout
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal">
+
+                <ImageButton
+                    android:layout_width="32dp"
+                    android:layout_height="32dp"
+                    android:src="@drawable/ic_thumb_up"
+                    android:background="@drawable/feedback_button_background"
+                    android:layout_marginEnd="8dp"
+                    android:scaleType="centerInside"
+                    android:id="@+id/thumbsUpButton" />
+
+                <ImageButton
+                    android:layout_width="32dp"
+                    android:layout_height="32dp"
+                    android:src="@drawable/ic_thumb_down"
+                    android:background="@drawable/feedback_button_background"
+                    android:scaleType="centerInside"
+                    android:id="@+id/thumbsDownButton" />
+            </LinearLayout>
+        </LinearLayout>
+    </LinearLayout>
+</androidx.cardview.widget.CardView>
