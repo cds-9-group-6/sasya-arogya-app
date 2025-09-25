@@ -80,18 +80,14 @@
     </group>
     
     <!-- Subtle Brand Elements -->
-    <!-- Corner Health Indicators -->
-    <circle
-        android:cx="20"
-        android:cy="20"
-        android:radius="2"
+    <!-- Corner Health Indicators (as paths) -->
+    <path
         android:fillColor="#A5D6A7"
-        android:fillAlpha="0.6" />
-    <circle
-        android:cx="88"
-        android:cy="88"
-        android:radius="2"
+        android:fillAlpha="0.6"
+        android:pathData="M20,18 A2,2 0 1,1 20,22 A2,2 0 1,1 20,18 Z" />
+    <path
         android:fillColor="#A5D6A7"
-        android:fillAlpha="0.6" />
+        android:fillAlpha="0.6"
+        android:pathData="M88,86 A2,2 0 1,1 88,90 A2,2 0 1,1 88,86 Z" />
         
 </vector>
