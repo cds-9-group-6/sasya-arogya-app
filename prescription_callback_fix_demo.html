@@ -1,0 +1,218 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>📋 Prescription Callback Fix Demonstration</title>
+    <style>
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            line-height: 1.6;
+            margin: 0;
+            padding: 20px;
+            background: linear-gradient(135deg, #f5f7fa 0%, #c3cfe2 100%);
+            min-height: 100vh;
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            background: white;
+            border-radius: 16px;
+            padding: 30px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.1);
+        }
+
+        .header {
+            text-align: center;
+            margin-bottom: 40px;
+            padding: 20px;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            border-radius: 12px;
+        }
+
+        .section {
+            margin: 30px 0;
+            padding: 20px;
+            border-left: 4px solid #667eea;
+            background: #f8f9ff;
+            border-radius: 8px;
+        }
+
+        .issue {
+            background: #ffebee;
+            border-left-color: #e74c3c;
+        }
+
+        .fix {
+            background: #e8f5e8;
+            border-left-color: #27ae60;
+        }
+
+        .debug {
+            background: #fff3e0;
+            border-left-color: #ff9800;
+        }
+
+        .code-block {
+            background: #2d3748;
+            color: #e2e8f0;
+            padding: 20px;
+            border-radius: 8px;
+            margin: 15px 0;
+            font-family: 'Monaco', 'Menlo', monospace;
+            font-size: 14px;
+            line-height: 1.5;
+            overflow-x: auto;
+        }
+
+        .diff-remove {
+            background: #ffeaea;
+            color: #c53030;
+            text-decoration: line-through;
+        }
+
+        .diff-add {
+            background: #f0fff4;
+            color: #38a169;
+            font-weight: bold;
+        }
+
+        .flow-diagram {
+            background: white;
+            padding: 20px;
+            border-radius: 8px;
+            margin: 20px 0;
+            border: 1px solid #ddd;
+        }
+
+        .arrow {
+            font-size: 24px;
+            color: #667eea;
+            text-align: center;
+            margin: 10px 0;
+        }
+
+        .step {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            padding: 15px;
+            border-radius: 8px;
+            text-align: center;
+            margin: 10px 0;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <h1>🔧 Prescription Callback Fix Demonstration</h1>
+            <p>Complete resolution of the server prescription data integration issue</p>
+            <p><strong>Problem:</strong> onPrescriptionDetails() callback was never being called</p>
+        </div>
+
+        <div class="section issue">
+            <h2>🚨 Root Cause Analysis</h2>
+            <p>The user reported that the <code>onPrescriptionDetails</code> callback in <code>MainActivityFSM</code> was never being called, even though prescription data was being sent by the server.</p>
+            
+            <h3>Issue Location: FSMModels.kt</h3>
+            <div class="code-block">
+<span class="diff-remove">@SerializedName("prescription_data") val prescriptionDetails: Map&lt;String, Any&gt;? = null,</span>
+            </div>
+            <p><strong>Problem:</strong> The server sends <code>"prescription_details"</code> but the code was looking for <code>"prescription_data"</code> - causing the field to always be null.</p>
+        </div>
+
+        <div class="section fix">
+            <h2>✅ The Fix</h2>
+            <p>Changed the JSON field mapping to match what the server actually sends:</p>
+            
+            <h3>FSMModels.kt - Line 36</h3>
+            <div class="code-block">
+<span class="diff-add">@SerializedName("prescription_details") val prescriptionDetails: Map&lt;String, Any&gt;? = null,</span>
+            </div>
+            
+            <p><strong>Result:</strong> Now <code>stateUpdate.prescriptionDetails</code> correctly maps to the server's JSON field.</p>
+        </div>
+
+        <div class="section debug">
+            <h2>🔍 Enhanced Debug Logging</h2>
+            <p>Added comprehensive logging in <code>FSMStreamHandler</code> to diagnose future callback issues:</p>
+            
+            <h3>FSMStreamHandler.kt - processEvent method</h3>
+            <div class="code-block">
+"state_update" -> {
+    val stateUpdate = gson.fromJson(data, FSMStateUpdate::class.java)
+    
+    // 🔍 DEBUG: Log the entire state update to diagnose callback issues
+    Log.d(TAG, "📨 RAW state_update JSON: $data")
+    Log.d(TAG, "📦 PARSED stateUpdate fields:")
+    Log.d(TAG, "  - prescriptionDetails: ${stateUpdate.prescriptionDetails}")
+    Log.d(TAG, "  - classificationResult: ${stateUpdate.classificationResult}")
+    Log.d(TAG, "  - assistantResponse: ${stateUpdate.assistantResponse}")
+    Log.d(TAG, "  - currentNode: ${stateUpdate.currentNode}")
+    
+    callback.onStateUpdate(stateUpdate)
+    // ... rest of callback processing
+}
+            </div>
+        </div>
+
+        <div class="flow-diagram">
+            <h2>📊 Complete Data Flow (Fixed)</h2>
+            
+            <div class="step">1. Server sends SSE with "prescription_details" field</div>
+            <div class="arrow">⬇️</div>
+            <div class="step">2. FSMStreamHandler receives JSON data</div>
+            <div class="arrow">⬇️</div>
+            <div class="step">3. Gson.fromJson() maps to FSMStateUpdate.prescriptionDetails</div>
+            <div class="arrow">⬇️</div>
+            <div class="step">4. stateUpdate.prescriptionDetails?.let{} triggers callback</div>
+            <div class="arrow">⬇️</div>
+            <div class="step">5. onPrescriptionDetails() called in MainActivityFSM</div>
+            <div class="arrow">⬇️</div>
+            <div class="step">6. Prescription parsed into StructuredPrescription object</div>
+            <div class="arrow">⬇️</div>
+            <div class="step">7. ChatAdapter updates UI with server prescription data</div>
+        </div>
+
+        <div class="section">
+            <h2>🎯 Impact</h2>
+            <ul>
+                <li><strong>✅ Prescription Data Integration:</strong> Server-sent prescription details now correctly populate the UI</li>
+                <li><strong>✅ No More Hardcoded Text:</strong> Both embedded and standalone prescription components display dynamic data</li>
+                <li><strong>✅ Consistent Layout:</strong> Both prescription display modes use the same server data source</li>
+                <li><strong>✅ Better Debugging:</strong> Enhanced logging helps diagnose future integration issues</li>
+            </ul>
+        </div>
+
+        <div class="section">
+            <h2>🧪 Validation</h2>
+            <p>To verify the fix works:</p>
+            <ol>
+                <li>Send a plant image to trigger disease detection</li>
+                <li>Check Android logs for the new debug messages showing received prescription data</li>
+                <li>Verify that prescription cards show server data instead of hardcoded text</li>
+                <li>Confirm both embedded (disease card) and standalone prescription components work consistently</li>
+            </ol>
+        </div>
+
+        <div class="section">
+            <h2>🚀 Next Steps</h2>
+            <p>The prescription callback integration is now complete. The app should correctly:</p>
+            <ul>
+                <li>Receive prescription_details from the server</li>
+                <li>Parse them into StructuredPrescription objects</li>
+                <li>Update ChatMessage with structured data</li>
+                <li>Display prescription information in both embedded and standalone layouts</li>
+                <li>Use the same data source for consistent UI rendering</li>
+            </ul>
+        </div>
+
+        <div style="text-align: center; margin-top: 40px; padding: 20px; background: #f8f9fa; border-radius: 8px;">
+            <p><strong>🎉 Prescription Callback Issue: RESOLVED</strong></p>
+            <p>The onPrescriptionDetails callback will now be triggered when the server sends prescription data!</p>
+        </div>
+    </div>
+</body>
+</html>

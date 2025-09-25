@@ -1,0 +1,677 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Dual Prescription System - Farmer-Friendly Design</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #E8F5E8 0%, #F1F8E9 100%);
+            padding: 20px;
+            line-height: 1.6;
+        }
+
+        .container {
+            max-width: 1400px;
+            margin: 0 auto;
+        }
+
+        .header {
+            text-align: center;
+            margin-bottom: 30px;
+            padding: 20px;
+            background: linear-gradient(135deg, #2E7D32, #4CAF50);
+            color: white;
+            border-radius: 16px;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+        }
+
+        .header h1 {
+            font-size: 2.5em;
+            margin-bottom: 10px;
+        }
+
+        .comparison-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 30px;
+            margin-bottom: 40px;
+        }
+
+        .section {
+            background: white;
+            border-radius: 16px;
+            overflow: hidden;
+            box-shadow: 0 6px 20px rgba(0,0,0,0.1);
+        }
+
+        .section-header {
+            background: linear-gradient(135deg, #FF8F00, #FFA726);
+            color: white;
+            padding: 16px;
+            font-size: 18px;
+            font-weight: bold;
+            text-align: center;
+        }
+
+        .section-header.standalone {
+            background: linear-gradient(135deg, #2E7D32, #4CAF50);
+        }
+
+        /* Disease Card with Embedded Prescription */
+        .disease-card {
+            background: linear-gradient(135deg, #FFF8E1, #FFECB3);
+            border: 2px solid #FFA726;
+            margin: 20px;
+            border-radius: 16px;
+            overflow: hidden;
+        }
+
+        .disease-header {
+            padding: 16px;
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+
+        .disease-icon {
+            width: 48px;
+            height: 48px;
+            background: #FFA726;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 24px;
+        }
+
+        .disease-info h2 {
+            font-size: 18px;
+            color: #2E2E2E;
+            margin-bottom: 2px;
+        }
+
+        .disease-info .confidence {
+            font-size: 14px;
+            color: #5D4037;
+        }
+
+        .disease-badge {
+            background: #FF8F00;
+            color: white;
+            padding: 4px 8px;
+            border-radius: 12px;
+            font-size: 12px;
+            font-weight: bold;
+        }
+
+        .symptoms {
+            padding: 16px;
+            border-bottom: 1px solid #FFECB3;
+        }
+
+        .symptoms h3 {
+            font-size: 16px;
+            color: #1B5E20;
+            margin-bottom: 8px;
+        }
+
+        .symptoms ul {
+            color: #5D4037;
+            margin-left: 16px;
+        }
+
+        /* Embedded Prescription Component */
+        .prescription-component {
+            margin: 12px;
+        }
+
+        .prescription-header {
+            background: linear-gradient(135deg, #2E7D32, #4CAF50);
+            color: white;
+            padding: 12px;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            border-radius: 8px 8px 0 0;
+        }
+
+        .prescription-header .rx-symbol {
+            font-size: 24px;
+            font-weight: bold;
+        }
+
+        .prescription-header .title {
+            flex: 1;
+            font-size: 14px;
+            font-weight: bold;
+        }
+
+        .prescription-header .date {
+            font-size: 11px;
+            opacity: 0.9;
+        }
+
+        .prescription-steps {
+            background: #FFE0B2;
+            padding: 12px;
+            border-radius: 0 0 8px 8px;
+        }
+
+        .prescription-step {
+            display: flex;
+            align-items: flex-start;
+            gap: 8px;
+            background: white;
+            padding: 8px;
+            border-radius: 8px;
+            margin-bottom: 8px;
+        }
+
+        .prescription-step:last-child {
+            margin-bottom: 0;
+        }
+
+        .step-number {
+            font-size: 16px;
+            min-width: 24px;
+        }
+
+        .step-content {
+            flex: 1;
+        }
+
+        .step-title {
+            font-size: 12px;
+            font-weight: bold;
+            color: #FF8F00;
+            margin-bottom: 2px;
+        }
+
+        .step-description {
+            font-size: 13px;
+            color: #2E2E2E;
+        }
+
+        .prescription-footer {
+            background: #F1F8E9;
+            padding: 10px;
+            display: flex;
+            align-items: center;
+            gap: 6px;
+            border-radius: 0 0 8px 8px;
+            font-size: 12px;
+            color: #1B5E20;
+            font-style: italic;
+        }
+
+        /* Standalone Prescription Card */
+        .standalone-prescription {
+            background: white;
+            border-radius: 16px;
+            overflow: hidden;
+            margin: 20px;
+            box-shadow: 0 6px 20px rgba(0,0,0,0.15);
+        }
+
+        .standalone-header {
+            background: linear-gradient(135deg, #2E7D32, #4CAF50);
+            color: white;
+            padding: 16px;
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+
+        .standalone-header .rx-symbol {
+            font-size: 32px;
+            font-weight: bold;
+        }
+
+        .standalone-header .info {
+            flex: 1;
+        }
+
+        .standalone-header .main-title {
+            font-size: 18px;
+            font-weight: bold;
+            margin-bottom: 2px;
+        }
+
+        .standalone-header .subtitle {
+            font-size: 12px;
+            opacity: 0.8;
+        }
+
+        .patient-info {
+            background: #F1F8E9;
+            padding: 16px;
+        }
+
+        .patient-info h3 {
+            font-size: 12px;
+            font-weight: bold;
+            color: #1B5E20;
+            margin-bottom: 8px;
+        }
+
+        .patient-row {
+            display: flex;
+            margin-bottom: 4px;
+        }
+
+        .patient-row .label {
+            font-weight: bold;
+            color: #1B5E20;
+            min-width: 80px;
+            font-size: 14px;
+        }
+
+        .patient-row .value {
+            color: #2E7D32;
+            font-size: 14px;
+        }
+
+        .patient-row .diagnosis {
+            color: #FF8F00;
+            font-size: 14px;
+        }
+
+        .treatment-plan {
+            padding: 16px;
+        }
+
+        .plan-title {
+            display: flex;
+            align-items: center;
+            font-size: 16px;
+            font-weight: bold;
+            color: #1B5E20;
+            margin-bottom: 12px;
+            gap: 8px;
+        }
+
+        .standalone-step {
+            background: #FFE0B2;
+            border-radius: 12px;
+            padding: 12px;
+            margin-bottom: 8px;
+            border-left: 4px solid #FF8F00;
+        }
+
+        .standalone-step:last-child {
+            margin-bottom: 0;
+        }
+
+        .standalone-step-header {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            margin-bottom: 8px;
+        }
+
+        .standalone-step-number {
+            font-size: 20px;
+        }
+
+        .standalone-step-title {
+            font-size: 14px;
+            font-weight: bold;
+            color: #FF8F00;
+        }
+
+        .standalone-step-description {
+            color: #2E2E2E;
+            font-size: 15px;
+            line-height: 1.4;
+        }
+
+        .duration-info {
+            background: #F1F8E9;
+            padding: 12px;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            font-size: 12px;
+            color: #1B5E20;
+            font-style: italic;
+        }
+
+        /* Key Features */
+        .features-section {
+            background: white;
+            border-radius: 16px;
+            padding: 20px;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+            margin-top: 30px;
+        }
+
+        .features-section h2 {
+            color: #2E7D32;
+            margin-bottom: 20px;
+            font-size: 1.5em;
+        }
+
+        .features-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 20px;
+        }
+
+        .feature {
+            background: #F1F8E9;
+            padding: 16px;
+            border-radius: 12px;
+            border-left: 4px solid #4CAF50;
+        }
+
+        .feature h3 {
+            color: #1B5E20;
+            margin-bottom: 8px;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .feature ul {
+            margin-left: 20px;
+            color: #2E7D32;
+        }
+
+        .feature li {
+            margin-bottom: 4px;
+        }
+
+        /* Farmer-Friendly Indicators */
+        .farmer-friendly {
+            background: linear-gradient(135deg, #C8E6C9, #A5D6A7);
+            color: #1B5E20;
+            padding: 8px 12px;
+            border-radius: 20px;
+            font-size: 12px;
+            font-weight: bold;
+            display: inline-flex;
+            align-items: center;
+            gap: 4px;
+            margin: 8px;
+        }
+
+        .usage-scenarios {
+            margin-top: 20px;
+            background: #FFEBEE;
+            border-radius: 12px;
+            padding: 16px;
+        }
+
+        .scenario {
+            margin-bottom: 10px;
+            padding: 8px;
+            background: white;
+            border-radius: 8px;
+            border-left: 3px solid #FF5722;
+        }
+
+        .scenario-title {
+            font-weight: bold;
+            color: #D32F2F;
+            margin-bottom: 4px;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <h1>🌱 Dual Prescription System</h1>
+            <p>Farmer-Friendly Treatment Cards - Embedded & Standalone</p>
+        </div>
+
+        <div class="comparison-grid">
+            <!-- Disease Card with Embedded Prescription -->
+            <div class="section">
+                <div class="section-header">
+                    🦠 Disease Card + Embedded Prescription
+                </div>
+                
+                <div class="disease-card">
+                    <div class="disease-header">
+                        <div class="disease-icon">🍃</div>
+                        <div class="disease-info">
+                            <h2>Tomato Early Blight</h2>
+                            <div class="confidence">Confidence: 89%</div>
+                        </div>
+                        <div class="disease-badge">DETECTED</div>
+                    </div>
+
+                    <div class="symptoms">
+                        <h3>🔍 Symptoms Detected:</h3>
+                        <ul>
+                            <li>Dark brown spots with concentric rings</li>
+                            <li>Yellowing around affected areas</li>
+                            <li>Leaf tissue deterioration</li>
+                        </ul>
+                    </div>
+
+                    <!-- Embedded Prescription Component -->
+                    <div class="prescription-component">
+                        <div class="prescription-header">
+                            <div class="rx-symbol">℞</div>
+                            <div class="title">TREATMENT PRESCRIPTION</div>
+                            <div class="date">Dec 24</div>
+                        </div>
+                        
+                        <div class="prescription-steps">
+                            <div class="prescription-step">
+                                <div class="step-number">1️⃣</div>
+                                <div class="step-content">
+                                    <div class="step-title">IMMEDIATE ACTION</div>
+                                    <div class="step-description">Remove affected leaves and dispose safely</div>
+                                </div>
+                            </div>
+                            
+                            <div class="prescription-step">
+                                <div class="step-number">2️⃣</div>
+                                <div class="step-content">
+                                    <div class="step-title">APPLY MEDICINE</div>
+                                    <div class="step-description">Spray copper-based fungicide solution</div>
+                                </div>
+                            </div>
+                            
+                            <div class="prescription-step">
+                                <div class="step-number">3️⃣</div>
+                                <div class="step-content">
+                                    <div class="step-title">REPEAT SCHEDULE</div>
+                                    <div class="step-description">Every 7-10 days, early morning</div>
+                                </div>
+                            </div>
+                            
+                            <div class="prescription-step">
+                                <div class="step-number">4️⃣</div>
+                                <div class="step-content">
+                                    <div class="step-title">MONITOR & CARE</div>
+                                    <div class="step-description">Check daily, avoid overhead watering</div>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <div class="prescription-footer">
+                            <span>⏱️</span>
+                            <span>Continue treatment until new healthy growth appears (usually 2-3 weeks)</span>
+                            <span>🌱✨</span>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="farmer-friendly">👨‍🌾 Farmer-Friendly: Clear steps integrated with disease info</div>
+            </div>
+
+            <!-- Standalone Prescription Card -->
+            <div class="section">
+                <div class="section-header standalone">
+                    ℞ Standalone Prescription Card
+                </div>
+                
+                <div class="standalone-prescription">
+                    <div class="standalone-header">
+                        <div class="rx-symbol">℞</div>
+                        <div class="info">
+                            <div class="main-title">PLANT PRESCRIPTION</div>
+                            <div class="subtitle">AI Plant Health System</div>
+                        </div>
+                        <div class="date">Dec 24, 2024</div>
+                    </div>
+
+                    <div class="patient-info">
+                        <h3>PATIENT INFORMATION</h3>
+                        <div class="patient-row">
+                            <span class="label">Plant Type:</span>
+                            <span class="value">Tomato Plant</span>
+                        </div>
+                        <div class="patient-row">
+                            <span class="label">Diagnosis:</span>
+                            <span class="value diagnosis">Early Blight Disease</span>
+                        </div>
+                    </div>
+
+                    <div class="treatment-plan">
+                        <h3 class="plan-title">📋 TREATMENT PLAN</h3>
+                        
+                        <div class="standalone-step">
+                            <div class="standalone-step-header">
+                                <span class="standalone-step-number">1️⃣</span>
+                                <span class="standalone-step-title">IMMEDIATE ACTION</span>
+                            </div>
+                            <div class="standalone-step-description">Remove affected leaves and dispose safely away from healthy plants</div>
+                        </div>
+                        
+                        <div class="standalone-step">
+                            <div class="standalone-step-header">
+                                <span class="standalone-step-number">2️⃣</span>
+                                <span class="standalone-step-title">APPLY MEDICINE</span>
+                            </div>
+                            <div class="standalone-step-description">Spray copper-based fungicide solution on all plant surfaces</div>
+                        </div>
+                        
+                        <div class="standalone-step">
+                            <div class="standalone-step-header">
+                                <span class="standalone-step-number">3️⃣</span>
+                                <span class="standalone-step-title">REPEAT SCHEDULE</span>
+                            </div>
+                            <div class="standalone-step-description">Every 7-10 days, early morning before sunrise for best results</div>
+                        </div>
+                        
+                        <div class="standalone-step">
+                            <div class="standalone-step-header">
+                                <span class="standalone-step-number">4️⃣</span>
+                                <span class="standalone-step-title">MONITOR & CARE</span>
+                            </div>
+                            <div class="standalone-step-description">Check daily, avoid overhead watering, improve air circulation</div>
+                        </div>
+                    </div>
+
+                    <div class="duration-info">
+                        <span>⏱️</span>
+                        <span>Continue treatment until new healthy growth appears (usually 2-3 weeks)</span>
+                        <span>🌱✨</span>
+                    </div>
+                </div>
+                
+                <div class="farmer-friendly">👨‍🌾 Farmer-Friendly: Detailed standalone reference with patient info</div>
+            </div>
+        </div>
+
+        <div class="features-section">
+            <h2>🎯 Key Features & Benefits</h2>
+            
+            <div class="features-grid">
+                <div class="feature">
+                    <h3>🔄 Dual Context Support</h3>
+                    <ul>
+                        <li><strong>Embedded:</strong> Shows within disease cards for immediate context</li>
+                        <li><strong>Standalone:</strong> Comprehensive prescription when requested</li>
+                        <li><strong>Same component:</strong> Consistent farmer experience</li>
+                        <li><strong>No layout disruption:</strong> Disease cards remain unchanged</li>
+                    </ul>
+                </div>
+
+                <div class="feature">
+                    <h3>👨‍🌾 Farmer-Friendly Design</h3>
+                    <ul>
+                        <li><strong>Step-by-step:</strong> Numbered, sequential instructions</li>
+                        <li><strong>Visual icons:</strong> Easy recognition with emojis</li>
+                        <li><strong>Clear timing:</strong> When and how often to apply</li>
+                        <li><strong>Simple language:</strong> No complex medical terms</li>
+                    </ul>
+                </div>
+
+                <div class="feature">
+                    <h3>🧠 Smart Detection Logic</h3>
+                    <ul>
+                        <li><strong>Context-aware:</strong> Embedded for detailed treatments</li>
+                        <li><strong>Auto-extraction:</strong> Pulls treatment steps from AI text</li>
+                        <li><strong>Fallback defaults:</strong> Always provides helpful instructions</li>
+                        <li><strong>Flexible triggering:</strong> Keywords and text analysis</li>
+                    </ul>
+                </div>
+
+                <div class="feature">
+                    <h3>📱 Consistent Experience</h3>
+                    <ul>
+                        <li><strong>Same feedback:</strong> Thumbs up/down on all cards</li>
+                        <li><strong>Reusable component:</strong> Single prescription layout</li>
+                        <li><strong>Unified styling:</strong> Matches app design system</li>
+                        <li><strong>Responsive design:</strong> Works on all screen sizes</li>
+                    </ul>
+                </div>
+            </div>
+
+            <div class="usage-scenarios">
+                <h3>📋 Usage Scenarios</h3>
+                
+                <div class="scenario">
+                    <div class="scenario-title">Scenario 1: Disease Detected with Treatment</div>
+                    <div>Shows disease card with embedded prescription component - farmer gets diagnosis + immediate treatment steps</div>
+                </div>
+                
+                <div class="scenario">
+                    <div class="scenario-title">Scenario 2: Simple Disease Detection</div>
+                    <div>Shows disease card with basic treatment section - for simple recommendations</div>
+                </div>
+                
+                <div class="scenario">
+                    <div class="scenario-title">Scenario 3: Prescription Request</div>
+                    <div>Shows standalone prescription card - when farmer explicitly asks for "prescription" or "treatment plan"</div>
+                </div>
+                
+                <div class="scenario">
+                    <div class="scenario-title">Scenario 4: Healthy Plant</div>
+                    <div>Shows green healthy card - no prescription needed</div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // Add some interactivity to show the responsive nature
+        document.querySelectorAll('.prescription-step, .standalone-step').forEach(step => {
+            step.addEventListener('mouseenter', function() {
+                this.style.transform = 'scale(1.02)';
+                this.style.boxShadow = '0 4px 12px rgba(0,0,0,0.15)';
+                this.style.transition = 'all 0.2s ease';
+            });
+            
+            step.addEventListener('mouseleave', function() {
+                this.style.transform = 'scale(1)';
+                this.style.boxShadow = 'none';
+            });
+        });
+    </script>
+</body>
+</html>
+
