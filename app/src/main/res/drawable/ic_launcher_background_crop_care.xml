@@ -53,12 +53,10 @@
         android:pathData="M5,100 Q15,95 25,100"
         android:strokeWidth="1"
         android:strokeColor="#689F38"
-        android:strokeAlpha="0.3"
-        android:fillColor="none" />
+        android:strokeAlpha="0.3" />
     <path
         android:pathData="M83,8 Q93,3 103,8"
         android:strokeWidth="1"
         android:strokeColor="#689F38"
-        android:strokeAlpha="0.3"
-        android:fillColor="none" />
+        android:strokeAlpha="0.3" />
 </vector>
