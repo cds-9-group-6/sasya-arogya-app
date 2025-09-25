@@ -1,0 +1,93 @@
+<?xml version="1.0" encoding="utf-8"?>
+<vector xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:aapt="http://schemas.android.com/aapt"
+    android:width="108dp"
+    android:height="108dp"
+    android:viewportWidth="108"
+    android:viewportHeight="108">
+
+    <!-- Central Plant Health Symbol -->
+    <group android:translateX="54" android:translateY="54">
+        
+        <!-- Main Plant Stem -->
+        <path
+            android:pathData="M0,-25 L0,20"
+            android:strokeWidth="3"
+            android:strokeColor="#FFFFFF"
+            android:strokeLineCap="round" />
+        
+        <!-- Medical Cross Integration on Stem -->
+        <path
+            android:pathData="M-6,0 L6,0 M0,-6 L0,6"
+            android:strokeWidth="2.5"
+            android:strokeColor="#FFFFFF"
+            android:strokeLineCap="round" />
+        
+        <!-- Primary Leaf (Left) - Healthy Green -->
+        <path android:pathData="M-2,-15 Q-15,-20 -18,-8 Q-15,0 -2,-10 Z">
+            <aapt:attr name="android:fillColor">
+                <gradient
+                    android:type="linear"
+                    android:startX="-18"
+                    android:startY="-20"
+                    android:endX="-2"
+                    android:endY="-8"
+                    android:startColor="#A5D6A7"
+                    android:endColor="#FFFFFF" />
+            </aapt:attr>
+        </path>
+        
+        <!-- Primary Leaf (Right) - Healthy Green -->
+        <path android:pathData="M2,-15 Q15,-20 18,-8 Q15,0 2,-10 Z">
+            <aapt:attr name="android:fillColor">
+                <gradient
+                    android:type="linear"
+                    android:startX="18"
+                    android:startY="-20"
+                    android:endX="2"
+                    android:endY="-8"
+                    android:startColor="#A5D6A7"
+                    android:endColor="#FFFFFF" />
+            </aapt:attr>
+        </path>
+        
+        <!-- Secondary Leaves (Smaller) -->
+        <path android:pathData="M-2,-5 Q-10,-8 -12,0 Q-10,5 -2,0 Z"
+            android:fillColor="#C8E6C9" />
+        <path android:pathData="M2,-5 Q10,-8 12,0 Q10,5 2,0 Z"
+            android:fillColor="#C8E6C9" />
+        
+        <!-- Protective Shield Base -->
+        <path android:pathData="M-12,8 Q0,25 12,8 Q8,12 4,15 Q0,18 -4,15 Q-8,12 -12,8 Z"
+            android:fillColor="#FFFFFF"
+            android:fillAlpha="0.9" />
+            
+        <!-- Care Symbol in Shield - Hands -->
+        <path android:pathData="M-6,12 Q-4,14 0,13 Q4,14 6,12 Q4,16 0,15 Q-4,16 -6,12 Z"
+            android:fillColor="#4CAF50" />
+        
+        <!-- Technology Accent - Subtle Circuit Lines -->
+        <path
+            android:pathData="M-20,-25 L-15,-23 M20,-25 L15,-23"
+            android:strokeWidth="1"
+            android:strokeColor="#FFFFFF"
+            android:strokeAlpha="0.6" />
+        <path
+            android:pathData="M-18,-23 L-16,-21 M18,-23 L16,-21"
+            android:strokeWidth="0.8"
+            android:strokeColor="#FFFFFF"
+            android:strokeAlpha="0.4" />
+    </group>
+    
+    <!-- Subtle Brand Elements -->
+    <!-- Corner Health Indicators (as paths) -->
+    <path
+        android:fillColor="#A5D6A7"
+        android:fillAlpha="0.6"
+        android:pathData="M20,18 A2,2 0 1,1 20,22 A2,2 0 1,1 20,18 Z" />
+    <path
+        android:fillColor="#A5D6A7"
+        android:fillAlpha="0.6"
+        android:pathData="M88,86 A2,2 0 1,1 88,90 A2,2 0 1,1 88,86 Z" />
+        
+</vector>

@@ -1,0 +1,46 @@
+<?xml version="1.0" encoding="utf-8"?>
+<vector xmlns:android="http://schemas.android.com/apk/res/android"
+    android:width="108dp"
+    android:height="108dp"
+    android:viewportWidth="108"
+    android:viewportHeight="108">
+
+    <!-- Central Plant Health Symbol - Simplified -->
+    <group android:translateX="54" android:translateY="54">
+        
+        <!-- Main Plant Stem -->
+        <path
+            android:pathData="M0,-25 L0,20"
+            android:strokeWidth="4"
+            android:strokeColor="#FFFFFF"
+            android:strokeLineCap="round" />
+        
+        <!-- Medical Cross Integration on Stem -->
+        <path
+            android:pathData="M-8,0 L8,0 M0,-8 L0,8"
+            android:strokeWidth="3"
+            android:strokeColor="#FFFFFF"
+            android:strokeLineCap="round" />
+        
+        <!-- Simplified Leaves - Solid Colors -->
+        <path android:pathData="M-2,-15 Q-15,-20 -18,-8 Q-15,0 -2,-10 Z"
+            android:fillColor="#A5D6A7" />
+        <path android:pathData="M2,-15 Q15,-20 18,-8 Q15,0 2,-10 Z"
+            android:fillColor="#A5D6A7" />
+        
+        <!-- Secondary Leaves -->
+        <path android:pathData="M-2,-5 Q-10,-8 -12,0 Q-10,5 -2,0 Z"
+            android:fillColor="#C8E6C9" />
+        <path android:pathData="M2,-5 Q10,-8 12,0 Q10,5 2,0 Z"
+            android:fillColor="#C8E6C9" />
+        
+        <!-- Simple Shield Base -->
+        <path android:pathData="M-12,8 Q0,25 12,8 Q8,12 4,15 Q0,18 -4,15 Q-8,12 -12,8 Z"
+            android:fillColor="#FFFFFF" />
+            
+        <!-- Care Symbol in Shield - Simple Circle (as path) -->
+        <path
+            android:fillColor="#4CAF50"
+            android:pathData="M0,9 A4,4 0 1,1 0,17 A4,4 0 1,1 0,9 Z" />
+    </group>
+</vector>
