@@ -10,25 +10,19 @@
         android:fillColor="#2E7D32"
         android:pathData="M0,0h108v108h-108z" />
     
-    <!-- Lighter Green Accent Circle -->
-    <circle
-        android:cx="54"
-        android:cy="54"
-        android:radius="40"
+    <!-- Lighter Green Accent Circle (as path) -->
+    <path
         android:fillColor="#4CAF50"
-        android:fillAlpha="0.3" />
+        android:fillAlpha="0.3"
+        android:pathData="M54,14 A40,40 0 1,1 54,94 A40,40 0 1,1 54,14 Z" />
     
-    <!-- Simple Corner Accent Dots -->
-    <circle
-        android:cx="15"
-        android:cy="15"
-        android:radius="3"
+    <!-- Simple Corner Accent Dots (as paths) -->
+    <path
         android:fillColor="#689F38"
-        android:fillAlpha="0.4" />
-    <circle
-        android:cx="93"
-        android:cy="93"
-        android:radius="3"
+        android:fillAlpha="0.4"
+        android:pathData="M15,12 A3,3 0 1,1 15,18 A3,3 0 1,1 15,12 Z" />
+    <path
         android:fillColor="#689F38"
-        android:fillAlpha="0.4" />
+        android:fillAlpha="0.4"
+        android:pathData="M93,90 A3,3 0 1,1 93,96 A3,3 0 1,1 93,90 Z" />
 </vector>
