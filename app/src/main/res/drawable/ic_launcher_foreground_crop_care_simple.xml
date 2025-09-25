@@ -38,11 +38,9 @@
         <path android:pathData="M-12,8 Q0,25 12,8 Q8,12 4,15 Q0,18 -4,15 Q-8,12 -12,8 Z"
             android:fillColor="#FFFFFF" />
             
-        <!-- Care Symbol in Shield - Simple Circle -->
-        <circle
-            android:cx="0"
-            android:cy="13"
-            android:radius="4"
-            android:fillColor="#4CAF50" />
+        <!-- Care Symbol in Shield - Simple Circle (as path) -->
+        <path
+            android:fillColor="#4CAF50"
+            android:pathData="M0,9 A4,4 0 1,1 0,17 A4,4 0 1,1 0,9 Z" />
     </group>
 </vector>
