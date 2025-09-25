@@ -1,0 +1,185 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.cardview.widget.CardView xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:layout_margin="8dp"
+    app:cardCornerRadius="16dp"
+    app:cardElevation="6dp"
+    android:id="@+id/prescriptionCard">
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        android:background="@drawable/modern_card_background">
+
+        <!-- Prescription Header (Standalone Style) -->
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            android:padding="16dp"
+            android:background="@color/forest_green"
+            android:gravity="center_vertical">
+
+            <!-- Rx Symbol -->
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="℞"
+                android:textSize="32sp"
+                android:textStyle="bold"
+                android:textColor="@color/clean_white"
+                android:layout_marginEnd="12dp" />
+
+            <LinearLayout
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:orientation="vertical">
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="PLANT PRESCRIPTION"
+                    android:textSize="18sp"
+                    android:textStyle="bold"
+                    android:textColor="@color/clean_white" />
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="AI Plant Health System"
+                    android:textSize="12sp"
+                    android:textColor="@color/clean_white"
+                    android:alpha="0.8"
+                    android:layout_marginTop="2dp" />
+            </LinearLayout>
+
+            <!-- Date -->
+            <TextView
+                android:id="@+id/prescriptionDate"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:textSize="12sp"
+                android:textColor="@color/clean_white"
+                android:alpha="0.9" />
+        </LinearLayout>
+
+        <!-- Patient Information (Unique to Standalone) -->
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical"
+            android:padding="16dp"
+            android:background="@color/light_green_50">
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="PATIENT INFORMATION"
+                android:textSize="12sp"
+                android:textStyle="bold"
+                android:textColor="@color/forest_green_dark"
+                android:layout_marginBottom="8dp" />
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal">
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="Plant Type: "
+                    android:textSize="14sp"
+                    android:textStyle="bold"
+                    android:textColor="@color/forest_green_dark" />
+
+                <TextView
+                    android:id="@+id/plantType"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:textSize="14sp"
+                    android:textColor="@color/forest_green" />
+            </LinearLayout>
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal"
+                android:layout_marginTop="4dp">
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="Diagnosis: "
+                    android:textSize="14sp"
+                    android:textStyle="bold"
+                    android:textColor="@color/forest_green_dark" />
+
+                <TextView
+                    android:id="@+id/diagnosisName"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:textSize="14sp"
+                    android:textColor="@color/warm_amber" />
+            </LinearLayout>
+        </LinearLayout>
+
+        <!-- 
+        ==================================================================
+        UNIFIED PRESCRIPTION COMPONENT - Same as embedded in disease cards
+        ==================================================================
+        -->
+        <include layout="@layout/prescription_component"
+            android:id="@+id/sharedPrescriptionComponent"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content" />
+
+
+        <!-- Feedback Section (Same as other cards) -->
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            android:paddingHorizontal="16dp"
+            android:paddingBottom="16dp"
+            android:gravity="center_vertical">
+
+            <TextView
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:text="Was this prescription helpful?"
+                android:textSize="12sp"
+                android:textColor="@color/forest_green" />
+
+            <LinearLayout
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal">
+
+                <ImageButton
+                    android:id="@+id/thumbsUpButton"
+                    android:layout_width="32dp"
+                    android:layout_height="32dp"
+                    android:src="@drawable/ic_thumb_up"
+                    android:background="@drawable/feedback_button_background"
+                    android:layout_marginEnd="8dp"
+                    android:scaleType="centerInside" />
+
+                <ImageButton
+                    android:id="@+id/thumbsDownButton"
+                    android:layout_width="32dp"
+                    android:layout_height="32dp"
+                    android:src="@drawable/ic_thumb_down"
+                    android:background="@drawable/feedback_button_background"
+                    android:scaleType="centerInside" />
+            </LinearLayout>
+        </LinearLayout>
+    </LinearLayout>
+</androidx.cardview.widget.CardView>

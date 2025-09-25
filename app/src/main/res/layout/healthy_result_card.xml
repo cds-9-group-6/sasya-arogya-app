@@ -205,77 +205,7 @@
                 android:textColor="@color/forest_green_dark"
                 android:lineSpacingExtra="4dp" />
 
-            <!-- Action Buttons -->
-            <LinearLayout
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:orientation="horizontal"
-                android:layout_marginTop="16dp"
-                android:gravity="center">
-
-                <androidx.cardview.widget.CardView
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    app:cardCornerRadius="20dp"
-                    app:cardElevation="2dp"
-                    android:layout_marginEnd="8dp">
-
-                    <LinearLayout
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:orientation="horizontal"
-                        android:background="@color/forest_green"
-                        android:paddingHorizontal="16dp"
-                        android:paddingVertical="8dp"
-                        android:gravity="center_vertical">
-
-                        <TextView
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:text="📋"
-                            android:layout_marginEnd="4dp" />
-
-                        <TextView
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:text="Care Schedule"
-                            android:textSize="12sp"
-                            android:textStyle="bold"
-                            android:textColor="@color/clean_white" />
-                    </LinearLayout>
-                </androidx.cardview.widget.CardView>
-
-                <androidx.cardview.widget.CardView
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    app:cardCornerRadius="20dp"
-                    app:cardElevation="2dp">
-
-                    <LinearLayout
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:orientation="horizontal"
-                        android:background="@color/warm_amber"
-                        android:paddingHorizontal="16dp"
-                        android:paddingVertical="8dp"
-                        android:gravity="center_vertical">
-
-                        <TextView
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:text="📸"
-                            android:layout_marginEnd="4dp" />
-
-                        <TextView
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:text="Check Again"
-                            android:textSize="12sp"
-                            android:textStyle="bold"
-                            android:textColor="@color/clean_white" />
-                    </LinearLayout>
-                </androidx.cardview.widget.CardView>
-            </LinearLayout>
+            <!-- Action Buttons Removed - Only keeping thumbs up/down for feedback -->
         </LinearLayout>
 
         <!-- Feedback Section -->
@@ -301,6 +231,7 @@
                 android:orientation="horizontal">
 
                 <ImageButton
+                    android:id="@+id/thumbsUpButton"
                     android:layout_width="32dp"
                     android:layout_height="32dp"
                     android:src="@drawable/ic_thumb_up"
@@ -309,6 +240,7 @@
                     android:scaleType="centerInside" />
 
                 <ImageButton
+                    android:id="@+id/thumbsDownButton"
                     android:layout_width="32dp"
                     android:layout_height="32dp"
                     android:src="@drawable/ic_thumb_down"

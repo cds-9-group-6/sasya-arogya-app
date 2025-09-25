@@ -23,6 +23,8 @@ class FSMStreamHandler {
         fun onMessage(message: String)
         fun onFollowUpItems(items: List<String>)
         fun onAttentionOverlay(overlayData: AttentionOverlayData)
+        fun onPrescriptionDetails(prescriptionData: Map<String, Any>)
+        fun onClassificationResult(classificationData: Map<String, Any>)
         fun onError(error: String)
         fun onStreamComplete()
     }
@@ -90,6 +92,20 @@ class FSMStreamHandler {
                 when (event) {
                     "state_update" -> {
                         val stateUpdate = gson.fromJson(data, FSMStateUpdate::class.java)
+                        
+                        // 🔍 DEBUG: Log the entire state update to diagnose callback issues
+                        Log.d(TAG, "📨 RAW state_update JSON: $data")
+                        Log.d(TAG, "📦 PARSED stateUpdate fields:")
+                        Log.d(TAG, "  - currentNode: ${stateUpdate.currentNode}")
+                        Log.d(TAG, "  - previousNode: ${stateUpdate.previousNode}")
+                        Log.d(TAG, "  - nextAction: ${stateUpdate.nextAction}")
+                        Log.d(TAG, "  - requiresUserInput: ${stateUpdate.requiresUserInput}")
+                        Log.d(TAG, "  - assistantResponse: ${stateUpdate.assistantResponse}")
+                        Log.d(TAG, "  - prescriptionDetails: ${if (stateUpdate.prescriptionDetails != null) "✅ PRESENT (${stateUpdate.prescriptionDetails!!.keys})" else "❌ NULL"}")
+                        Log.d(TAG, "  - classificationResult: ${if (stateUpdate.classificationResult != null) "✅ PRESENT" else "❌ NULL"}")
+                        Log.d(TAG, "  - treatmentRecommendations: ${if (stateUpdate.treatmentRecommendations != null) "✅ PRESENT (${stateUpdate.treatmentRecommendations!!.size} items)" else "❌ NULL"}")
+                        Log.d(TAG, "  - preventiveMeasures: ${if (stateUpdate.preventiveMeasures != null) "✅ PRESENT (${stateUpdate.preventiveMeasures!!.size} items)" else "❌ NULL"}")
+                        
                         callback.onStateUpdate(stateUpdate)
                         
                         // Handle specific parts of state update
@@ -103,6 +119,18 @@ class FSMStreamHandler {
                             if (items.isNotEmpty()) {
                                 callback.onFollowUpItems(items)
                             }
+                        }
+                        
+                        // 🆕 CRITICAL FIX: Process prescription_details from server
+                        stateUpdate.prescriptionDetails?.let { prescriptionData ->
+                            Log.d(TAG, "📋 Processing prescription_details from server: $prescriptionData")
+                            callback.onPrescriptionDetails(prescriptionData)
+                        }
+                        
+                        // 🆕 CRITICAL FIX: Process classification_result for disease info
+                        stateUpdate.classificationResult?.let { classificationData ->
+                            Log.d(TAG, "🔬 Processing classification_result from server: $classificationData")
+                            callback.onClassificationResult(classificationData)
                         }
                         
                         stateUpdate.error?.let { error ->

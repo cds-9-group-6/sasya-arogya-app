@@ -755,6 +755,98 @@ class MainActivityFSM : ComponentActivity(), FSMStreamHandler.StreamCallback {
         }
     }
     
+    // 🆕 CRITICAL FIX: Process prescription data from server
+    private var pendingPrescriptionData: com.sasya.arogya.fsm.StructuredPrescription? = null
+    private var pendingClassificationData: Map<String, Any>? = null
+    
+    override fun onPrescriptionDetails(prescriptionData: Map<String, Any>) {
+        Log.d(TAG, "📋 Received prescription_details from server: $prescriptionData")
+        
+        try {
+            // Parse prescription JSON into structured object
+            val gson = com.google.gson.Gson()
+            val jsonString = gson.toJson(prescriptionData)
+            val structuredPrescription = gson.fromJson(jsonString, com.sasya.arogya.fsm.StructuredPrescription::class.java)
+            
+            pendingPrescriptionData = structuredPrescription
+            Log.d(TAG, "✅ Parsed structured prescription: ${structuredPrescription.diagnosis?.diseaseName}")
+            
+            // If we have the last message, update it with prescription data
+            updateLastMessageWithPrescription()
+            
+        } catch (e: Exception) {
+            Log.e(TAG, "❌ Error parsing prescription data: ${e.message}", e)
+        }
+    }
+    
+    override fun onClassificationResult(classificationData: Map<String, Any>) {
+        Log.d(TAG, "🔬 Received classification_result from server: $classificationData")
+        
+        pendingClassificationData = classificationData
+        
+        // If we have the last message, update it with classification data
+        updateLastMessageWithClassification()
+    }
+    
+    private fun updateLastMessageWithPrescription() {
+        if (pendingPrescriptionData != null && 
+            currentSessionState.messages.isNotEmpty() && 
+            !currentSessionState.messages.last().isUser) {
+            
+            val lastMessage = currentSessionState.messages.last()
+            val updatedMessage = lastMessage.copy(structuredPrescription = pendingPrescriptionData)
+            
+            // Update the message in the list
+            currentSessionState.messages[currentSessionState.messages.size - 1] = updatedMessage
+            
+            // Update the adapter
+            chatAdapter.updateMessageWithPrescription(currentSessionState.messages.size - 1, updatedMessage)
+            
+            // Save to session manager
+            currentSessionState.sessionId?.let { sessionId ->
+                sessionManager.updateLastMessageInSession(sessionId, updatedMessage)
+            }
+            
+            Log.d(TAG, "✅ Updated last message with prescription data")
+        }
+    }
+    
+    private fun updateLastMessageWithClassification() {
+        if (pendingClassificationData != null && 
+            currentSessionState.messages.isNotEmpty() && 
+            !currentSessionState.messages.last().isUser) {
+            
+            val classificationData = pendingClassificationData!!
+            val lastMessage = currentSessionState.messages.last()
+            
+            // Extract disease name and confidence from classification
+            val diseaseName = classificationData["disease_name"] as? String
+            val confidence = when (val conf = classificationData["confidence"]) {
+                is Number -> conf.toDouble()
+                is String -> conf.toDoubleOrNull()
+                else -> null
+            }
+            
+            val updatedMessage = lastMessage.copy(
+                diseaseName = diseaseName,
+                confidence = confidence
+            )
+            
+            // Update the message in the list
+            currentSessionState.messages[currentSessionState.messages.size - 1] = updatedMessage
+            
+            // Update the adapter
+            chatAdapter.updateMessageWithClassification(currentSessionState.messages.size - 1, updatedMessage)
+            
+            // Save to session manager
+            currentSessionState.sessionId?.let { sessionId ->
+                sessionManager.updateLastMessageInSession(sessionId, updatedMessage)
+            }
+            
+            Log.d(TAG, "✅ Updated last message with classification data: $diseaseName (${confidence?.let { "${(it * 100).toInt()}%" }})")
+        }
+    }
+    
     /**
      * Update profile button based on user's agricultural profile setup status
      */

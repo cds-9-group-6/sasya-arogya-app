@@ -49,21 +49,42 @@ class ChatAdapter(
         private const val VIEW_TYPE_DISEASE_CARD = 3
         private const val VIEW_TYPE_HEALTHY_CARD = 4
         private const val VIEW_TYPE_SEVERE_DISEASE_CARD = 5
+        private const val VIEW_TYPE_PRESCRIPTION_CARD = 6
     }
     
     override fun getItemViewType(position: Int): Int {
         val message = messages[position]
         return when {
-            message.isUser -> VIEW_TYPE_USER
-            // Check healthy FIRST to avoid misclassification
-            isHealthyMessage(message) -> VIEW_TYPE_HEALTHY_CARD
+            message.isUser -> {
+                android.util.Log.d("ChatAdapter", "🙋 Position $position: USER message")
+                VIEW_TYPE_USER
+            }
+            // Check prescription FIRST - highest priority for treatment recommendations
+            isPrescriptionMessage(message) -> {
+                android.util.Log.d("ChatAdapter", "℞ Position $position: PRESCRIPTION card - confidence: ${message.confidence}, diseaseName: '${message.diseaseName}', text: ${message.text.take(50)}...")
+                VIEW_TYPE_PRESCRIPTION_CARD
+            }
+            // Check healthy SECOND to avoid misclassification
+            isHealthyMessage(message) -> {
+                android.util.Log.d("ChatAdapter", "🌱 Position $position: HEALTHY card - confidence: ${message.confidence}, diseaseName: '${message.diseaseName}', text: ${message.text.take(50)}...")
+                VIEW_TYPE_HEALTHY_CARD
+            }
             isDiseaseMessage(message) -> {
                 when {
-                    isSevereDisease(message) -> VIEW_TYPE_SEVERE_DISEASE_CARD
-                    else -> VIEW_TYPE_DISEASE_CARD
+                    isSevereDisease(message) -> {
+                        android.util.Log.d("ChatAdapter", "🚨 Position $position: SEVERE DISEASE card - confidence: ${message.confidence}, diseaseName: '${message.diseaseName}'")
+                        VIEW_TYPE_SEVERE_DISEASE_CARD
+                    }
+                    else -> {
+                        android.util.Log.d("ChatAdapter", "🦠 Position $position: DISEASE card - confidence: ${message.confidence}, diseaseName: '${message.diseaseName}', text: ${message.text.take(50)}...")
+                        VIEW_TYPE_DISEASE_CARD
+                    }
                 }
             }
-            else -> VIEW_TYPE_ASSISTANT
+            else -> {
+                android.util.Log.d("ChatAdapter", "💬 Position $position: ASSISTANT message")
+                VIEW_TYPE_ASSISTANT
+            }
         }
     }
     
@@ -90,6 +111,10 @@ class ChatAdapter(
                 val view = inflater.inflate(R.layout.disease_result_card, parent, false)
                 SevereDiseaseCardViewHolder(view, onFollowUpClick, onThumbsUpClick, onThumbsDownClick)
             }
+            VIEW_TYPE_PRESCRIPTION_CARD -> {
+                val view = inflater.inflate(R.layout.prescription_result_card, parent, false)
+                PrescriptionCardViewHolder(view, onFollowUpClick, onThumbsUpClick, onThumbsDownClick)
+            }
             else -> throw IllegalArgumentException("Invalid view type: $viewType")
         }
     }
@@ -102,6 +127,7 @@ class ChatAdapter(
             is DiseaseCardViewHolder -> holder.bind(message)
             is HealthyCardViewHolder -> holder.bind(message)
             is SevereDiseaseCardViewHolder -> holder.bind(message)
+            is PrescriptionCardViewHolder -> holder.bind(message)
         }
     }
     
@@ -139,6 +165,26 @@ class ChatAdapter(
         }
     }
     
+    // 🆕 CRITICAL FIX: Update message with prescription data from server
+    fun updateMessageWithPrescription(position: Int, updatedMessage: ChatMessage) {
+        if (position in 0 until messages.size) {
+            messages[position] = updatedMessage
+            notifyItemChanged(position)
+            
+            android.util.Log.d("ChatAdapter", "📋 Updated message at position $position with prescription data")
+        }
+    }
+    
+    // 🆕 CRITICAL FIX: Update message with classification data from server  
+    fun updateMessageWithClassification(position: Int, updatedMessage: ChatMessage) {
+        if (position in 0 until messages.size) {
+            messages[position] = updatedMessage
+            notifyItemChanged(position)
+            
+            android.util.Log.d("ChatAdapter", "🔬 Updated message at position $position with classification data: ${updatedMessage.diseaseName} (${updatedMessage.confidence?.let { "${(it * 100).toInt()}%" }})")
+        }
+    }
+    
     fun clear() {
         messages.clear()
         notifyDataSetChanged()
@@ -147,36 +193,139 @@ class ChatAdapter(
     /**
      * Helper methods to detect message types based on content
      */
+    
+    // Helper function to determine if diseaseName indicates health vs actual disease
+    private fun diseaseNameIndicatesHealthy(diseaseName: String?): Boolean {
+        val result = diseaseName == null || 
+               diseaseName.isBlank() ||
+               diseaseName.contains("healthy", ignoreCase = true) ||
+               diseaseName.contains("no disease", ignoreCase = true) ||
+               diseaseName.equals("none", ignoreCase = true)
+        
+        android.util.Log.d("ChatAdapter", "🔍 diseaseNameIndicatesHealthy('$diseaseName'): $result")
+        return result
+    }
+    
+    // Helper function for healthy keywords
+    private fun hasHealthyKeywords(text: String): Boolean {
+        val keywords = listOf(
+            "healthy", "looks good", "no disease found", "plant appears healthy",
+            "no issues detected", "plant looks healthy", "appears to be healthy",
+            "no disease", "is healthy", "plant is in good", "no signs of disease"
+        )
+        
+        val result = keywords.any { keyword -> text.contains(keyword, ignoreCase = true) }
+        android.util.Log.d("ChatAdapter", "🔍 hasHealthyKeywords('${text.take(50)}...'): $result")
+        
+        return result
+    }
+    
     private fun isDiseaseMessage(message: ChatMessage): Boolean {
+        // Check if diseaseName indicates an actual disease (not healthy indicators)
+        val hasActualDiseaseName = !diseaseNameIndicatesHealthy(message.diseaseName)
+        
+        // Check for disease detection phrases (excluding healthy variants)
+        val hasDiseaseDetectionPhrases = (message.confidence != null && message.confidence > 0.0 && 
+            (message.text.contains("detected:", ignoreCase = true) ||
+             message.text.contains("diagnosis:", ignoreCase = true) ||
+             message.text.contains("identified as", ignoreCase = true) ||
+             message.text.contains("appears to be", ignoreCase = true) ||
+             message.text.contains("suffering from", ignoreCase = true)) &&
+            // Make sure these phrases aren't referring to healthy plants
+            !message.text.contains("appears to be healthy", ignoreCase = true) &&
+            !message.text.contains("identified as healthy", ignoreCase = true))
+        
         // Only trigger disease card if we have actual disease data OR specific detection phrases
-        return message.diseaseName != null || 
-               (message.confidence != null && message.confidence!! > 0.0 && 
-                (message.text.contains("detected:", ignoreCase = true) ||
-                 message.text.contains("diagnosis:", ignoreCase = true) ||
-                 message.text.contains("identified as", ignoreCase = true) ||
-                 message.text.contains("appears to be", ignoreCase = true) ||
-                 message.text.contains("suffering from", ignoreCase = true)))
+        // AND it's not already identified as healthy
+        return (hasActualDiseaseName || hasDiseaseDetectionPhrases) && 
+               !hasHealthyKeywords(message.text)
     }
     
     private fun isHealthyMessage(message: ChatMessage): Boolean {
-        // Check for explicit healthy indicators first
-        val hasHealthyKeywords = (message.text.contains("healthy", ignoreCase = true) ||
-                                 message.text.contains("looks good", ignoreCase = true) ||
-                                 message.text.contains("no disease found", ignoreCase = true) ||
-                                 message.text.contains("plant appears healthy", ignoreCase = true) ||
-                                 message.text.contains("no issues detected", ignoreCase = true))
+        // Use shared helper functions for consistency
+        val hasHealthyKeywordsInText = hasHealthyKeywords(message.text)
+        val diseaseNameIsHealthy = diseaseNameIndicatesHealthy(message.diseaseName)
         
-        // High confidence with healthy keywords and no disease name should be healthy
-        return (message.confidence != null && message.confidence!! > 0.85 && 
-                message.diseaseName == null && 
-                hasHealthyKeywords &&
-                // Make sure it's not a disease message with high confidence
-                !message.text.contains("disease detected", ignoreCase = true))
+        android.util.Log.d("ChatAdapter", "🔍 HEALTHY CHECK - confidence: ${message.confidence}, diseaseName: '${message.diseaseName}', hasHealthyKeywords: $hasHealthyKeywordsInText, diseaseNameIsHealthy: $diseaseNameIsHealthy")
+        android.util.Log.d("ChatAdapter", "🔍 HEALTHY CHECK - text: ${message.text.take(100)}...")
+        
+        // AGGRESSIVE BACKUP: If text explicitly mentions healthy, treat it as healthy regardless
+        val explicitHealthyMention = message.text.contains("healthy", ignoreCase = true) ||
+                                    message.text.contains("plant looks good", ignoreCase = true) ||
+                                    message.text.contains("no disease", ignoreCase = true)
+        
+        if (explicitHealthyMention && (message.confidence == null || message.confidence > 0.3)) {
+            android.util.Log.d("ChatAdapter", "🌱 BACKUP HEALTHY DETECTION: Explicit healthy mention found!")
+            return true
+        }
+        
+        // SIMPLIFIED LOGIC: Make it much more likely to detect healthy plants
+        val hasConfidence = message.confidence != null && message.confidence > 0.5  // Lower threshold
+        val hasHealthyIndicators = hasHealthyKeywordsInText || diseaseNameIsHealthy
+        val notExplicitDisease = !message.text.contains("disease detected", ignoreCase = true) &&
+                                !message.text.contains("disease identified", ignoreCase = true) &&
+                                !message.text.contains("diagnosed as", ignoreCase = true)
+        
+        val result = hasConfidence && hasHealthyIndicators && notExplicitDisease
+        
+        android.util.Log.d("ChatAdapter", "🔍 HEALTHY CHECK RESULT: $result (hasConfidence: $hasConfidence, hasHealthyIndicators: $hasHealthyIndicators, notExplicitDisease: $notExplicitDisease)")
+        
+        return result
+    }
+    
+    private fun isPrescriptionMessage(message: ChatMessage): Boolean {
+        // ✅ FIXED LOGIC: Only show STANDALONE prescription for explicit user requests
+        // Disease messages with prescription data should NOT trigger standalone prescription
+        
+        // Check if this is an explicit user request for a standalone prescription
+        val explicitPrescriptionKeywords = listOf(
+            "give me a prescription",
+            "show me the prescription", 
+            "generate prescription",
+            "create prescription",
+            "prescription card",
+            "treatment plan card"
+        )
+        
+        val hasExplicitRequest = explicitPrescriptionKeywords.any { keyword ->
+            message.text.contains(keyword, ignoreCase = true)
+        }
+        
+        // Only show standalone if:
+        // 1. Explicit prescription request AND 
+        // 2. NOT a disease classification message
+        val shouldShowStandalone = hasExplicitRequest && !isDiseaseMessage(message)
+        
+        android.util.Log.d("ChatAdapter", "🔍 STANDALONE PRESCRIPTION CHECK - explicitRequest: $hasExplicitRequest, isDiseaseMsg: ${isDiseaseMessage(message)}, result: $shouldShowStandalone")
+        
+        return shouldShowStandalone
+    }
+    
+    private fun shouldEmbedPrescription(message: ChatMessage): Boolean {
+        // PRIORITY 1: Check for structured prescription data
+        if (message.structuredPrescription != null) {
+            android.util.Log.d("ChatAdapter", "✅ STRUCTURED PRESCRIPTION FOUND - embedding in disease card")
+            return true
+        }
+        
+        // PRIORITY 2: Check for text-based prescription indicators (backward compatibility)
+        val hasPrescriptionKeywords = (message.text.contains("medication", ignoreCase = true) ||
+                                      message.text.contains("dosage", ignoreCase = true) ||
+                                      message.text.contains("apply every", ignoreCase = true) ||
+                                      message.text.contains("fungicide spray", ignoreCase = true) ||
+                                      message.text.contains("treatment schedule", ignoreCase = true))
+        
+        val hasDetailedTreatment = hasTreatmentRecommendations(message) && message.text.length > 200
+        
+        android.util.Log.d("ChatAdapter", "🔍 EMBED PRESCRIPTION CHECK - structured: ${message.structuredPrescription != null}, keywords: $hasPrescriptionKeywords, detailed: $hasDetailedTreatment")
+        
+        return (hasPrescriptionKeywords || hasDetailedTreatment) &&
+               !diseaseNameIndicatesHealthy(message.diseaseName)
     }
     
     private fun isSevereDisease(message: ChatMessage): Boolean {
-        return message.diseaseName != null && 
-               (message.confidence != null && message.confidence!! > 0.95) &&
+        return !diseaseNameIndicatesHealthy(message.diseaseName) && 
+               (message.confidence != null && message.confidence > 0.95) &&
                (message.text.contains("severe", ignoreCase = true) ||
                 message.text.contains("critical", ignoreCase = true) ||
                 message.text.contains("urgent", ignoreCase = true) ||
@@ -545,6 +694,9 @@ class ChatAdapter(
         private val attentionOverlayImage: ImageView = itemView.findViewById(R.id.attentionOverlayImage)
         private val overlayDescription: TextView = itemView.findViewById(R.id.overlayDescription)
         
+        // Embedded prescription component
+        private val embeddedPrescription: LinearLayout = itemView.findViewById(R.id.embeddedPrescription)
+        
         fun bind(message: ChatMessage) {
             // Set disease name
             diseaseName.text = message.diseaseName ?: "Disease Detected"
@@ -561,8 +713,16 @@ class ChatAdapter(
             // Handle attention overlay display FIRST for visibility debugging
             handleAttentionOverlay(message)
             
-            // Only show treatment section if actual treatment recommendations are present
-            if (hasTreatmentRecommendations(message)) {
+            // Check if we should embed prescription vs show simple treatment
+            if (shouldEmbedPrescription(message)) {
+                // Show embedded prescription component
+                embeddedPrescription.visibility = View.VISIBLE
+                treatmentSection.visibility = View.GONE
+                populateEmbeddedPrescription(message)
+                android.util.Log.d("DiseaseCardViewHolder", "✅ Showing embedded prescription component")
+            } else if (hasTreatmentRecommendations(message)) {
+                // Show simple treatment section
+                embeddedPrescription.visibility = View.GONE
                 treatmentSection.visibility = View.VISIBLE
                 val serverTreatment = extractTreatment(message.text)
                 if (serverTreatment.isNotBlank()) {
@@ -582,7 +742,10 @@ class ChatAdapter(
                     expandTreatment.text = if (isExpanded) "COLLAPSE" else "EXPAND"
                     android.util.Log.d("DiseaseCardViewHolder", "Treatment section toggled: isExpanded=$isExpanded")
                 }
+                android.util.Log.d("DiseaseCardViewHolder", "✅ Showing simple treatment section")
             } else {
+                // No treatment recommendations
+                embeddedPrescription.visibility = View.GONE
                 treatmentSection.visibility = View.GONE
                 expandTreatment.setOnClickListener(null)
             }
@@ -714,6 +877,195 @@ class ChatAdapter(
             
             android.util.Log.d("DiseaseCardViewHolder", "Applied formatting: original(${text.length}) -> formatted(${formattedText.length})")
             return formattedText
+        }
+        
+        private fun populateEmbeddedPrescription(message: ChatMessage) {
+            try {
+                // Get prescription component views
+                val prescriptionDate = embeddedPrescription.findViewById<TextView>(R.id.prescriptionDate)
+                val immediateAction = embeddedPrescription.findViewById<TextView>(R.id.immediateAction)
+                val medicineApplication = embeddedPrescription.findViewById<TextView>(R.id.medicineApplication)
+                val repeatSchedule = embeddedPrescription.findViewById<TextView>(R.id.repeatSchedule)
+                val monitorCare = embeddedPrescription.findViewById<TextView>(R.id.monitorCare)
+                val treatmentDuration = embeddedPrescription.findViewById<TextView>(R.id.treatmentDuration)
+                
+                // Set current date
+                val dateFormatter = SimpleDateFormat("MMM dd", Locale.getDefault())
+                prescriptionDate?.text = dateFormatter.format(Date())
+                
+                // PRIORITY 1: Use structured prescription data if available
+                if (message.structuredPrescription != null) {
+                    android.util.Log.d("DiseaseCardViewHolder", "📋 Using STRUCTURED prescription data")
+                    populateFromStructuredData(message.structuredPrescription, immediateAction, medicineApplication, repeatSchedule, monitorCare, treatmentDuration)
+                } else {
+                    // PRIORITY 2: Fall back to text parsing (backward compatibility)
+                    android.util.Log.d("DiseaseCardViewHolder", "📋 Falling back to TEXT parsing for prescription")
+                    populateFromTextParsing(message, immediateAction, medicineApplication, repeatSchedule, monitorCare, treatmentDuration)
+                }
+                
+                android.util.Log.d("DiseaseCardViewHolder", "✅ Prescription populated successfully")
+            } catch (e: Exception) {
+                android.util.Log.e("DiseaseCardViewHolder", "❌ Error populating embedded prescription", e)
+            }
+        }
+        
+        private fun populateFromStructuredData(
+            prescription: com.sasya.arogya.fsm.StructuredPrescription,
+            immediateAction: TextView?, 
+            medicineApplication: TextView?, 
+            repeatSchedule: TextView?, 
+            monitorCare: TextView?,
+            treatmentDuration: TextView?
+        ) {
+            // Step 1: Immediate Action - from immediate_treatment.actions
+            val immediateStep = prescription.immediateTreatment?.actions?.firstOrNull() 
+                ?: prescription.immediateTreatment?.emergencyMeasures?.firstOrNull()
+                ?: "Remove affected plant parts immediately"
+            immediateAction?.text = immediateStep
+            
+            // Step 2: Medicine Application - from medicine_recommendations.primary_treatment
+            val primaryTreatment = prescription.medicineRecommendations?.primaryTreatment
+            val medicineStep = if (primaryTreatment != null) {
+                buildString {
+                    append(primaryTreatment.applicationMethod ?: "Apply")
+                    append(" ")
+                    append(primaryTreatment.medicineName ?: "prescribed medicine")
+                    if (primaryTreatment.dosage != null) {
+                        append(" at ")
+                        append(primaryTreatment.dosage)
+                    }
+                }
+            } else {
+                "Apply prescribed plant medicine as directed"
+            }
+            medicineApplication?.text = medicineStep
+            
+            // Step 3: Repeat Schedule - from primary_treatment.frequency
+            val scheduleStep = primaryTreatment?.frequency?.let { frequency ->
+                "$frequency, early morning for best results"
+            } ?: "Follow recommended schedule, early morning"
+            repeatSchedule?.text = scheduleStep
+            
+            // Step 4: Monitor & Care - from prevention and additional_notes
+            val carePoints = mutableListOf<String>()
+            
+            // Add monitoring from weekly plan
+            prescription.weeklyTreatmentPlan?.week1?.monitoring?.let { monitoring ->
+                carePoints.add(monitoring.lowercase().replace("monitor ", ""))
+            }
+            
+            // Add prevention practices
+            prescription.prevention?.culturalPractices?.firstOrNull()?.let { practice ->
+                carePoints.add(practice.lowercase())
+            }
+            
+            val monitorStep = if (carePoints.isNotEmpty()) {
+                "Check daily, ${carePoints.take(2).joinToString(", ")}"
+            } else {
+                "Monitor plant daily for improvement"
+            }
+            monitorCare?.text = monitorStep
+            
+            // Step 5: Treatment Duration - from primary_treatment.duration or additional_notes
+            val durationStep = primaryTreatment?.duration
+                ?: prescription.additionalNotes?.followUp
+                ?: "Continue treatment until improvement is visible (usually 2-3 weeks)"
+            treatmentDuration?.text = durationStep
+        }
+        
+        private fun populateFromTextParsing(
+            message: ChatMessage, 
+            immediateAction: TextView?, 
+            medicineApplication: TextView?, 
+            repeatSchedule: TextView?, 
+            monitorCare: TextView?,
+            treatmentDuration: TextView?
+        ) {
+            // Backward compatibility: Extract and format treatment steps from text
+            val treatment = extractTreatment(message.text)
+            android.util.Log.d("DiseaseCardViewHolder", "📋 Text parsing treatment: ${treatment.take(100)}...")
+            
+            // Step 1: Immediate Action
+            val immediateStep = extractImmediateAction(treatment, message.text)
+            immediateAction?.text = immediateStep
+            
+            // Step 2: Medicine Application
+            val medicineStep = extractMedicineApplication(treatment, message.text)
+            medicineApplication?.text = medicineStep
+            
+            // Step 3: Repeat Schedule
+            val scheduleStep = extractRepeatSchedule(treatment, message.text)
+            repeatSchedule?.text = scheduleStep
+            
+            // Step 4: Monitor & Care
+            val monitorStep = extractMonitorCare(treatment, message.text)
+            monitorCare?.text = monitorStep
+            
+            // Step 5: Treatment Duration - extract from text
+            val durationStep = extractTreatmentDuration(treatment, message.text)
+            treatmentDuration?.text = durationStep
+        }
+        
+        private fun extractTreatmentDuration(treatment: String, fullText: String): String {
+            return when {
+                fullText.contains("2-3 weeks", ignoreCase = true) -> "Continue for 2-3 weeks until improvement"
+                fullText.contains("1-2 weeks", ignoreCase = true) -> "Apply for 1-2 weeks then reassess"
+                fullText.contains("until", ignoreCase = true) && fullText.contains("improve", ignoreCase = true) ->
+                    "Continue until improvement is visible"
+                fullText.contains("weekly", ignoreCase = true) -> "Weekly applications for 3-4 weeks"
+                else -> "Continue treatment until new healthy growth appears (usually 2-3 weeks)"
+            }
+        }
+        
+        private fun extractImmediateAction(treatment: String, fullText: String): String {
+            return when {
+                fullText.contains("remove", ignoreCase = true) && fullText.contains("leaves", ignoreCase = true) ->
+                    "Remove affected leaves and dispose safely"
+                fullText.contains("isolate", ignoreCase = true) ->
+                    "Isolate affected plants from healthy ones"
+                else -> "Remove affected plant parts and clean area"
+            }
+        }
+        
+        private fun extractMedicineApplication(treatment: String, fullText: String): String {
+            return when {
+                fullText.contains("copper", ignoreCase = true) && fullText.contains("fungicide", ignoreCase = true) ->
+                    "Spray copper-based fungicide solution"
+                fullText.contains("fungicide", ignoreCase = true) ->
+                    "Apply fungicide spray to affected areas"
+                fullText.contains("spray", ignoreCase = true) ->
+                    "Apply recommended plant spray"
+                else -> "Apply prescribed plant medicine"
+            }
+        }
+        
+        private fun extractRepeatSchedule(treatment: String, fullText: String): String {
+            return when {
+                fullText.contains("every 7", ignoreCase = true) || fullText.contains("weekly", ignoreCase = true) ->
+                    "Every 7 days, early morning"
+                fullText.contains("every 10", ignoreCase = true) || fullText.contains("7-10 days", ignoreCase = true) ->
+                    "Every 7-10 days, early morning"
+                fullText.contains("daily", ignoreCase = true) ->
+                    "Daily application, early morning"
+                else -> "Follow recommended schedule, early morning"
+            }
+        }
+        
+        private fun extractMonitorCare(treatment: String, fullText: String): String {
+            val carePoints = mutableListOf<String>()
+            
+            if (fullText.contains("water", ignoreCase = true) || fullText.contains("overhead", ignoreCase = true)) {
+                carePoints.add("avoid overhead watering")
+            }
+            if (fullText.contains("circulation", ignoreCase = true) || fullText.contains("air", ignoreCase = true)) {
+                carePoints.add("improve air circulation")
+            }
+            
+            return if (carePoints.isNotEmpty()) {
+                "Check daily, ${carePoints.joinToString(", ")}"
+            } else {
+                "Check daily, maintain proper plant care"
+            }
         }
         
         private fun setupFeedbackButtons(message: ChatMessage) {
@@ -888,6 +1240,8 @@ class ChatAdapter(
         private val overlayDescription: TextView = itemView.findViewById(R.id.overlayDescription)
         
         fun bind(message: ChatMessage) {
+            android.util.Log.d("HealthyCardViewHolder", "🌱 Binding healthy card - confidence: ${message.confidence}, diseaseName: '${message.diseaseName}', text contains 'healthy': ${message.text.contains("healthy", ignoreCase = true)}")
+            
             healthyTitle.text = "Plant Looks Healthy!"
             
             val confidencePercentage = ((message.confidence ?: 0.94) * 100).toInt()
@@ -1351,6 +1705,399 @@ class ChatAdapter(
             
             android.util.Log.d("SevereDiseaseCardViewHolder", "Applied formatting: original(${text.length}) -> formatted(${formattedText.length})")
             return formattedText
+        }
+    }
+    
+    /**
+     * ViewHolder for prescription cards - pharmacy-style treatment recommendations
+     */
+    inner class PrescriptionCardViewHolder(
+        itemView: View,
+        private val onFollowUpClick: (String) -> Unit,
+        private val onThumbsUpClick: (ChatMessage) -> Unit,
+        private val onThumbsDownClick: (ChatMessage) -> Unit
+    ) : RecyclerView.ViewHolder(itemView) {
+        
+        private val prescriptionDate: TextView = itemView.findViewById(R.id.prescriptionDate)
+        private val plantType: TextView = itemView.findViewById(R.id.plantType)
+        private val diagnosisName: TextView = itemView.findViewById(R.id.diagnosisName)
+        private val thumbsUpButton: ImageButton = itemView.findViewById(R.id.thumbsUpButton)
+        private val thumbsDownButton: ImageButton = itemView.findViewById(R.id.thumbsDownButton)
+        
+        fun bind(message: ChatMessage) {
+            android.util.Log.d("PrescriptionCardViewHolder", "℞ Binding standalone prescription card - structured: ${message.structuredPrescription != null}, diseaseName: '${message.diseaseName}', confidence: ${message.confidence}")
+            
+            // Set current date in header
+            val dateFormatter = SimpleDateFormat("MMM dd, yyyy", Locale.getDefault())
+            prescriptionDate.text = dateFormatter.format(Date())
+            
+            // Populate patient information (unique to standalone)
+            populatePatientInfo(message)
+            
+            // Populate shared prescription component (same as embedded)
+            populateSharedPrescriptionComponent(message)
+            
+            // Set up feedback buttons
+            setupFeedbackButtons(message)
+        }
+        
+        private fun populatePatientInfo(message: ChatMessage) {
+            // Plant type from structured data or text extraction
+            plantType.text = if (message.structuredPrescription != null) {
+                message.structuredPrescription.plantType?.replaceFirstChar { it.uppercase() } ?: "Plant"
+            } else {
+                extractPlantType(message.text)
+            }
+            
+            // Disease name from structured data or message
+            diagnosisName.text = if (message.structuredPrescription != null) {
+                message.structuredPrescription.diagnosis?.diseaseName 
+                    ?: message.structuredPrescription.diseaseName 
+                    ?: message.diseaseName 
+                    ?: "Plant Disease"
+            } else {
+                message.diseaseName ?: "Plant Disease"
+            }
+        }
+        
+        private fun populateSharedPrescriptionComponent(message: ChatMessage) {
+            // Find the shared prescription component views
+            val sharedComponent = itemView.findViewById<LinearLayout>(R.id.sharedPrescriptionComponent)
+            val componentDate = sharedComponent.findViewById<TextView>(R.id.prescriptionDate)
+            val immediateAction = sharedComponent.findViewById<TextView>(R.id.immediateAction)
+            val medicineApplication = sharedComponent.findViewById<TextView>(R.id.medicineApplication)
+            val repeatSchedule = sharedComponent.findViewById<TextView>(R.id.repeatSchedule)
+            val monitorCare = sharedComponent.findViewById<TextView>(R.id.monitorCare)
+            val treatmentDuration = sharedComponent.findViewById<TextView>(R.id.treatmentDuration)
+            
+            // Set date in component
+            val dateFormatter = SimpleDateFormat("MMM dd", Locale.getDefault())
+            componentDate?.text = dateFormatter.format(Date())
+            
+            // Use the same logic as embedded prescription
+            if (message.structuredPrescription != null) {
+                android.util.Log.d("PrescriptionCardViewHolder", "📋 Using STRUCTURED prescription data for shared component")
+                populateFromStructuredData(message.structuredPrescription, immediateAction, medicineApplication, repeatSchedule, monitorCare, treatmentDuration)
+            } else {
+                android.util.Log.d("PrescriptionCardViewHolder", "📋 Falling back to TEXT parsing for shared component")
+                populateFromTextParsing(message, immediateAction, medicineApplication, repeatSchedule, monitorCare, treatmentDuration)
+            }
+        }
+        
+        // Reuse the same structured data population logic as DiseaseCardViewHolder
+        private fun populateFromStructuredData(
+            prescription: com.sasya.arogya.fsm.StructuredPrescription,
+            immediateAction: TextView?, 
+            medicineApplication: TextView?, 
+            repeatSchedule: TextView?, 
+            monitorCare: TextView?,
+            treatmentDuration: TextView?
+        ) {
+            // Step 1: Immediate Action - from immediate_treatment.actions
+            val immediateStep = prescription.immediateTreatment?.actions?.firstOrNull() 
+                ?: prescription.immediateTreatment?.emergencyMeasures?.firstOrNull()
+                ?: "Remove affected plant parts immediately"
+            immediateAction?.text = immediateStep
+            
+            // Step 2: Medicine Application - from medicine_recommendations.primary_treatment
+            val primaryTreatment = prescription.medicineRecommendations?.primaryTreatment
+            val medicineStep = if (primaryTreatment != null) {
+                buildString {
+                    append(primaryTreatment.applicationMethod ?: "Apply")
+                    append(" ")
+                    append(primaryTreatment.medicineName ?: "prescribed medicine")
+                    if (primaryTreatment.dosage != null) {
+                        append(" at ")
+                        append(primaryTreatment.dosage)
+                    }
+                }
+            } else {
+                "Apply prescribed plant medicine as directed"
+            }
+            medicineApplication?.text = medicineStep
+            
+            // Step 3: Repeat Schedule - from primary_treatment.frequency
+            val scheduleStep = primaryTreatment?.frequency?.let { frequency ->
+                "$frequency, early morning for best results"
+            } ?: "Follow recommended schedule, early morning"
+            repeatSchedule?.text = scheduleStep
+            
+            // Step 4: Monitor & Care - from prevention and additional_notes
+            val carePoints = mutableListOf<String>()
+            
+            // Add monitoring from weekly plan
+            prescription.weeklyTreatmentPlan?.week1?.monitoring?.let { monitoring ->
+                carePoints.add(monitoring.lowercase().replace("monitor ", ""))
+            }
+            
+            // Add prevention practices
+            prescription.prevention?.culturalPractices?.firstOrNull()?.let { practice ->
+                carePoints.add(practice.lowercase())
+            }
+            
+            val monitorStep = if (carePoints.isNotEmpty()) {
+                "Check daily, ${carePoints.take(2).joinToString(", ")}"
+            } else {
+                "Monitor plant daily for improvement"
+            }
+            monitorCare?.text = monitorStep
+            
+            // Step 5: Treatment Duration - from primary_treatment.duration or additional_notes
+            val durationStep = primaryTreatment?.duration
+                ?: prescription.additionalNotes?.followUp
+                ?: "Continue treatment until improvement is visible (usually 2-3 weeks)"
+            treatmentDuration?.text = durationStep
+        }
+        
+        // Reuse the same text parsing logic as DiseaseCardViewHolder  
+        private fun populateFromTextParsing(
+            message: ChatMessage, 
+            immediateAction: TextView?, 
+            medicineApplication: TextView?, 
+            repeatSchedule: TextView?, 
+            monitorCare: TextView?,
+            treatmentDuration: TextView?
+        ) {
+            // Backward compatibility: Extract and format treatment steps from text
+            val treatment = extractTreatment(message.text)
+            android.util.Log.d("PrescriptionCardViewHolder", "📋 Text parsing treatment: ${treatment.take(100)}...")
+            
+            // Step 1: Immediate Action
+            val immediateStep = extractImmediateAction(treatment, message.text)
+            immediateAction?.text = immediateStep
+            
+            // Step 2: Medicine Application
+            val medicineStep = extractMedicineApplication(treatment, message.text)
+            medicineApplication?.text = medicineStep
+            
+            // Step 3: Repeat Schedule
+            val scheduleStep = extractRepeatSchedule(treatment, message.text)
+            repeatSchedule?.text = scheduleStep
+            
+            // Step 4: Monitor & Care
+            val monitorStep = extractMonitorCare(treatment, message.text)
+            monitorCare?.text = monitorStep
+            
+            // Step 5: Treatment Duration - extract from text
+            val durationStep = extractTreatmentDuration(treatment, message.text)
+            treatmentDuration?.text = durationStep
+        }
+        
+        // Add the text parsing utility methods that are now needed by standalone card
+        private fun extractTreatment(text: String): String {
+            // Extract treatment section from the message text
+            val treatmentIndicators = listOf("treatment:", "recommendation:", "apply", "spray", "use")
+            
+            val lines = text.split("\n")
+            val treatmentLines = mutableListOf<String>()
+            var collectingTreatment = false
+            
+            for (line in lines) {
+                val lowerLine = line.lowercase()
+                if (treatmentIndicators.any { indicator -> lowerLine.contains(indicator) }) {
+                    collectingTreatment = true
+                    treatmentLines.add(line.trim())
+                } else if (collectingTreatment && line.trim().isNotEmpty()) {
+                    treatmentLines.add(line.trim())
+                } else if (collectingTreatment && line.trim().isEmpty()) {
+                    break // End of treatment section
+                }
+            }
+            
+            return treatmentLines.joinToString(" ").ifEmpty { text }
+        }
+        
+        private fun extractImmediateAction(treatment: String, fullText: String): String {
+            return when {
+                fullText.contains("remove", ignoreCase = true) && fullText.contains("leaves", ignoreCase = true) ->
+                    "Remove affected leaves and dispose safely"
+                fullText.contains("isolate", ignoreCase = true) ->
+                    "Isolate affected plants from healthy ones"
+                else -> "Remove affected plant parts and clean area"
+            }
+        }
+        
+        private fun extractMedicineApplication(treatment: String, fullText: String): String {
+            return when {
+                fullText.contains("copper", ignoreCase = true) && fullText.contains("fungicide", ignoreCase = true) ->
+                    "Spray copper-based fungicide solution"
+                fullText.contains("fungicide", ignoreCase = true) ->
+                    "Apply fungicide spray to affected areas"
+                fullText.contains("spray", ignoreCase = true) ->
+                    "Apply recommended plant spray"
+                else -> "Apply prescribed plant medicine"
+            }
+        }
+        
+        private fun extractRepeatSchedule(treatment: String, fullText: String): String {
+            return when {
+                fullText.contains("every 7", ignoreCase = true) || fullText.contains("weekly", ignoreCase = true) ->
+                    "Every 7 days, early morning"
+                fullText.contains("every 10", ignoreCase = true) || fullText.contains("7-10 days", ignoreCase = true) ->
+                    "Every 7-10 days, early morning"
+                fullText.contains("daily", ignoreCase = true) ->
+                    "Daily application, early morning"
+                else -> "Follow recommended schedule, early morning"
+            }
+        }
+        
+        private fun extractMonitorCare(treatment: String, fullText: String): String {
+            val carePoints = mutableListOf<String>()
+            
+            if (fullText.contains("water", ignoreCase = true) || fullText.contains("overhead", ignoreCase = true)) {
+                carePoints.add("avoid overhead watering")
+            }
+            if (fullText.contains("circulation", ignoreCase = true) || fullText.contains("air", ignoreCase = true)) {
+                carePoints.add("improve air circulation")
+            }
+            
+            return if (carePoints.isNotEmpty()) {
+                "Check daily, ${carePoints.joinToString(", ")}"
+            } else {
+                "Check daily, maintain proper plant care"
+            }
+        }
+        
+        private fun extractTreatmentDuration(treatment: String, fullText: String): String {
+            return when {
+                fullText.contains("2-3 weeks", ignoreCase = true) -> "Continue for 2-3 weeks until improvement"
+                fullText.contains("1-2 weeks", ignoreCase = true) -> "Apply for 1-2 weeks then reassess"
+                fullText.contains("until", ignoreCase = true) && fullText.contains("improve", ignoreCase = true) ->
+                    "Continue until improvement is visible"
+                fullText.contains("weekly", ignoreCase = true) -> "Weekly applications for 3-4 weeks"
+                else -> "Continue treatment until new healthy growth appears (usually 2-3 weeks)"
+            }
+        }
+        
+        private fun extractPlantType(text: String): String {
+            // Try to extract plant type from the text
+            val plantKeywords = listOf("tomato", "apple", "corn", "wheat", "potato", "cucumber", "pepper", "strawberry")
+            for (keyword in plantKeywords) {
+                if (text.contains(keyword, ignoreCase = true)) {
+                    return keyword.replaceFirstChar { it.uppercase() } + " Plant"
+                }
+            }
+            return "Plant"
+        }
+        
+        private fun extractDetailedTreatment(text: String): String {
+            android.util.Log.d("PrescriptionCardViewHolder", "🔍 Extracting detailed treatment from text (length: ${text.length})")
+            
+            // Try specific treatment extraction similar to disease card but formatted for prescription
+            val treatment = when {
+                text.contains("TREATMENT FOR YOUR PLANT", ignoreCase = true) -> {
+                    val startIndex = text.indexOf("TREATMENT FOR YOUR PLANT", ignoreCase = true)
+                    val endIndex = text.indexOf("Your plant will get better", ignoreCase = true)
+                    if (startIndex >= 0 && endIndex > startIndex) {
+                        text.substring(startIndex, endIndex).trim()
+                    } else {
+                        extractTreatmentSection(text)
+                    }
+                }
+                else -> extractTreatmentSection(text)
+            }
+            
+            // Format for prescription display
+            return formatForPrescription(treatment)
+        }
+        
+        private fun extractTreatmentSection(text: String): String {
+            // Extract treatment-related sections
+            return when {
+                text.contains("apply", ignoreCase = true) && text.contains("fungicide", ignoreCase = true) -> {
+                    "Apply copper-based fungicide spray<br>📅 Every 7-10 days<br>🕐 Early morning application<br>⚠️ Continue until symptoms resolve"
+                }
+                text.contains("spray", ignoreCase = true) -> {
+                    "Apply recommended plant spray<br>📅 As directed<br>🕐 Follow application schedule<br>⚠️ Monitor plant response"
+                }
+                else -> {
+                    "Follow treatment recommendations<br>📅 As prescribed<br>🕐 Monitor application timing<br>⚠️ Continue as directed"
+                }
+            }
+        }
+        
+        private fun formatForPrescription(treatment: String): String {
+            // Format treatment text for prescription card display
+            var formatted = treatment
+                .replace(Regex("\\*\\*(.*?)\\*\\*")) { "<b>${it.groupValues[1]}</b>" }
+                .replace("\n", "<br>")
+            
+            // Add prescription-style formatting if not already present
+            if (!formatted.contains("📅") && !formatted.contains("🕐")) {
+                formatted = "Apply as directed<br>📅 Follow recommended schedule<br>🕐 Monitor application timing<br>⚠️ Continue until symptoms resolve"
+            }
+            
+            return formatted
+        }
+        
+        private fun extractAdditionalCare(text: String): String {
+            // Extract care instructions or provide defaults
+            val careInstructions = mutableListOf<String>()
+            
+            if (text.contains("remove", ignoreCase = true) && text.contains("leaves", ignoreCase = true)) {
+                careInstructions.add("• Remove and dispose of affected leaves")
+            }
+            if (text.contains("air circulation", ignoreCase = true)) {
+                careInstructions.add("• Improve air circulation around plant")
+            }
+            if (text.contains("watering", ignoreCase = true)) {
+                careInstructions.add("• Avoid overhead watering")
+            }
+            
+            // Add default instructions if none found
+            if (careInstructions.isEmpty()) {
+                careInstructions.addAll(listOf(
+                    "• Remove and dispose of affected plant material",
+                    "• Improve air circulation around plant", 
+                    "• Water at soil level to avoid wet foliage",
+                    "• Monitor plant daily for changes"
+                ))
+            } else {
+                careInstructions.add("• Monitor plant daily for changes")
+            }
+            
+            return careInstructions.joinToString("\n")
+        }
+        
+        
+        private fun setupFeedbackButtons(message: ChatMessage) {
+            thumbsUpButton.setOnClickListener {
+                thumbsUpButton.setColorFilter(
+                    ContextCompat.getColor(itemView.context, R.color.thumbs_up_selected)
+                )
+                thumbsDownButton.setColorFilter(
+                    ContextCompat.getColor(itemView.context, R.color.thumbs_default)
+                )
+                
+                // Record feedback for prescription
+                val feedback = MessageFeedback(
+                    messageText = message.text,
+                    feedbackType = FeedbackType.THUMBS_UP,
+                    userContext = "Positive feedback on prescription card"
+                )
+                FeedbackManager.recordFeedback(feedback)
+                
+                onThumbsUpClick(message)
+            }
+            
+            thumbsDownButton.setOnClickListener {
+                thumbsDownButton.setColorFilter(
+                    ContextCompat.getColor(itemView.context, R.color.thumbs_down_selected)
+                )
+                thumbsUpButton.setColorFilter(
+                    ContextCompat.getColor(itemView.context, R.color.thumbs_default)
+                )
+                
+                // Record feedback for prescription
+                val feedback = MessageFeedback(
+                    messageText = message.text,
+                    feedbackType = FeedbackType.THUMBS_DOWN,
+                    userContext = "Negative feedback on prescription card"
+                )
+                FeedbackManager.recordFeedback(feedback)
+                
+                onThumbsDownClick(message)
+            }
         }
     }
 }

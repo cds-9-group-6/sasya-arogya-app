@@ -1,0 +1,246 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- Reusable Prescription Component - Can be embedded in disease cards or used standalone -->
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:orientation="vertical"
+    android:id="@+id/prescriptionComponent">
+
+    <!-- Prescription Header -->
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        android:background="@color/forest_green"
+        android:padding="12dp"
+        android:gravity="center_vertical">
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="℞"
+            android:textSize="24sp"
+            android:textStyle="bold"
+            android:textColor="@color/clean_white"
+            android:layout_marginEnd="8dp" />
+
+        <TextView
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:text="TREATMENT PRESCRIPTION"
+            android:textSize="14sp"
+            android:textStyle="bold"
+            android:textColor="@color/clean_white" />
+
+        <TextView
+            android:id="@+id/prescriptionDate"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textSize="11sp"
+            android:textColor="@color/clean_white"
+            android:alpha="0.9" />
+    </LinearLayout>
+
+    <!-- Treatment Steps - Farmer-Friendly Format -->
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        android:background="@color/warm_amber_light"
+        android:padding="12dp">
+
+        <!-- Step 1: Immediate Action -->
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            android:layout_marginBottom="8dp"
+            android:background="@drawable/modern_card_background"
+            android:padding="8dp">
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="1️⃣"
+                android:textSize="16sp"
+                android:layout_marginEnd="8dp" />
+
+            <LinearLayout
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:orientation="vertical">
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="IMMEDIATE ACTION"
+                    android:textSize="12sp"
+                    android:textStyle="bold"
+                    android:textColor="@color/warm_amber_dark" />
+
+                <TextView
+                    android:id="@+id/immediateAction"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:textSize="13sp"
+                    android:textColor="@color/earth_text_primary"
+                    android:layout_marginTop="2dp" />
+            </LinearLayout>
+        </LinearLayout>
+
+        <!-- Step 2: Apply Medicine -->
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            android:layout_marginBottom="8dp"
+            android:background="@drawable/modern_card_background"
+            android:padding="8dp">
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="2️⃣"
+                android:textSize="16sp"
+                android:layout_marginEnd="8dp" />
+
+            <LinearLayout
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:orientation="vertical">
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="APPLY MEDICINE"
+                    android:textSize="12sp"
+                    android:textStyle="bold"
+                    android:textColor="@color/warm_amber_dark" />
+
+                <TextView
+                    android:id="@+id/medicineApplication"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:textSize="13sp"
+                    android:textColor="@color/earth_text_primary"
+                    android:layout_marginTop="2dp" />
+            </LinearLayout>
+        </LinearLayout>
+
+        <!-- Step 3: Schedule -->
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            android:layout_marginBottom="8dp"
+            android:background="@drawable/modern_card_background"
+            android:padding="8dp">
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="3️⃣"
+                android:textSize="16sp"
+                android:layout_marginEnd="8dp" />
+
+            <LinearLayout
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:orientation="vertical">
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="REPEAT SCHEDULE"
+                    android:textSize="12sp"
+                    android:textStyle="bold"
+                    android:textColor="@color/warm_amber_dark" />
+
+                <TextView
+                    android:id="@+id/repeatSchedule"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:textSize="13sp"
+                    android:textColor="@color/earth_text_primary"
+                    android:layout_marginTop="2dp" />
+            </LinearLayout>
+        </LinearLayout>
+
+        <!-- Step 4: Monitor -->
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            android:background="@drawable/modern_card_background"
+            android:padding="8dp">
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="4️⃣"
+                android:textSize="16sp"
+                android:layout_marginEnd="8dp" />
+
+            <LinearLayout
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:orientation="vertical">
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="MONITOR and CARE"
+                    android:textSize="12sp"
+                    android:textStyle="bold"
+                    android:textColor="@color/warm_amber_dark" />
+
+                <TextView
+                    android:id="@+id/monitorCare"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:textSize="13sp"
+                    android:textColor="@color/earth_text_primary"
+                    android:layout_marginTop="2dp" />
+            </LinearLayout>
+        </LinearLayout>
+    </LinearLayout>
+
+    <!-- Duration & Success Indicator -->
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        android:background="@color/light_green_50"
+        android:padding="10dp"
+        android:gravity="center_vertical">
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="⏱️"
+            android:textSize="14sp"
+            android:layout_marginEnd="6dp" />
+
+        <TextView
+            android:id="@+id/treatmentDuration"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:textSize="12sp"
+            android:textColor="@color/forest_green_dark"
+            android:textStyle="italic" />
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="🌱✨"
+            android:textSize="14sp" />
+    </LinearLayout>
+</LinearLayout>
+
