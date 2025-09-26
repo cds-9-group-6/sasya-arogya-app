@@ -28,7 +28,7 @@
                 android:layout_height="wrap_content"
                 android:orientation="vertical"
                 android:padding="12dp"
-                android:background="#F5F5F5">
+                android:background="@color/assistant_message_bg">
 
                 <!-- Sasya Arogya Header -->
                 <LinearLayout

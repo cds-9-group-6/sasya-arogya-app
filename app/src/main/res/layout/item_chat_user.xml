@@ -29,7 +29,7 @@
                 android:layout_height="wrap_content"
                 android:orientation="vertical"
                 android:padding="12dp"
-                android:background="#C8E6C9">
+                android:background="@color/user_message_bg">
 
                 <!-- User Header -->
                 <LinearLayout

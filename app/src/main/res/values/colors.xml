@@ -41,11 +41,11 @@
     <color name="black">#FF000000</color>
     <color name="white">#FFFFFFFF</color>
     
-    <!-- User & Assistant Message Colors - ENHANCED CONTRAST -->
-    <color name="user_message_bg">#C8E6C9</color>      <!-- Strong light green for user -->
-    <color name="assistant_message_bg">#F5F5F5</color>  <!-- Light gray for assistant -->
+    <!-- User & Assistant Message Colors - WhatsApp-style with Earthy Theme -->
+    <color name="user_message_bg">#D4E6D4</color>      <!-- WhatsApp-style earthy green (similar to #DCF8C6 but earthier) -->
+    <color name="assistant_message_bg">#FFFFFF</color>  <!-- Pure white for assistant like WhatsApp -->
     <color name="user_text">#1B5E20</color>            <!-- Dark forest green -->
-    <color name="assistant_text">#000000</color>        <!-- Pure black for maximum readability -->
+    <color name="assistant_text">#2E2E2E</color>        <!-- Dark gray for excellent readability -->
     <color name="action_item_color">#1976D2</color>     <!-- Blue for clickable items -->
     
     <!-- Additional Chat Colors -->
