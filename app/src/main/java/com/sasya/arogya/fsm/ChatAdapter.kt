@@ -165,19 +165,37 @@ class ChatAdapter(
         private val diseaseSeverity: TextView = itemView.findViewById(R.id.diseaseSeverity)
         private val diseaseContent: TextView = itemView.findViewById(R.id.diseaseContent)
         
+        // Healthy card elements
+        private val healthyCardContainer: LinearLayout = itemView.findViewById(R.id.healthyCardContainer)
+        private val healthyTitle: TextView = itemView.findViewById(R.id.healthyTitle)
+        private val healthyConfidence: TextView = itemView.findViewById(R.id.healthyConfidence)
+        private val healthyStatus: TextView = itemView.findViewById(R.id.healthyStatus)
+        private val healthyContent: TextView = itemView.findViewById(R.id.healthyContent)
+        
         fun bind(message: ChatMessage) {
             messageTime.text = timeFormatter.format(Date(message.timestamp))
             
-            // Handle disease card display
+            // Handle disease/healthy card display
             if (message.diseaseName != null && message.confidence != null) {
-                diseaseCardContainer.visibility = View.VISIBLE
-                populateDiseaseCard(message)
+                if (message.diseaseName.lowercase() == "healthy") {
+                    // Show healthy card
+                    healthyCardContainer.visibility = View.VISIBLE
+                    diseaseCardContainer.visibility = View.GONE
+                    populateHealthyCard(message)
+                } else {
+                    // Show disease card
+                    diseaseCardContainer.visibility = View.VISIBLE
+                    healthyCardContainer.visibility = View.GONE
+                    populateDiseaseCard(message)
+                }
                 
-                // Show only the intro message text before the disease card
+                // Show only the intro message text before the card
                 val introText = extractIntroText(message.text)
                 messageText.text = TextFormattingUtil.formatWhatsAppStyle(introText)
             } else {
+                // No special card, show regular message
                 diseaseCardContainer.visibility = View.GONE
+                healthyCardContainer.visibility = View.GONE
                 messageText.text = TextFormattingUtil.formatWhatsAppStyle(message.text)
             }
             
@@ -335,6 +353,76 @@ class ChatAdapter(
             // Extract and format symptoms and treatment from message text
             val diseaseDetails = extractDiseaseDetails(message.text)
             diseaseContent.text = TextFormattingUtil.formatWhatsAppStyle(diseaseDetails)
+        }
+        
+        private fun populateHealthyCard(message: ChatMessage) {
+            // Set healthy title
+            healthyTitle.text = "Healthy Plant Detected"
+            
+            // Set confidence percentage
+            val confidencePercent = String.format("%.0f", (message.confidence ?: 0.0) * 100)
+            healthyConfidence.text = "$confidencePercent%"
+            
+            // Extract or set plant status
+            val status = extractHealthyStatus(message.text) ?: "Excellent Health"
+            healthyStatus.text = status
+            
+            // Extract and format care recommendations from message text
+            val healthyDetails = extractHealthyDetails(message.text)
+            healthyContent.text = TextFormattingUtil.formatWhatsAppStyle(healthyDetails)
+        }
+        
+        private fun extractHealthyStatus(text: String): String? {
+            // Look for status information in the message text
+            val statusRegex = Regex("(?i)status:?\\s*([^\\n]+)")
+            val statusMatch = statusRegex.find(text)?.groupValues?.get(1)?.trim()
+            
+            // Also look for health-related keywords
+            if (statusMatch != null) return statusMatch
+            
+            return when {
+                text.contains("excellent", ignoreCase = true) -> "Excellent Health"
+                text.contains("very good", ignoreCase = true) -> "Very Good Health"
+                text.contains("good", ignoreCase = true) -> "Good Health"
+                text.contains("healthy", ignoreCase = true) -> "Healthy"
+                else -> null
+            }
+        }
+        
+        private fun extractHealthyDetails(text: String): String {
+            // Extract care recommendations and observations
+            val lines = text.split("\n")
+            val detailLines = mutableListOf<String>()
+            var foundDetailsStart = false
+            
+            for (line in lines) {
+                val trimmedLine = line.trim()
+                
+                // Start collecting when we hit care recommendations or observations
+                if (!foundDetailsStart && (
+                    trimmedLine.lowercase().contains("recommendations:") ||
+                    trimmedLine.lowercase().contains("care:") ||
+                    trimmedLine.lowercase().contains("continue") ||
+                    trimmedLine.lowercase().contains("maintain") ||
+                    trimmedLine.lowercase().contains("shows:") ||
+                    trimmedLine.lowercase().contains("observations:") ||
+                    trimmedLine.startsWith("•") ||
+                    trimmedLine.matches(Regex("\\d+\\..*")))) {
+                    foundDetailsStart = true
+                }
+                
+                if (foundDetailsStart) {
+                    detailLines.add(line)
+                }
+            }
+            
+            return if (detailLines.isNotEmpty()) {
+                detailLines.joinToString("\n")
+            } else {
+                // Fallback: return the second half of the message
+                val midPoint = lines.size / 2
+                lines.drop(midPoint).joinToString("\n")
+            }
         }
         
         private fun extractIntroText(text: String): String {
