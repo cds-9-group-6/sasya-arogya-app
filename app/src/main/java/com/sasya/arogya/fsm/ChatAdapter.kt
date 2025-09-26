@@ -158,9 +158,28 @@ class ChatAdapter(
         private val attentionOverlayImage: ImageView = itemView.findViewById(R.id.attentionOverlayImage)
         private val overlayDescription: TextView = itemView.findViewById(R.id.overlayDescription)
         
+        // Disease card elements
+        private val diseaseCardContainer: LinearLayout = itemView.findViewById(R.id.diseaseCardContainer)
+        private val diseaseTitle: TextView = itemView.findViewById(R.id.diseaseTitle)
+        private val diseaseConfidence: TextView = itemView.findViewById(R.id.diseaseConfidence)
+        private val diseaseSeverity: TextView = itemView.findViewById(R.id.diseaseSeverity)
+        private val diseaseContent: TextView = itemView.findViewById(R.id.diseaseContent)
+        
         fun bind(message: ChatMessage) {
-            messageText.text = TextFormattingUtil.formatWhatsAppStyle(message.text)
             messageTime.text = timeFormatter.format(Date(message.timestamp))
+            
+            // Handle disease card display
+            if (message.diseaseName != null && message.confidence != null) {
+                diseaseCardContainer.visibility = View.VISIBLE
+                populateDiseaseCard(message)
+                
+                // Show only the intro message text before the disease card
+                val introText = extractIntroText(message.text)
+                messageText.text = TextFormattingUtil.formatWhatsAppStyle(introText)
+            } else {
+                diseaseCardContainer.visibility = View.GONE
+                messageText.text = TextFormattingUtil.formatWhatsAppStyle(message.text)
+            }
             
             // Show state indicator if present
             if (message.state != null) {
@@ -298,6 +317,88 @@ class ChatAdapter(
                 }
             } else {
                 attentionOverlayContainer.visibility = View.GONE
+            }
+        }
+        
+        private fun populateDiseaseCard(message: ChatMessage) {
+            // Set disease title
+            diseaseTitle.text = "${message.diseaseName} Detected"
+            
+            // Set confidence percentage
+            val confidencePercent = String.format("%.0f", (message.confidence ?: 0.0) * 100)
+            diseaseConfidence.text = "$confidencePercent%"
+            
+            // Extract severity from message text or set default
+            val severity = extractSeverity(message.text) ?: "Mild to Moderate"
+            diseaseSeverity.text = severity
+            
+            // Extract and format symptoms and treatment from message text
+            val diseaseDetails = extractDiseaseDetails(message.text)
+            diseaseContent.text = TextFormattingUtil.formatWhatsAppStyle(diseaseDetails)
+        }
+        
+        private fun extractIntroText(text: String): String {
+            // Extract the first sentence or paragraph before detailed disease information
+            val lines = text.split("\n")
+            val introLines = mutableListOf<String>()
+            
+            for (line in lines) {
+                val trimmedLine = line.trim()
+                // Stop when we hit structured disease info
+                if (trimmedLine.lowercase().contains("detected:") ||
+                    trimmedLine.lowercase().contains("confidence:") ||
+                    trimmedLine.lowercase().contains("severity:") ||
+                    trimmedLine.lowercase().contains("symptoms identified:") ||
+                    trimmedLine.lowercase().contains("recommended treatment:")) {
+                    break
+                }
+                introLines.add(line)
+            }
+            
+            return if (introLines.isNotEmpty()) {
+                introLines.joinToString("\n").trim()
+            } else {
+                // Fallback: take first sentence
+                text.split(".").firstOrNull()?.plus(".") ?: text
+            }
+        }
+        
+        private fun extractSeverity(text: String): String? {
+            // Look for severity information in the message text
+            val severityRegex = Regex("(?i)severity:?\\s*([^\\n]+)")
+            return severityRegex.find(text)?.groupValues?.get(1)?.trim()
+        }
+        
+        private fun extractDiseaseDetails(text: String): String {
+            // Extract symptoms and treatment details, excluding the intro text
+            val lines = text.split("\n")
+            val detailLines = mutableListOf<String>()
+            var foundDetailsStart = false
+            
+            for (line in lines) {
+                val trimmedLine = line.trim()
+                
+                // Start collecting when we hit structured info
+                if (!foundDetailsStart && (
+                    trimmedLine.lowercase().contains("symptoms identified:") ||
+                    trimmedLine.lowercase().contains("recommended treatment:") ||
+                    trimmedLine.lowercase().contains("treatment:") ||
+                    trimmedLine.startsWith("•") ||
+                    trimmedLine.matches(Regex("\\d+\\..*")))) {
+                    foundDetailsStart = true
+                }
+                
+                if (foundDetailsStart) {
+                    detailLines.add(line)
+                }
+            }
+            
+            return if (detailLines.isNotEmpty()) {
+                detailLines.joinToString("\n")
+            } else {
+                // Fallback: return the second half of the message
+                val midPoint = lines.size / 2
+                lines.drop(midPoint).joinToString("\n")
             }
         }
         
