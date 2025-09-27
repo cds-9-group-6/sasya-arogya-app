@@ -1,19 +1,43 @@
 <?xml version="1.0" encoding="utf-8"?>
-<!-- Disease card background with orange left border like in screenshot -->
+<!-- Enhanced disease card background with more pronounced visual styling -->
 <layer-list xmlns:android="http://schemas.android.com/apk/res/android">
     
-    <!-- Left orange border -->
-    <item android:left="0dp">
+    <!-- Drop shadow for depth -->
+    <item android:top="2dp" android:left="2dp">
         <shape android:shape="rectangle">
-            <solid android:color="#FF8A65" />
+            <solid android:color="#30FF8A65" />
+            <corners android:radius="10dp" />
+        </shape>
+    </item>
+    
+    <!-- Left orange border (thicker and more vibrant) -->
+    <item android:left="0dp" android:right="2dp" android:bottom="2dp">
+        <shape android:shape="rectangle">
+            <solid android:color="#FF7043" />
             <corners android:radius="8dp" />
         </shape>
     </item>
     
-    <!-- Main card background -->
-    <item android:left="6dp">
+    <!-- Subtle background tint -->
+    <item android:left="8dp" android:right="2dp" android:bottom="2dp">
         <shape android:shape="rectangle">
-            <solid android:color="@color/clean_white" />
+            <solid android:color="#FFF3E0" />
+            <corners 
+                android:topRightRadius="8dp"
+                android:bottomRightRadius="8dp" />
+            <stroke 
+                android:width="1dp"
+                android:color="#FFE0B2" />
+        </shape>
+    </item>
+    
+    <!-- Main card background with subtle gradient -->
+    <item android:left="8dp" android:right="2dp" android:bottom="2dp" android:top="1dp">
+        <shape android:shape="rectangle">
+            <gradient
+                android:startColor="@color/clean_white"
+                android:endColor="#FFFAF7"
+                android:angle="90" />
             <corners 
                 android:topRightRadius="8dp"
                 android:bottomRightRadius="8dp" />
