@@ -155,28 +155,336 @@ app/build/outputs/apk/
 - **Async Processing**: Kotlin Coroutines
 - **Architecture**: MVVM pattern
 
-### 🌐 Server Infrastructure
+### 🏗 Comprehensive System Architecture
 
 ```mermaid
-graph TD
-    A[Mobile App] --> B{Server Selection}
-    B -->|High Performance| C[GPU Cluster]
-    B -->|Standard Processing| D[Non-GPU Cluster]
-    C --> E[AI Disease Detection]
-    D --> F[AI Disease Detection]
-    E --> G[Results & Recommendations]
-    F --> G
+graph TB
+    %% Mobile App Layer
+    subgraph "📱 Android App"
+        subgraph "🎨 Presentation Layer"
+            UI[MainActivity/MainActivityFSM]
+            Chat[ChatAdapter with Disease Cards]
+            Welcome[Welcome Actions System]
+            Camera[Camera Integration]
+        end
+        
+        subgraph "💼 Business Logic Layer"
+            FSM[FSMStreamHandler]
+            Session[SessionManager]
+            Config[ServerConfig]
+            Format[TextFormattingUtil]
+        end
+        
+        subgraph "🌐 Network Layer"
+            Retrofit[RetrofitClient]
+            API[FSMApiService]
+            Stream[Real-time Streaming]
+        end
+    end
+    
+    %% Network Communication
+    UI --> FSM
+    Chat --> FSM
+    Welcome --> Camera
+    Welcome --> FSM
+    FSM --> Session
+    FSM --> API
+    API --> Retrofit
+    
+    %% Server Selection Logic
+    Config --> ServerSelect{🔄 Smart Server Selection}
+    
+    %% Backend Infrastructure
+    subgraph "☁️ Backend Infrastructure"
+        subgraph "🚀 GPU Cluster (High Performance)"
+            GPUServer[GPU Processing Server]
+            subgraph "🤖 AI/ML Pipeline - GPU"
+                GPUPreprocess[Image Preprocessing]
+                GPUModel[Advanced ML Models]
+                GPUPostprocess[Result Processing]
+                GPUConfidence[Confidence Scoring]
+            end
+            GPUStorage[(GPU Model Storage)]
+        end
+        
+        subgraph "⚡ Non-GPU Cluster (Standard)"
+            NonGPUServer[Standard Processing Server]
+            subgraph "🧠 AI/ML Pipeline - Standard"
+                StdPreprocess[Image Preprocessing]
+                StdModel[Standard ML Models]
+                StdPostprocess[Result Processing]
+                StdConfidence[Confidence Scoring]
+            end
+            StdStorage[(Standard Model Storage)]
+        end
+        
+        subgraph "📊 Shared Services"
+            Analytics[Usage Analytics]
+            Logging[System Logging]
+            Monitor[Performance Monitoring]
+        end
+    end
+    
+    %% Data Flow
+    ServerSelect -->|High Performance Need| GPUServer
+    ServerSelect -->|Standard Processing| NonGPUServer
+    
+    %% GPU Processing Flow
+    GPUServer --> GPUPreprocess
+    GPUPreprocess --> GPUModel
+    GPUModel --> GPUStorage
+    GPUModel --> GPUPostprocess
+    GPUPostprocess --> GPUConfidence
+    
+    %% Non-GPU Processing Flow  
+    NonGPUServer --> StdPreprocess
+    StdPreprocess --> StdModel
+    StdModel --> StdStorage
+    StdModel --> StdPostprocess
+    StdPostprocess --> StdConfidence
+    
+    %% Response Flow
+    GPUConfidence --> ResponseFormat{📋 Format Response}
+    StdConfidence --> ResponseFormat
+    
+    subgraph "📤 Response Generation"
+        ResponseFormat --> DiseaseCard[Disease Card Data]
+        ResponseFormat --> Confidence[Confidence Assessment]
+        ResponseFormat --> Treatment[Treatment Recommendations]
+        ResponseFormat --> FollowUp[Follow-up Actions]
+    end
+    
+    %% Return to Mobile App
+    DiseaseCard --> Stream
+    Confidence --> Stream
+    Treatment --> Stream
+    FollowUp --> Stream
+    Stream --> Chat
+    
+    %% Analytics and Monitoring
+    GPUServer --> Analytics
+    NonGPUServer --> Analytics
+    GPUServer --> Logging
+    NonGPUServer --> Logging
+    Analytics --> Monitor
+    Logging --> Monitor
+    
+    %% Data Persistence
+    subgraph "💾 Mobile Data Layer"
+        SessionData[(Session Storage)]
+        ImageCache[(Image Cache)]
+        UserPrefs[(User Preferences)]
+    end
+    
+    Session --> SessionData
+    Camera --> ImageCache
+    Config --> UserPrefs
+    
+    %% Styling
+    classDef mobileApp fill:#E8F5E8,stroke:#4CAF50,stroke-width:2px
+    classDef backend fill:#FFF3E0,stroke:#FF8A65,stroke-width:2px
+    classDef aiml fill:#E3F2FD,stroke:#2196F3,stroke-width:2px
+    classDef storage fill:#F3E5F5,stroke:#9C27B0,stroke-width:2px
+    
+    class UI,Chat,Welcome,Camera,FSM,Session mobileApp
+    class GPUServer,NonGPUServer,Analytics,Logging backend
+    class GPUModel,StdModel,GPUConfidence,StdConfidence aiml
+    class GPUStorage,StdStorage,SessionData,ImageCache storage
 ```
 
-#### 🚀 GPU Cluster
+### 🌐 Detailed Component Architecture
+
+#### 📱 **Mobile App Layer (Android)**
+
+##### 🎨 **Presentation Layer**
+- **`MainActivity/MainActivityFSM`** - Main application entry points with FSM-based intelligent chat interface
+- **`ChatAdapter with Disease Cards`** - Advanced RecyclerView adapter rendering WhatsApp-style messages with enhanced visual disease cards
+- **`Welcome Actions System`** - Professional sample actions for immediate user engagement (8 strategic buttons)
+- **`Camera Integration`** - Direct photo capture with seamless analysis workflow
+
+##### 💼 **Business Logic Layer**  
+- **`FSMStreamHandler`** - Finite State Machine managing real-time streaming responses and state transitions
+- **`SessionManager`** - Comprehensive session management with persistent storage and conversation history
+- **`ServerConfig`** - Smart server selection logic with automatic failover between GPU/Non-GPU clusters
+- **`TextFormattingUtil`** - WhatsApp-style text formatting for proper **bold text** rendering
+
+##### 🌐 **Network Layer**
+- **`RetrofitClient`** - HTTP client with customizable server endpoints and connection management
+- **`FSMApiService`** - RESTful API interface definitions for disease detection and streaming responses
+- **`Real-time Streaming`** - WebSocket-like streaming for live AI analysis updates and progress indicators
+
+#### ☁️ **Backend Infrastructure**
+
+##### 🚀 **GPU Cluster (High Performance)**
 - **URL**: `http://engine-sasya-chikitsa.apps.cluster-mqklc.mqklc.sandbox601.opentlc.com/`
 - **Purpose**: Complex disease analysis requiring high computational power
-- **Features**: Advanced ML models, faster processing
+- **ML Pipeline**:
+  - **Image Preprocessing**: Advanced image enhancement, normalization, and augmentation
+  - **Advanced ML Models**: Deep neural networks optimized for GPU processing
+  - **Result Processing**: Sophisticated post-processing with confidence calibration
+  - **Confidence Scoring**: Multi-layer confidence assessment with uncertainty quantification
+- **Features**: Faster processing, higher accuracy, support for complex diseases
 
-#### ⚡ Non-GPU Cluster  
+##### ⚡ **Non-GPU Cluster (Standard Processing)**
 - **URL**: `http://engine-sasya-chikitsa.apps.cluster-6twrd.6twrd.sandbox1818.opentlc.com/`
-- **Purpose**: Standard disease detection for common cases
-- **Features**: Efficient processing, reliable availability
+- **Purpose**: Standard disease detection for common cases with reliable availability
+- **ML Pipeline**:
+  - **Image Preprocessing**: Efficient image processing optimized for CPU
+  - **Standard ML Models**: Lightweight models for common disease detection
+  - **Result Processing**: Fast result generation with standard confidence metrics
+  - **Confidence Scoring**: Reliable confidence assessment for standard cases
+- **Features**: Consistent availability, efficient processing, reliable for common diseases
+
+##### 📊 **Shared Backend Services**
+- **`Usage Analytics`** - Comprehensive usage tracking, disease detection statistics, and performance metrics
+- **`System Logging`** - Centralized logging for debugging, error tracking, and system monitoring
+- **`Performance Monitoring`** - Real-time system performance tracking with alerting and optimization
+
+#### 🔄 **Data Flow Architecture**
+
+##### 📤 **Request Flow**
+1. **User Action** → Welcome actions or direct photo upload
+2. **Smart Server Selection** → Config determines optimal GPU/Non-GPU cluster based on:
+   - Server availability and response times
+   - Image complexity and processing requirements  
+   - User preferences and historical performance
+3. **Image Processing** → Multi-stage ML pipeline execution
+4. **Response Generation** → Structured data formatting for mobile consumption
+
+##### 📥 **Response Flow** 
+1. **Disease Card Data** → Structured disease information with confidence metrics
+2. **Confidence Assessment** → Four-tier confidence system (High/Moderate/Preliminary/Initial)
+3. **Treatment Recommendations** → Contextual advice based on disease type and severity
+4. **Follow-up Actions** → Dynamic action suggestions for continued user engagement
+5. **Real-time Streaming** → Progressive response delivery for better user experience
+
+#### 💾 **Data Persistence Layer**
+
+##### 📱 **Mobile Storage**
+- **`Session Storage`** - Complete conversation history with disease cards and user interactions
+- **`Image Cache`** - Efficient local caching of captured and processed images
+- **`User Preferences`** - Server selection preferences, user profile, and application settings
+
+##### ☁️ **Backend Storage**  
+- **`GPU Model Storage`** - Advanced ML models optimized for GPU processing
+- **`Standard Model Storage`** - Lightweight ML models for standard CPU processing
+- **`Analytics Database`** - Usage patterns, disease detection statistics, and system performance data
+
+#### 🔒 **Security & Reliability**
+
+##### 🛡️ **Security Features**
+- **HTTPS Communication** - All API calls encrypted with TLS
+- **Image Data Privacy** - Images processed and not permanently stored on servers
+- **Session Security** - Secure session management with proper authentication
+- **API Rate Limiting** - Protection against abuse and ensuring fair usage
+
+##### 🔄 **Reliability Features**
+- **Automatic Failover** - Smart switching between GPU/Non-GPU clusters
+- **Retry Logic** - Automatic retry with exponential backoff for network failures
+- **Offline Capability** - Local session storage and graceful degradation
+- **Performance Monitoring** - Continuous system health monitoring with alerting
+
+### 🔄 **Disease Detection Workflow**
+
+```mermaid
+sequenceDiagram
+    participant User as 👨‍🌾 User
+    participant App as 📱 Mobile App
+    participant UI as 🎨 UI Components
+    participant FSM as 🤖 FSM Handler
+    participant Config as ⚙️ Server Config
+    participant GPU as 🚀 GPU Cluster
+    participant NonGPU as ⚡ Non-GPU Cluster
+    participant ML as 🧠 ML Pipeline
+    
+    %% Welcome Experience
+    User->>App: Launch App
+    App->>UI: Load Welcome Message
+    UI->>User: Show 8 Sample Actions
+    Note over UI,User: 📸 Analyze Plant Photo<br/>🔍 Common Plant Problems<br/>🌱 Seasonal Care Tips<br/>💊 Treatment Guide<br/>📅 Care Schedule<br/>🚨 Emergency Plant Care<br/>🌿 Plant Health Guide<br/>🧪 Soil Testing Guide
+    
+    %% Photo Analysis Workflow
+    User->>UI: Tap "📸 Analyze Plant Photo"
+    UI->>App: Open Camera
+    User->>App: Capture Plant Image
+    App->>FSM: Process Image Request
+    
+    %% Smart Server Selection
+    FSM->>Config: Determine Optimal Server
+    Config->>Config: Check Server Availability
+    Config->>Config: Assess Image Complexity
+    
+    alt High Performance Required
+        Config->>GPU: Route to GPU Cluster
+        GPU->>ML: Advanced ML Processing
+        Note over GPU,ML: - Advanced image enhancement<br/>- Deep neural networks<br/>- GPU-optimized models<br/>- High accuracy analysis
+    else Standard Processing
+        Config->>NonGPU: Route to Non-GPU Cluster  
+        NonGPU->>ML: Standard ML Processing
+        Note over NonGPU,ML: - Efficient preprocessing<br/>- Lightweight models<br/>- CPU-optimized processing<br/>- Reliable detection
+    end
+    
+    %% ML Analysis Process
+    ML->>ML: Image Preprocessing
+    ML->>ML: Disease Detection
+    ML->>ML: Confidence Scoring
+    ML->>ML: Generate Recommendations
+    
+    %% Response Generation
+    alt GPU Processing
+        ML->>GPU: Analysis Complete
+        GPU->>FSM: Stream Results
+    else Non-GPU Processing
+        ML->>NonGPU: Analysis Complete
+        NonGPU->>FSM: Stream Results
+    end
+    
+    %% Disease Card Generation
+    FSM->>FSM: Generate Dynamic Content
+    FSM->>FSM: Format Disease Card Data
+    FSM->>UI: Update Chat Interface
+    
+    %% Visual Disease Card Display
+    UI->>UI: Render Enhanced Disease Card
+    Note over UI: - Professional styling with shadows<br/>- Confidence-based assessment<br/>- Visual prominence with gradients<br/>- WhatsApp-style formatting
+    
+    UI->>User: Display Results
+    Note over User,UI: 🎯 Disease Detected: Stem Borer<br/>📊 Confidence: 42% (Preliminary)<br/>⚠️ Visual Warning with Orange Card<br/>💡 Treatment Recommendations<br/>📋 Follow-up Actions
+    
+    %% Follow-up Actions
+    User->>UI: Select Follow-up Action
+    UI->>FSM: Process Follow-up
+    FSM->>FSM: Generate Contextual Response
+    FSM->>UI: Stream Additional Information
+    UI->>User: Show Additional Guidance
+    
+    %% Session Management
+    FSM->>App: Save to Session History
+    App->>App: Update Local Storage
+    
+    %% Error Handling & Fallback
+    Note over Config,NonGPU: Automatic failover if primary<br/>server unavailable
+```
+
+### 🎯 **Key Workflow Features**
+
+#### 🚀 **Smart Server Selection Logic**
+- **Performance Assessment**: Evaluates image complexity and processing requirements
+- **Availability Monitoring**: Real-time server health and response time tracking  
+- **Automatic Failover**: Seamless switching between GPU and Non-GPU clusters
+- **User Experience**: Transparent server selection - users always get optimal processing
+
+#### 📊 **Four-Tier Confidence System**
+- **High Confidence (≥80%)** → ⚠️ Immediate action recommended with prominent red styling
+- **Moderate Confidence (≥60%)** → 📋 Monitor closely with orange warning indicators
+- **Preliminary (≥40%)** → 🔍 Continue monitoring with yellow caution styling  
+- **Initial Assessment (<40%)** → ❓ Consider additional consultation with blue info styling
+
+#### 🎨 **Enhanced Visual Feedback**
+- **Dynamic Content Generation**: Contextual introductions based on disease classification
+- **Professional Disease Cards**: Material Design elevation with drop shadows and gradients
+- **WhatsApp-Style Formatting**: Proper **bold text** rendering without markdown symbols
+- **Optimal Layout**: Wider containers (90% width utilization) for better visual impact
 
 ### 📁 Project Structure
 ```
