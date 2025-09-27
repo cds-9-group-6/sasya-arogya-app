@@ -24,10 +24,11 @@ To help farmers worldwide save crops, reduce losses, and improve agricultural pr
 
 ### 🔍 Core Functionality
 - **📸 Instant Disease Detection** - Capture plant photos for immediate AI analysis
-- **🎯 High Accuracy Diagnosis** - Advanced machine learning models for precise identification  
-- **📊 Confidence Scoring** - Reliability indicators for each diagnosis
-- **💡 Treatment Recommendations** - Actionable advice for disease management
-- **📱 Offline Capability** - Works without internet connection
+- **🎯 High Accuracy Diagnosis** - Advanced machine learning models with confidence-based assessments
+- **📊 Intelligent Confidence Scoring** - Four-tier reliability system (High/Moderate/Preliminary/Initial)
+- **💡 Dynamic Treatment Recommendations** - Contextual advice based on disease type and severity
+- **🌟 Enhanced Visual Cards** - Professionally styled disease cards with prominent visual indicators
+- **📝 Smart Content Generation** - Generic system that works with any plant disease automatically
 
 ### 🌐 Dual Server Architecture
 - **🚀 GPU Server** - High-performance processing for complex analysis
@@ -35,11 +36,13 @@ To help farmers worldwide save crops, reduce losses, and improve agricultural pr
 - **🔄 Automatic Switching** - Smart server selection based on availability
 
 ### 🎨 User Experience
-- **🌿 Earth-Themed UI** - Beautiful, farmer-friendly interface design
-- **💬 Chat Interface** - Intuitive conversation-based interaction
-- **📷 Image Management** - Easy photo capture and preview
-- **🔧 Server Configuration** - Flexible backend switching
-- **📋 Session Management** - Track and review diagnosis history
+- **🌿 Earth-Themed UI** - Beautiful, farmer-friendly interface design with WhatsApp-style messaging
+- **💬 Enhanced Chat Interface** - Professional conversation-based interaction with intelligent responses
+- **🚀 Welcome Actions** - 8 sample clickable actions for immediate user engagement
+- **📸 Smart Photo Analysis** - One-tap image capture with direct analysis integration
+- **🎯 Dynamic Content** - Contextual disease information based on confidence levels
+- **🔧 Server Configuration** - Flexible backend switching with automatic failover
+- **📋 Session Management** - Track and review comprehensive diagnosis history
 
 ### 🌍 Multi-Language Support
 - **🔤 Agricultural Terminology** - Specialized vocabulary for farming
@@ -119,11 +122,13 @@ app/build/outputs/apk/
 ## 📱 Usage
 
 ### Getting Started
-1. **Install the App** - Deploy to Android device
-2. **Select Server Type** - Choose GPU or Non-GPU processing
-3. **Capture Image** - Photo plant leaves showing disease symptoms
-4. **Receive Diagnosis** - Get AI-powered disease identification
-5. **Follow Recommendations** - Apply suggested treatment strategies
+1. **Install the App** - Deploy to Android device or emulator
+2. **Welcome Experience** - Choose from 8 professional sample actions to get started instantly
+3. **Quick Photo Analysis** - Tap "📸 Analyze Plant Photo" for immediate camera access
+4. **Smart Server Selection** - App automatically chooses optimal GPU/Non-GPU processing
+5. **Enhanced Diagnosis** - Receive AI-powered identification with confidence-based assessments
+6. **Visual Disease Cards** - View results in professionally styled cards with prominent visuals
+7. **Dynamic Recommendations** - Get contextual treatment advice based on detected condition
 
 ### 🖼 Image Guidelines
 - **📸 Clear photos** - Well-lit, focused images
@@ -131,11 +136,14 @@ app/build/outputs/apk/
 - **🔍 Close-up shots** - Capture disease symptoms clearly
 - **🌅 Good lighting** - Natural daylight preferred
 
-### 💬 Chat Interface
-- **Interactive Diagnosis** - Conversational disease analysis
-- **📝 Follow-up Questions** - Additional guidance and clarification
-- **👍👎 Feedback** - Rate diagnosis accuracy
-- **📚 History** - Review past consultations
+### 💬 Enhanced Chat Interface
+- **🚀 Welcome Actions** - Professional sample actions: Analyze Photo, Common Problems, Seasonal Care, etc.
+- **📱 Interactive Diagnosis** - WhatsApp-style conversational disease analysis
+- **🎨 Visual Disease Cards** - Enhanced styling with drop shadows, gradients, and prominent borders
+- **📊 Dynamic Content** - Intelligent introductions based on disease classification and confidence
+- **📝 Smart Formatting** - Proper **bold text** display without markdown symbols
+- **👍👎 Feedback System** - Comprehensive rating system for diagnosis accuracy
+- **📚 Session History** - Complete consultation tracking with visual context
 
 ## 🏗 Architecture
 
@@ -173,20 +181,20 @@ graph TD
 ### 📁 Project Structure
 ```
 app/src/main/java/com/sasya/arogya/
-├── 🎯 MainActivity.kt              # Main app entry point
-├── 🤖 MainActivityFSM.kt          # Finite State Machine activity
+├── 🎯 MainActivity.kt              # Main app entry point  
+├── 🤖 MainActivityFSM.kt          # Enhanced FSM activity with welcome actions
 ├── config/
-│   └── 🔧 ServerConfig.kt         # Server configuration
-├── fsm/                           # Finite State Machine logic
-│   ├── 💬 ChatAdapter.kt          # Chat interface adapter
-│   ├── 📱 SessionManager.kt       # Session management
+│   └── 🔧 ServerConfig.kt         # Server configuration management
+├── fsm/                           # Enhanced Finite State Machine logic
+│   ├── 💬 ChatAdapter.kt          # Advanced chat interface with visual disease cards
+│   ├── 📱 SessionManager.kt       # Comprehensive session management
 │   ├── 🌐 FSMApiService.kt        # API service interface
-│   └── 🔄 FSMStreamHandler.kt     # Real-time data handling
+│   └── 🔄 FSMStreamHandler.kt     # Real-time streaming data handling
 ├── network/                       # Networking components
 │   ├── 🌍 ApiService.kt           # REST API definitions
 │   └── 🏗 RetrofitClient.kt       # HTTP client setup
 └── utils/
-    └── 📝 TextFormattingUtil.kt   # UI text utilities
+    └── 📝 TextFormattingUtil.kt   # WhatsApp-style text formatting utilities
 ```
 
 ## 🌍 Supported Diseases
@@ -219,12 +227,42 @@ app/src/main/java/com/sasya/arogya/
 - **Gradle**: 8.4
 - **Android Gradle Plugin**: 8.12.3
 
-### 🎨 UI Theme
-The app features a beautiful **earth-themed design**:
-- **🌲 Forest Greens**: Primary colors for nature connection
-- **🌿 Sage Tones**: Secondary colors for calm user experience  
-- **🍯 Warm Ambers**: Accent colors for important actions
-- **🌾 Earth Browns**: Text and background for readability
+### 🎨 Recent Major Enhancements
+
+#### 🚀 Welcome Message System
+- **Professional Sample Actions**: 8 strategically designed clickable actions
+- **Intelligent Response Handling**: Contextual AI responses for each action type
+- **Direct Integration**: Photo analysis button immediately opens camera
+- **User Engagement**: Modern AI app standards with immediate value delivery
+
+#### 🎯 Enhanced Disease Cards
+- **Visual Prominence**: Drop shadows, gradients, and enhanced borders
+- **Material Design**: CardView elevation with proper depth perception  
+- **Improved Warning Icons**: Gradient backgrounds with enhanced shadows
+- **Optimal Proportions**: Wider layout eliminating elongated appearance
+
+#### 🧠 Dynamic Content Generation
+- **Generic System**: Single maintainable approach for all disease types
+- **Confidence-Based Assessments**: Four-tier system (High/Moderate/Preliminary/Initial)  
+- **Intelligent Introductions**: Contextual content eliminating empty space
+- **Spread Prevention Focus**: Educational content relevant for all conditions
+- **Zero Maintenance**: No code updates needed when new diseases are added
+- **WhatsApp-Style Formatting**: Proper **bold text** rendering with TextFormattingUtil
+
+#### 📐 Layout & Visual Improvements  
+- **Wider Disease Containers**: Optimized margins (8dp/48dp → 4dp/16dp) for better proportions
+- **Enhanced Backgrounds**: Multi-layer design with drop shadows and warm tinting (#FFF3E0)
+- **CardView Integration**: Material Design elevation with proper depth perception
+- **Optimal Space Usage**: ~90% width utilization vs previous ~60%
+
+### 🎨 Enhanced UI Theme
+The app features a beautiful **earth-themed design** with **WhatsApp-style messaging**:
+- **🌲 Forest Greens**: Primary colors for nature connection and healthy plant indicators
+- **🌿 Sage Tones**: Secondary colors for calm user experience and follow-up actions
+- **🍊 Orange Gradients**: Enhanced disease card borders (#FF7043 → #FF5722) for visual prominence
+- **🍯 Warm Ambers**: Accent colors for important actions and confidence indicators
+- **🌾 Earth Browns**: Professional text and background for optimal readability
+- **🎨 Modern Styling**: WhatsApp-inspired message bubbles with proper **bold formatting**
 
 ### 📱 Build Variants Configuration
 
