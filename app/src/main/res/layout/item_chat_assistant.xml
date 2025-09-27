@@ -16,7 +16,7 @@
 
         <!-- Assistant Message Bubble -->
         <androidx.cardview.widget.CardView
-            android:layout_width="wrap_content"
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_gravity="start"
             app:cardCornerRadius="18dp"
@@ -24,7 +24,7 @@
             android:layout_marginBottom="8dp">
 
             <LinearLayout
-                android:layout_width="wrap_content"
+                android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:orientation="vertical"
                 android:padding="12dp"
@@ -66,13 +66,12 @@
                 <!-- Message Text -->
                 <TextView
                     android:id="@+id/messageText"
-                    android:layout_width="wrap_content"
+                    android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:text="Assistant message"
                     android:textSize="15sp"
                     android:textColor="@color/assistant_text"
-                    android:lineSpacingExtra="2dp"
-                    android:maxWidth="380dp" />
+                    android:lineSpacingExtra="2dp" />
 
                 <!-- Disease Card Container -->
                 <LinearLayout
@@ -205,7 +204,7 @@
 
                     <!-- Healthy Header -->
                     <LinearLayout
-                        android:layout_width="wrap_content"
+                        android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:orientation="horizontal"
                         android:gravity="center_vertical"
@@ -231,12 +230,15 @@
                         <!-- Healthy Title -->
                         <TextView
                             android:id="@+id/healthyTitle"
-                            android:layout_width="wrap_content"
+                            android:layout_width="0dp"
                             android:layout_height="wrap_content"
+                            android:layout_weight="1"
                             android:text="Healthy Plant Detected"
                             android:textSize="18sp"
                             android:textStyle="bold"
-                            android:textColor="@color/earth_text_primary" />
+                            android:textColor="@color/earth_text_primary"
+                            android:maxLines="2"
+                            android:ellipsize="end" />
 
                     </LinearLayout>
 
@@ -249,7 +251,7 @@
 
                         <!-- Confidence -->
                         <LinearLayout
-                            android:layout_width="wrap_content"
+                            android:layout_width="match_parent"
                             android:layout_height="wrap_content"
                             android:orientation="horizontal"
                             android:layout_marginBottom="4dp">
@@ -273,7 +275,7 @@
 
                         <!-- Plant Status -->
                         <LinearLayout
-                            android:layout_width="wrap_content"
+                            android:layout_width="match_parent"
                             android:layout_height="wrap_content"
                             android:orientation="horizontal"
                             android:layout_marginBottom="4dp">
