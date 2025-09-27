@@ -1,5 +1,39 @@
 <?xml version="1.0" encoding="utf-8"?>
-<shape xmlns:android="http://schemas.android.com/apk/res/android">
-    <solid android:color="@color/clean_white" />
-    <corners android:radius="20dp" />
-</shape>
+<!-- WhatsApp-style earthy chat background with subtle pattern -->
+<layer-list xmlns:android="http://schemas.android.com/apk/res/android">
+    
+    <!-- Base earthy background color (WhatsApp-style light) -->
+    <item>
+        <shape android:shape="rectangle">
+            <solid android:color="#F7F3F0" />  <!-- Very light earthy beige, similar to WhatsApp #ECE5DD -->
+            <corners android:radius="20dp" />
+        </shape>
+    </item>
+    
+    <!-- Subtle earthy pattern overlay (mimics WhatsApp's texture) -->
+    <item>
+        <shape android:shape="rectangle">
+            <gradient
+                android:type="linear"
+                android:angle="45"
+                android:startColor="#00000000"
+                android:centerColor="#05E8F5E8"
+                android:endColor="#00000000" />
+            <corners android:radius="20dp" />
+        </shape>
+    </item>
+    
+    <!-- Additional subtle texture lines (similar to WhatsApp pattern) -->
+    <item android:top="0dp" android:left="0dp">
+        <shape android:shape="rectangle">
+            <gradient
+                android:type="linear"
+                android:angle="135"
+                android:startColor="#00000000"
+                android:centerColor="#03F1F8E9"
+                android:endColor="#00000000" />
+            <corners android:radius="20dp" />
+        </shape>
+    </item>
+    
+</layer-list>

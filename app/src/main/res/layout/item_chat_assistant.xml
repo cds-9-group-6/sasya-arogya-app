@@ -16,44 +16,34 @@
 
         <!-- Assistant Message Bubble -->
         <androidx.cardview.widget.CardView
-            android:layout_width="wrap_content"
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_gravity="start"
-            app:cardCornerRadius="16dp"
-            app:cardElevation="2dp"
-            android:layout_marginBottom="4dp">
+            app:cardCornerRadius="18dp"
+            app:cardElevation="1dp"
+            android:layout_marginBottom="8dp">
 
             <LinearLayout
-                android:layout_width="wrap_content"
+                android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:orientation="vertical"
                 android:padding="12dp"
-                android:background="#F5F5F5">
+                android:background="@color/assistant_message_bg">
 
-                <!-- Sasya Arogya Header -->
-                <LinearLayout
+                <!-- WhatsApp-style subtle header -->
+                <TextView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:orientation="horizontal"
-                    android:gravity="center_vertical"
-                    android:layout_marginBottom="4dp">
-
-                    <ImageView
-                        android:layout_width="16dp"
-                        android:layout_height="16dp"
-                        android:src="@drawable/ic_local_florist"
-                        android:layout_marginEnd="4dp"
-                        android:scaleType="centerInside" />
-
-                    <TextView
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:text="Sasya Arogya"
-                        android:textSize="12sp"
-                        android:textStyle="bold"
-                        android:textColor="#66BB6A" />
-
-                </LinearLayout>
+                    android:text="🤖 Sasya Arogya"
+                    android:textSize="12sp"
+                    android:textStyle="bold"
+                    android:textColor="@color/forest_green"
+                    android:alpha="0.8"
+                    android:paddingStart="4dp"
+                    android:paddingTop="4dp"
+                    android:paddingEnd="4dp"
+                    android:paddingBottom="4dp"
+                    android:layout_marginBottom="4dp" />
 
                 <!-- Professional State Indicator -->
                 <TextView
@@ -76,13 +66,249 @@
                 <!-- Message Text -->
                 <TextView
                     android:id="@+id/messageText"
-                    android:layout_width="wrap_content"
+                    android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:text="Assistant message"
-                    android:textSize="16sp"
-                    android:textColor="#2D3748"
-                    android:lineSpacingExtra="2dp"
-                    android:maxWidth="380dp" />
+                    android:textSize="15sp"
+                    android:textColor="@color/assistant_text"
+                    android:lineSpacingExtra="2dp" />
+
+                <!-- Disease Card Container -->
+                <LinearLayout
+                    android:id="@+id/diseaseCardContainer"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="vertical"
+                    android:layout_marginTop="12dp"
+                    android:background="@drawable/disease_card_background"
+                    android:padding="16dp"
+                    android:visibility="gone">
+
+                    <!-- Disease Header -->
+                    <LinearLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:orientation="horizontal"
+                        android:gravity="center_vertical"
+                        android:layout_marginBottom="12dp">
+
+                        <!-- Warning Icon -->
+                        <LinearLayout
+                            android:layout_width="32dp"
+                            android:layout_height="32dp"
+                            android:background="@drawable/warning_icon_background"
+                            android:gravity="center"
+                            android:layout_marginEnd="12dp">
+
+                            <TextView
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:text="⚠"
+                                android:textSize="16sp"
+                                android:textColor="@color/clean_white" />
+                        </LinearLayout>
+
+                        <!-- Disease Title -->
+                        <TextView
+                            android:id="@+id/diseaseTitle"
+                            android:layout_width="0dp"
+                            android:layout_height="wrap_content"
+                            android:layout_weight="1"
+                            android:text="Disease Detected"
+                            android:textSize="18sp"
+                            android:textStyle="bold"
+                            android:textColor="@color/earth_text_primary"
+                            android:maxLines="2"
+                            android:ellipsize="end" />
+
+                    </LinearLayout>
+
+                    <!-- Disease Details -->
+                    <LinearLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:orientation="vertical"
+                        android:layout_marginBottom="16dp">
+
+                        <!-- Confidence -->
+                        <LinearLayout
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:orientation="horizontal"
+                            android:layout_marginBottom="4dp">
+
+                            <TextView
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:text="Confidence: "
+                                android:textSize="14sp"
+                                android:textStyle="bold"
+                                android:textColor="@color/earth_text_primary" />
+
+                            <TextView
+                                android:id="@+id/diseaseConfidence"
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:text="87%"
+                                android:textSize="14sp"
+                                android:textColor="@color/earth_text_primary" />
+                        </LinearLayout>
+
+                        <!-- Severity -->
+                        <LinearLayout
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:orientation="horizontal"
+                            android:layout_marginBottom="4dp">
+
+                            <TextView
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:text="Severity: "
+                                android:textSize="14sp"
+                                android:textStyle="bold"
+                                android:textColor="@color/earth_text_primary" />
+
+                            <TextView
+                                android:id="@+id/diseaseSeverity"
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:text="Mild to Moderate"
+                                android:textSize="14sp"
+                                android:textColor="@color/earth_text_primary" />
+                        </LinearLayout>
+
+                    </LinearLayout>
+
+                    <!-- Disease Content (Symptoms and Treatment) -->
+                    <TextView
+                        android:id="@+id/diseaseContent"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:textSize="14sp"
+                        android:textColor="@color/earth_text_primary"
+                        android:lineSpacingExtra="4dp" />
+
+                </LinearLayout>
+
+                <!-- Healthy Plant Card Container -->
+                <LinearLayout
+                    android:id="@+id/healthyCardContainer"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="vertical"
+                    android:layout_marginTop="12dp"
+                    android:background="@drawable/healthy_card_background"
+                    android:padding="16dp"
+                    android:visibility="gone">
+
+                    <!-- Healthy Header -->
+                    <LinearLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:orientation="horizontal"
+                        android:gravity="center_vertical"
+                        android:layout_marginBottom="12dp">
+
+                        <!-- Checkmark Icon -->
+                        <LinearLayout
+                            android:layout_width="32dp"
+                            android:layout_height="32dp"
+                            android:background="@drawable/healthy_icon_background"
+                            android:gravity="center"
+                            android:layout_marginEnd="12dp">
+
+                            <TextView
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:text="✓"
+                                android:textSize="18sp"
+                                android:textStyle="bold"
+                                android:textColor="@color/clean_white" />
+                        </LinearLayout>
+
+                        <!-- Healthy Title -->
+                        <TextView
+                            android:id="@+id/healthyTitle"
+                            android:layout_width="0dp"
+                            android:layout_height="wrap_content"
+                            android:layout_weight="1"
+                            android:text="Healthy Plant Detected"
+                            android:textSize="18sp"
+                            android:textStyle="bold"
+                            android:textColor="@color/earth_text_primary"
+                            android:maxLines="2"
+                            android:ellipsize="end" />
+
+                    </LinearLayout>
+
+                    <!-- Healthy Details -->
+                    <LinearLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:orientation="vertical"
+                        android:layout_marginBottom="16dp">
+
+                        <!-- Confidence -->
+                        <LinearLayout
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:orientation="horizontal"
+                            android:layout_marginBottom="4dp">
+
+                            <TextView
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:text="Confidence: "
+                                android:textSize="14sp"
+                                android:textStyle="bold"
+                                android:textColor="@color/earth_text_primary" />
+
+                            <TextView
+                                android:id="@+id/healthyConfidence"
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:text="95%"
+                                android:textSize="14sp"
+                                android:textColor="@color/earth_text_primary" />
+                        </LinearLayout>
+
+                        <!-- Plant Status -->
+                        <LinearLayout
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:orientation="horizontal"
+                            android:layout_marginBottom="4dp">
+
+                            <TextView
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:text="Status: "
+                                android:textSize="14sp"
+                                android:textStyle="bold"
+                                android:textColor="@color/earth_text_primary" />
+
+                            <TextView
+                                android:id="@+id/healthyStatus"
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:text="Excellent Health"
+                                android:textSize="14sp"
+                                android:textColor="@color/forest_green" />
+                        </LinearLayout>
+
+                    </LinearLayout>
+
+                    <!-- Healthy Content (Care recommendations) -->
+                    <TextView
+                        android:id="@+id/healthyContent"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:textSize="14sp"
+                        android:textColor="@color/earth_text_primary"
+                        android:lineSpacingExtra="4dp" />
+
+                </LinearLayout>
 
                 <!-- Attention Overlay Container -->
                 <LinearLayout

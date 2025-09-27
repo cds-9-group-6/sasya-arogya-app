@@ -20,42 +20,32 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_gravity="end"
-            app:cardCornerRadius="16dp"
-            app:cardElevation="2dp"
-            android:layout_marginBottom="4dp">
+            app:cardCornerRadius="18dp"
+            app:cardElevation="1dp"
+            android:layout_marginBottom="8dp">
 
             <LinearLayout
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:orientation="vertical"
                 android:padding="12dp"
-                android:background="#C8E6C9">
+                android:background="@color/user_message_bg">
 
-                <!-- User Header -->
-                <LinearLayout
+                <!-- WhatsApp-style subtle header -->
+                <TextView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:orientation="horizontal"
-                    android:gravity="center_vertical"
+                    android:text="👨‍🌾 You"
+                    android:textSize="12sp"
+                    android:textStyle="bold"
+                    android:textColor="@color/forest_green"
+                    android:alpha="0.8"
                     android:layout_gravity="end"
-                    android:layout_marginBottom="4dp">
-
-                    <TextView
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:text="You"
-                        android:textSize="12sp"
-                        android:textStyle="bold"
-                        android:textColor="#2E7D32"
-                        android:layout_marginEnd="4dp" />
-
-                    <ImageView
-                        android:layout_width="16dp"
-                        android:layout_height="16dp"
-                        android:src="@drawable/ic_person"
-                        android:scaleType="centerInside" />
-
-                </LinearLayout>
+                    android:paddingStart="4dp"
+                    android:paddingTop="4dp"
+                    android:paddingEnd="4dp"
+                    android:paddingBottom="4dp"
+                    android:layout_marginBottom="4dp" />
 
                 <!-- Message Text -->
                 <TextView
