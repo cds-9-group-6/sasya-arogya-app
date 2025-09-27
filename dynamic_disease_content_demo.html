@@ -1,0 +1,372 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Dynamic Disease Content - Sasya Arogya Demo</title>
+    <style>
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            margin: 0;
+            padding: 20px;
+            background: linear-gradient(135deg, #F7F3F0 0%, #E8F5E8 100%);
+            min-height: 100vh;
+        }
+        
+        .demo-container {
+            max-width: 450px;
+            margin: 0 auto;
+            background: #FFFFFF;
+            border-radius: 20px;
+            box-shadow: 0 8px 32px rgba(0,0,0,0.1);
+            overflow: hidden;
+        }
+        
+        .demo-header {
+            background: linear-gradient(135deg, #4CAF50 0%, #2E7D32 100%);
+            color: white;
+            padding: 20px;
+            text-align: center;
+        }
+        
+        .demo-title {
+            font-size: 22px;
+            font-weight: bold;
+            margin: 0;
+            text-shadow: 1px 1px 2px rgba(0,0,0,0.3);
+        }
+        
+        .demo-subtitle {
+            font-size: 12px;
+            opacity: 0.9;
+            margin: 5px 0 0 0;
+        }
+        
+        .chat-container {
+            background: #F7F3F0;
+            padding: 20px;
+            min-height: 500px;
+        }
+        
+        .comparison-section {
+            margin-bottom: 30px;
+        }
+        
+        .comparison-title {
+            font-size: 16px;
+            font-weight: bold;
+            color: #2D3748;
+            margin-bottom: 15px;
+            text-align: center;
+            padding: 10px;
+            background: rgba(255,255,255,0.8);
+            border-radius: 8px;
+        }
+        
+        .message-container {
+            background: #FFFFFF;
+            border-radius: 18px;
+            padding: 12px;
+            margin-bottom: 20px;
+            box-shadow: 0 1px 3px rgba(0,0,0,0.1);
+        }
+        
+        .message-header {
+            font-size: 12px;
+            font-weight: bold;
+            color: #2E7D32;
+            opacity: 0.8;
+            margin-bottom: 8px;
+        }
+        
+        .state-indicator {
+            display: inline-block;
+            background: #4CAF50;
+            color: white;
+            padding: 4px 8px;
+            border-radius: 12px;
+            font-size: 10px;
+            font-weight: bold;
+            letter-spacing: 0.5px;
+            margin-bottom: 12px;
+        }
+        
+        /* BEFORE - Empty message text */
+        .empty-message-text {
+            min-height: 20px;
+            background: #F8F8F8;
+            border-radius: 4px;
+            margin-bottom: 12px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: #CCCCCC;
+            font-style: italic;
+            padding: 20px;
+        }
+        
+        /* AFTER - Dynamic content */
+        .dynamic-message-text {
+            font-size: 15sp;
+            line-height: 1.4;
+            color: #2E2E2E;
+            margin-bottom: 12px;
+            padding: 8px 0;
+        }
+        
+        .dynamic-message-text strong {
+            color: #1B5E20;
+        }
+        
+        /* Disease card styling */
+        .disease-card-wrapper {
+            margin-top: 12px;
+            margin-left: 4px;
+            margin-right: 4px;
+            border-radius: 10px;
+            box-shadow: 0 4px 12px rgba(255, 112, 67, 0.15);
+            background: white;
+        }
+        
+        .disease-card {
+            background: 
+                linear-gradient(90deg, #FF7043 0%, #FF7043 8px, #FFF3E0 8px, #FFF3E0 100%);
+            border-radius: 8px;
+            padding: 18px;
+            border: 1px solid #FFE0B2;
+            background-image: linear-gradient(135deg, rgba(255, 255, 255, 0.9) 0%, rgba(255, 250, 247, 0.9) 100%);
+            background-blend-mode: overlay;
+        }
+        
+        .disease-header {
+            display: flex;
+            align-items: center;
+            margin-bottom: 15px;
+        }
+        
+        .warning-icon {
+            width: 32px;
+            height: 32px;
+            background: linear-gradient(135deg, #FF7043 0%, #FF5722 100%);
+            border: 1px solid #E64A19;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin-right: 12px;
+            box-shadow: 0 2px 6px rgba(255, 112, 67, 0.3);
+        }
+        
+        .warning-icon::before {
+            content: "⚠";
+            color: white;
+            font-size: 16px;
+            font-weight: bold;
+        }
+        
+        .disease-title {
+            font-size: 18px;
+            font-weight: bold;
+            color: #2E2E2E;
+            flex: 1;
+        }
+        
+        .disease-details {
+            margin-bottom: 16px;
+        }
+        
+        .detail-row {
+            display: flex;
+            margin-bottom: 8px;
+        }
+        
+        .detail-label {
+            font-weight: bold;
+            color: #2E2E2E;
+            margin-right: 8px;
+        }
+        
+        .detail-value {
+            color: #2E2E2E;
+        }
+        
+        .disease-section {
+            margin-bottom: 15px;
+        }
+        
+        .section-title {
+            display: flex;
+            align-items: center;
+            font-size: 14px;
+            font-weight: bold;
+            color: #2D3748;
+            margin-bottom: 8px;
+        }
+        
+        .section-content {
+            font-size: 14sp;
+            line-height: 1.5;
+            color: #2E2E2E;
+            margin-left: 8px;
+        }
+        
+        .enhancement-note {
+            background: #E3F2FD;
+            border-left: 4px solid #2196F3;
+            padding: 15px;
+            margin: 20px;
+            border-radius: 8px;
+            font-size: 14px;
+            color: #1565C0;
+        }
+        
+        .feature-list {
+            list-style: none;
+            padding: 0;
+            margin: 10px 0;
+        }
+        
+        .feature-list li {
+            padding: 3px 0;
+            display: flex;
+            align-items: center;
+        }
+        
+        .feature-list li::before {
+            content: "✨";
+            margin-right: 8px;
+        }
+        
+        @media (max-width: 480px) {
+            .demo-container {
+                margin: 10px;
+                max-width: none;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="enhancement-note">
+        <h3 style="margin-top: 0;">🎯 Dynamic Disease Content Enhancement</h3>
+        <p><strong>Intelligent contextual content eliminates empty space above disease cards</strong></p>
+        <ul class="feature-list">
+            <li>Disease-type specific introductory content</li>
+            <li>Confidence-based urgency messaging</li>
+            <li>Educational context for each disease category</li>
+            <li>Professional analysis completion confirmations</li>
+            <li>Smart content adaptation for pest, fungal, bacterial, and viral diseases</li>
+        </ul>
+    </div>
+
+    <div class="demo-container">
+        <div class="demo-header">
+            <h1 class="demo-title">🌿 Sasya Arogya</h1>
+            <p class="demo-subtitle">Dynamic Content Enhancement</p>
+        </div>
+        
+        <div class="chat-container">
+            <!-- BEFORE -->
+            <div class="comparison-section">
+                <div class="comparison-title">❌ Before (Empty Space Issue)</div>
+                <div class="message-container">
+                    <div class="message-header">🤖 Sasya Arogya</div>
+                    <div class="state-indicator">Thinking</div>
+                    
+                    <div class="empty-message-text">
+                        [Empty space - looks awkward and unprofessional]
+                    </div>
+                    
+                    <div class="disease-card-wrapper">
+                        <div class="disease-card">
+                            <div class="disease-header">
+                                <div class="warning-icon"></div>
+                                <div class="disease-title">stem_borer Detected</div>
+                            </div>
+                            
+                            <div class="disease-details">
+                                <div class="detail-row">
+                                    <span class="detail-label">Confidence:</span>
+                                    <span class="detail-value">42%</span>
+                                </div>
+                                <div class="detail-row">
+                                    <span class="detail-label">Severity:</span>
+                                    <span class="detail-value">Mild to Moderate</span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- AFTER -->
+            <div class="comparison-section">
+                <div class="comparison-title">✅ After (Dynamic Content)</div>
+                <div class="message-container">
+                    <div class="message-header">🤖 Sasya Arogya</div>
+                    <div class="state-indicator">Thinking</div>
+                    
+                    <div class="dynamic-message-text">
+                        🐛 <strong>Pest Damage Analysis Complete</strong>
+                        <br><br>
+                        Our analysis indicates pest-related damage to your plant. These insects can cause significant harm by feeding on plant tissues, weakening the plant's structure and creating entry points for diseases.
+                        <br><br>
+                        🔍 <strong>Preliminary Detection</strong> - Further observation may be needed.
+                    </div>
+                    
+                    <div class="disease-card-wrapper">
+                        <div class="disease-card">
+                            <div class="disease-header">
+                                <div class="warning-icon"></div>
+                                <div class="disease-title">Stem Borer Detected</div>
+                            </div>
+                            
+                            <div class="disease-details">
+                                <div class="detail-row">
+                                    <span class="detail-label">Confidence:</span>
+                                    <span class="detail-value">42%</span>
+                                </div>
+                                <div class="detail-row">
+                                    <span class="detail-label">Severity:</span>
+                                    <span class="detail-value">Mild to Moderate</span>
+                                </div>
+                            </div>
+                            
+                            <div class="disease-section">
+                                <div class="section-title">🌿 PLANT DISEASE ANALYSIS</div>
+                            </div>
+                            
+                            <div class="disease-section">
+                                <div class="section-title">🔍 WHAT WE FOUND</div>
+                                <div class="section-content">Your plant has: <strong>Stem Borer</strong></div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="enhancement-note">
+        <h4>🎨 Dynamic Content Features:</h4>
+        <ul>
+            <li><strong>Disease Category Recognition:</strong> Automatically detects pest, fungal, bacterial, viral, nutritional, and environmental issues</li>
+            <li><strong>Contextual Education:</strong> Provides relevant background information for each disease type</li>
+            <li><strong>Confidence-Based Messaging:</strong> Adapts urgency and recommendation tone based on detection confidence</li>
+            <li><strong>Professional Analysis Confirmation:</strong> Clear indication that AI analysis is complete</li>
+            <li><strong>Fills Empty Space:</strong> Transforms awkward empty space into valuable educational content</li>
+        </ul>
+        
+        <p><strong>Example Messages by Disease Type:</strong></p>
+        <ul>
+            <li>🐛 <strong>Pest (Borer/Miner/Aphid):</strong> "Pest damage analysis with feeding pattern information"</li>
+            <li>🍄 <strong>Fungal (Blight/Rust/Mildew):</strong> "Fungal infection details with humidity warnings"</li>
+            <li>🦠 <strong>Bacterial (Canker/Wilt):</strong> "Bacterial disease info with vascular system alerts"</li>
+            <li>🦠 <strong>Viral (Mosaic/Virus):</strong> "Viral infection details with prevention focus"</li>
+            <li>⚖️ <strong>Nutritional (Deficiency):</strong> "Nutritional analysis with balance recommendations"</li>
+            <li>🌡️ <strong>Environmental (Stress/Scorch):</strong> "Environmental factor analysis and mitigation"</li>
+        </ul>
+        
+        <p><strong>Result:</strong> Empty space is now filled with intelligent, educational content that enhances the user experience while providing valuable plant care context.</p>
+    </div>
+</body>
+</html>

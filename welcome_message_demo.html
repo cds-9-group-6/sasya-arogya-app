@@ -1,0 +1,336 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Sasya Arogya - Welcome Message Demo</title>
+    <style>
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            margin: 0;
+            padding: 20px;
+            background: linear-gradient(135deg, #F7F3F0 0%, #E8F5E8 100%);
+            min-height: 100vh;
+        }
+        
+        .app-container {
+            max-width: 400px;
+            margin: 0 auto;
+            background: #FFFFFF;
+            border-radius: 20px;
+            box-shadow: 0 8px 32px rgba(0,0,0,0.1);
+            overflow: hidden;
+        }
+        
+        .app-header {
+            background: linear-gradient(135deg, #4CAF50 0%, #2E7D32 100%);
+            color: white;
+            padding: 20px;
+            text-align: center;
+        }
+        
+        .app-title {
+            font-size: 22px;
+            font-weight: bold;
+            margin: 0;
+            text-shadow: 1px 1px 2px rgba(0,0,0,0.3);
+        }
+        
+        .app-subtitle {
+            font-size: 12px;
+            opacity: 0.9;
+            margin: 5px 0 0 0;
+        }
+        
+        .chat-container {
+            background: #F7F3F0;
+            min-height: 500px;
+            padding: 15px;
+        }
+        
+        .message-container {
+            margin-bottom: 15px;
+        }
+        
+        .assistant-message {
+            background: #FFFFFF;
+            border-radius: 18px;
+            padding: 0;
+            box-shadow: 0 1px 3px rgba(0,0,0,0.1);
+            margin-left: 8px;
+            margin-right: 48px;
+        }
+        
+        .message-header {
+            padding: 12px 12px 8px 12px;
+            font-size: 12px;
+            font-weight: bold;
+            color: #2E7D32;
+            opacity: 0.8;
+        }
+        
+        .state-indicator {
+            display: inline-block;
+            background: #4CAF50;
+            color: white;
+            padding: 4px 8px;
+            border-radius: 12px;
+            font-size: 10px;
+            font-weight: bold;
+            letter-spacing: 0.5px;
+            margin: 0 12px 12px 12px;
+        }
+        
+        .message-text {
+            padding: 0 12px 12px 12px;
+            font-size: 15px;
+            line-height: 1.4;
+            color: #2E2E2E;
+        }
+        
+        .welcome-actions {
+            padding: 12px;
+            border-top: 1px solid #F0F0F0;
+        }
+        
+        .actions-header {
+            font-size: 14px;
+            font-weight: bold;
+            color: #2D3748;
+            margin-bottom: 12px;
+            display: flex;
+            align-items: center;
+        }
+        
+        .actions-grid {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 8px;
+        }
+        
+        .action-chip {
+            display: inline-flex;
+            align-items: center;
+            background: #A5D6A7;
+            color: #1B5E20;
+            padding: 10px 16px;
+            border-radius: 20px;
+            font-size: 14px;
+            font-weight: 500;
+            border: 2px solid #66BB6A;
+            cursor: pointer;
+            transition: all 0.2s ease;
+            text-decoration: none;
+        }
+        
+        .action-chip:hover {
+            background: #81C784;
+            transform: translateY(-1px);
+            box-shadow: 0 2px 8px rgba(0,0,0,0.15);
+        }
+        
+        .action-chip.clicked {
+            background: #81C784;
+            border-color: #4CAF50;
+        }
+        
+        .action-chip.clicked::before {
+            content: "✓ ";
+            font-weight: bold;
+        }
+        
+        .message-time {
+            font-size: 12px;
+            color: #999999;
+            margin: 5px 0 0 20px;
+        }
+        
+        .demo-note {
+            background: #E3F2FD;
+            border-left: 4px solid #2196F3;
+            padding: 15px;
+            margin: 20px;
+            border-radius: 8px;
+            font-size: 14px;
+            color: #1565C0;
+        }
+        
+        .feature-list {
+            list-style: none;
+            padding: 0;
+            margin: 10px 0;
+        }
+        
+        .feature-list li {
+            padding: 5px 0;
+            display: flex;
+            align-items: center;
+        }
+        
+        .feature-list li::before {
+            content: "✅";
+            margin-right: 10px;
+        }
+        
+        @media (max-width: 480px) {
+            .app-container {
+                margin: 10px;
+                max-width: none;
+            }
+            
+            .action-chip {
+                font-size: 13px;
+                padding: 8px 12px;
+            }
+        }
+        
+        .pulse-animation {
+            animation: pulse 2s infinite;
+        }
+        
+        @keyframes pulse {
+            0% { transform: scale(1); }
+            50% { transform: scale(1.05); }
+            100% { transform: scale(1); }
+        }
+    </style>
+</head>
+<body>
+    <div class="demo-note">
+        <h3 style="margin-top: 0;">🌿 Sasya Arogya - Enhanced Welcome Message Demo</h3>
+        <p><strong>Professional Sample Actions Implementation</strong></p>
+        <ul class="feature-list">
+            <li>8 strategic action buttons for immediate engagement</li>
+            <li>WhatsApp-style message design with earthy theme</li>
+            <li>Smart contextual responses for each action</li>
+            <li>Beautiful hover animations and click feedback</li>
+            <li>Mobile-optimized responsive design</li>
+        </ul>
+        <p><em>Click any action button below to see the interactive behavior!</em></p>
+    </div>
+
+    <div class="app-container">
+        <div class="app-header">
+            <h1 class="app-title">🌿 Sasya Arogya</h1>
+            <p class="app-subtitle">Intelligent Plant Health Assistant</p>
+        </div>
+        
+        <div class="chat-container">
+            <div class="message-container">
+                <div class="assistant-message">
+                    <div class="message-header">🤖 Sasya Arogya</div>
+                    <div class="state-indicator">READY</div>
+                    
+                    <div class="message-text">
+                        🌿 Welcome to Sasya Arogya! I'm your intelligent plant health assistant.<br><br>
+                        
+                        I can help you:<br>
+                        • Diagnose plant diseases from images<br>
+                        • Recommend treatments and medicines<br>
+                        • Connect you with local vendors<br>
+                        • Provide seasonal care advice<br><br>
+                        
+                        <strong>Tap any action below to get started instantly:</strong>
+                    </div>
+                    
+                    <div class="welcome-actions">
+                        <div class="actions-header">
+                            📝 What would you like to know next?
+                        </div>
+                        
+                        <div class="actions-grid">
+                            <div class="action-chip pulse-animation" onclick="handleActionClick(this, '📸 Analyze Plant Photo')">
+                                📸 Analyze Plant Photo
+                            </div>
+                            <div class="action-chip" onclick="handleActionClick(this, '🔍 Common Plant Problems')">
+                                🔍 Common Plant Problems
+                            </div>
+                            <div class="action-chip" onclick="handleActionClick(this, '🌱 Seasonal Care Tips')">
+                                🌱 Seasonal Care Tips
+                            </div>
+                            <div class="action-chip" onclick="handleActionClick(this, '💊 Treatment Guide')">
+                                💊 Treatment Guide
+                            </div>
+                            <div class="action-chip" onclick="handleActionClick(this, '📅 Care Schedule')">
+                                📅 Care Schedule
+                            </div>
+                            <div class="action-chip" onclick="handleActionClick(this, '🚨 Emergency Plant Care')">
+                                🚨 Emergency Plant Care
+                            </div>
+                            <div class="action-chip" onclick="handleActionClick(this, '🌿 Plant Health Guide')">
+                                🌿 Plant Health Guide
+                            </div>
+                            <div class="action-chip" onclick="handleActionClick(this, '🧪 Soil Testing Guide')">
+                                🧪 Soil Testing Guide
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="message-time">12:34</div>
+            </div>
+        </div>
+    </div>
+
+    <div class="demo-note">
+        <h4>🎯 Action Response Examples:</h4>
+        <ul>
+            <li><strong>📸 Analyze Plant Photo:</strong> Opens camera/gallery for immediate plant diagnosis</li>
+            <li><strong>🔍 Common Plant Problems:</strong> "Show me the most common plant problems and diseases..."</li>
+            <li><strong>🌱 Seasonal Care Tips:</strong> "Give me seasonal plant care tips for [current season]..."</li>
+            <li><strong>💊 Treatment Guide:</strong> "Show me comprehensive treatment guide for plant diseases..."</li>
+            <li><strong>📅 Care Schedule:</strong> "Help me create a plant care schedule including watering..."</li>
+            <li><strong>🚨 Emergency Plant Care:</strong> "I need emergency plant care help. Show me urgent solutions..."</li>
+            <li><strong>🌿 Plant Health Guide:</strong> "Provide comprehensive plant health guide covering nutrition..."</li>
+            <li><strong>🧪 Soil Testing Guide:</strong> "Show me how to test soil conditions, pH levels..."</li>
+        </ul>
+        
+        <p><strong>Design Features:</strong></p>
+        <ul class="feature-list">
+            <li>Light green chip background (#A5D6A7)</li>
+            <li>Forest green text (#1B5E20)</li>
+            <li>Smooth hover animations</li>
+            <li>Click feedback with checkmarks</li>
+            <li>Professional WhatsApp-style layout</li>
+            <li>Responsive mobile design</li>
+        </ul>
+    </div>
+
+    <script>
+        function handleActionClick(element, actionText) {
+            // Add clicked state
+            element.classList.add('clicked');
+            element.style.pointerEvents = 'none';
+            
+            // Show user selection feedback
+            setTimeout(() => {
+                alert(`🌿 Action Selected: "${actionText}"\n\nIn the actual app, this would:\n• Add your selection as a user message\n• Trigger intelligent contextual response\n• Show relevant plant care information\n• Provide follow-up actions`);
+                
+                // Reset after demo
+                setTimeout(() => {
+                    element.classList.remove('clicked');
+                    element.style.pointerEvents = 'auto';
+                    element.textContent = actionText;
+                }, 2000);
+            }, 300);
+        }
+        
+        // Add some demo interactivity
+        document.querySelectorAll('.action-chip').forEach(chip => {
+            chip.addEventListener('mouseenter', () => {
+                chip.style.transform = 'translateY(-2px) scale(1.02)';
+            });
+            
+            chip.addEventListener('mouseleave', () => {
+                if (!chip.classList.contains('clicked')) {
+                    chip.style.transform = 'translateY(0) scale(1)';
+                }
+            });
+        });
+        
+        // Remove pulse animation after a few seconds
+        setTimeout(() => {
+            document.querySelector('.pulse-animation')?.classList.remove('pulse-animation');
+        }, 6000);
+    </script>
+</body>
+</html>

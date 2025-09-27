@@ -1,0 +1,16 @@
+feat: Remove Treatment Guide from welcome message sample actions
+
+- Remove "💊 Treatment Guide" from welcome message followUpItems list
+- Remove corresponding case handler in handleFollowUpClick() method
+- Streamline welcome actions to 7 focused plant care options
+- Maintain clean user experience with most essential actions only
+
+BREAKING CHANGE: Users will no longer see Treatment Guide as a quick action
+in the welcome message, though treatment information is still available
+through other interaction flows.
+
+Files modified:
+- app/src/main/java/com/sasya/arogya/MainActivityFSM.kt
+
+This change simplifies the initial user experience while keeping the most
+commonly used plant care actions readily accessible from the welcome screen.

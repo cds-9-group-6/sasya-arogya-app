@@ -159,6 +159,7 @@ class ChatAdapter(
         private val overlayDescription: TextView = itemView.findViewById(R.id.overlayDescription)
         
         // Disease card elements
+        private val diseaseCardWrapper: androidx.cardview.widget.CardView = itemView.findViewById(R.id.diseaseCardWrapper)
         private val diseaseCardContainer: LinearLayout = itemView.findViewById(R.id.diseaseCardContainer)
         private val diseaseTitle: TextView = itemView.findViewById(R.id.diseaseTitle)
         private val diseaseConfidence: TextView = itemView.findViewById(R.id.diseaseConfidence)
@@ -188,7 +189,7 @@ class ChatAdapter(
                 if (message.diseaseName.lowercase() == "healthy") {
                     // Show healthy card
                     healthyCardContainer.visibility = View.VISIBLE
-                    diseaseCardContainer.visibility = View.GONE
+                    diseaseCardWrapper.visibility = View.GONE
                     
                     if (shouldPopulateCard) {
                         populateHealthyCard(message)
@@ -197,7 +198,7 @@ class ChatAdapter(
                     }
                 } else {
                     // Show disease card
-                    diseaseCardContainer.visibility = View.VISIBLE
+                    diseaseCardWrapper.visibility = View.VISIBLE
                     healthyCardContainer.visibility = View.GONE
                     
                     if (shouldPopulateCard) {
@@ -207,13 +208,16 @@ class ChatAdapter(
                     }
                 }
                 
-                // Show empty message text when card is displayed to prevent duplication
-                // Keep it visible to maintain layout constraints, but show no content
+                // Show dynamic introductory content based on disease/health classification
                 messageText.visibility = View.VISIBLE
-                messageText.text = ""
+                messageText.text = if (message.diseaseName.lowercase() == "healthy") {
+                    TextFormattingUtil.formatWhatsAppStyle(generateHealthyIntroText(message.confidence))
+                } else {
+                    TextFormattingUtil.formatWhatsAppStyle(generateDiseaseIntroText(message.diseaseName, message.confidence))
+                }
             } else {
                 // No special card, show regular message
-                diseaseCardContainer.visibility = View.GONE
+                diseaseCardWrapper.visibility = View.GONE
                 healthyCardContainer.visibility = View.GONE
                 cardPopulated = false
                 lastMessageText = ""
@@ -644,6 +648,66 @@ class ChatAdapter(
             }
             
             Log.d("ChatAdapter", "🔍 Zoom functionality initialized for attention overlay")
+        }
+        
+        /**
+         * Generate dynamic introductory text based on disease classification
+         */
+        private fun generateDiseaseIntroText(diseaseName: String?, confidence: Double?): String {
+            if (diseaseName == null || confidence == null) return ""
+            
+            val confidencePercent = String.format("%.0f", confidence * 100)
+            val diseaseNameClean = diseaseName.replace("_", " ").split(" ")
+                .joinToString(" ") { it.lowercase().replaceFirstChar { char -> char.uppercase() } }
+            
+            // Generic professional analysis message
+            val introText = "🔬 **Plant Health Analysis Complete**\n\nOur AI has identified potential health concerns in your plant image. Early detection and proper treatment are essential to prevent spread and maintain plant health."
+            
+            // Confidence-based assessment and recommendations
+            val assessmentMessage = when {
+                confidence >= 0.8 -> {
+                    "**High Confidence Detection ($confidencePercent%)**\n\n⚠️ Our analysis shows strong indicators of the identified condition. Immediate attention is recommended to prevent potential spread to other parts of the plant or nearby vegetation."
+                }
+                confidence >= 0.6 -> {
+                    "**Moderate Confidence Detection ($confidencePercent%)**\n\n📋 The analysis indicates likely signs of the identified condition. Monitor the plant closely and consider implementing preventive treatments to limit any potential spread."
+                }
+                confidence >= 0.4 -> {
+                    "**Preliminary Detection ($confidencePercent%)**\n\n🔍 Early signs have been detected that warrant attention. Continue monitoring the plant's condition and be prepared to take action if symptoms worsen or spread."
+                }
+                else -> {
+                    "**Initial Assessment ($confidencePercent%)**\n\n❓ Some concerning signs have been noted. Consider obtaining additional images or consulting with a plant specialist for a more definitive diagnosis."
+                }
+            }
+            
+            return "$introText\n\n$assessmentMessage"
+        }
+        
+        /**
+         * Generate dynamic introductory text for healthy plant detections
+         */
+        private fun generateHealthyIntroText(confidence: Double?): String {
+            if (confidence == null) return ""
+            
+            val confidencePercent = String.format("%.0f", confidence * 100)
+            
+            val introText = "🌿 **Plant Health Analysis Complete**\n\nExcellent news! Our AI analysis indicates that your plant appears to be in good health with no immediate concerns detected."
+            
+            val assessmentMessage = when {
+                confidence >= 0.9 -> {
+                    "**Excellent Health Assessment ($confidencePercent%)**\n\n✅ Your plant shows strong, healthy characteristics. Continue your current care routine to maintain this excellent condition."
+                }
+                confidence >= 0.7 -> {
+                    "**Good Health Assessment ($confidencePercent%)**\n\n💚 The plant appears healthy with no concerning symptoms visible. Regular monitoring and consistent care will help maintain plant health."
+                }
+                confidence >= 0.5 -> {
+                    "**Positive Health Assessment ($confidencePercent%)**\n\n📍 Generally positive signs detected. Continue regular care monitoring and watch for any changes in plant condition."
+                }
+                else -> {
+                    "**Basic Health Check ($confidencePercent%)**\n\n🔍 No immediate issues detected, but continue observing plant condition and maintain consistent care practices."
+                }
+            }
+            
+            return "$introText\n\n$assessmentMessage"
         }
     }
 }
