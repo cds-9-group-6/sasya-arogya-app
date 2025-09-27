@@ -376,9 +376,18 @@ class MainActivityFSM : ComponentActivity(), FSMStreamHandler.StreamCallback {
     
     private fun addWelcomeMessage() {
         val welcomeMessage = ChatMessage(
-            text = "🌿 Welcome to Sasya Arogya! I'm your intelligent plant health assistant.\n\nI can help you:\n• Diagnose plant diseases from images\n• Recommend treatments and medicines\n• Connect you with local vendors\n• Provide seasonal care advice\n\nHow can I help you today?",
+            text = "🌿 Welcome to Sasya Arogya! I'm your intelligent plant health assistant.\n\nI can help you:\n• Diagnose plant diseases from images\n• Recommend treatments and medicines\n• Connect you with local vendors\n• Provide seasonal care advice\n\nTap any action below to get started instantly:",
             isUser = false,
-            state = "Ready"
+            state = "Ready",
+            followUpItems = listOf(
+                "📸 Analyze Plant Photo",
+                "🔍 Common Plant Problems", 
+                "🌱 Seasonal Care Tips",
+                "📅 Care Schedule",
+                "🚨 Emergency Plant Care",
+                "🌿 Plant Health Guide",
+                "🧪 Soil Testing Guide"
+            )
         )
         
         chatAdapter.addMessage(welcomeMessage)
@@ -619,10 +628,53 @@ class MainActivityFSM : ComponentActivity(), FSMStreamHandler.StreamCallback {
         }
         scrollToBottom()
         
-        // Send to FSM agent
-        sendToFSMAgent(followUpText, null)
+        // Special handling for certain actions
+        when (followUpText) {
+            "📸 Analyze Plant Photo" -> {
+                // Immediately trigger image picker for photo analysis
+                openImagePicker()
+                stopThinkingIndicator() // Don't show thinking indicator for image picker
+                return
+            }
+            
+            "🔍 Common Plant Problems" -> {
+                // Send enhanced query for common problems
+                sendToFSMAgent("Show me the most common plant problems and diseases I should watch out for, with symptoms and treatment options.", null)
+            }
+            
+            "🌱 Seasonal Care Tips" -> {
+                // Send season-specific query
+                val season = getCurrentSeason()
+                sendToFSMAgent("Give me seasonal plant care tips and recommendations for $season season, including what to plant, water, and watch for.", null)
+            }
+            
+            "📅 Care Schedule" -> {
+                // Send query for care scheduling
+                sendToFSMAgent("Help me create a plant care schedule including watering, fertilizing, pruning, and pest monitoring timelines.", null)
+            }
+            
+            "🚨 Emergency Plant Care" -> {
+                // Send query for emergency care
+                sendToFSMAgent("I need emergency plant care help. Show me how to diagnose and treat urgent plant health issues like wilting, yellowing, or pest infestations.", null)
+            }
+            
+            "🌿 Plant Health Guide" -> {
+                // Send query for health guide
+                sendToFSMAgent("Provide me with a comprehensive plant health guide covering nutrition, light requirements, watering, and disease prevention.", null)
+            }
+            
+            "🧪 Soil Testing Guide" -> {
+                // Send query for soil testing
+                sendToFSMAgent("Show me how to test soil conditions, understand pH levels, nutrient deficiencies, and improve soil quality for better plant health.", null)
+            }
+            
+            else -> {
+                // Default: send original text to FSM agent
+                sendToFSMAgent(followUpText, null)
+            }
+        }
         
-        // Show thinking indicator
+        // Show thinking indicator for FSM queries
         showThinkingIndicator()
         // Processing state handled by thinking indicator, not status indicator
         
