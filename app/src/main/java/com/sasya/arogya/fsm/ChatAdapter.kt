@@ -172,30 +172,52 @@ class ChatAdapter(
         private val healthyStatus: TextView = itemView.findViewById(R.id.healthyStatus)
         private val healthyContent: TextView = itemView.findViewById(R.id.healthyContent)
         
+        // Track if card has been populated to prevent duplication
+        private var cardPopulated = false
+        private var lastMessageText = ""
+        
         fun bind(message: ChatMessage) {
             messageTime.text = timeFormatter.format(Date(message.timestamp))
             
             // Handle disease/healthy card display
             if (message.diseaseName != null && message.confidence != null) {
+                // Check if this is the same message content to prevent duplication
+                val currentMessageKey = "${message.diseaseName}_${message.confidence}_${message.text.hashCode()}"
+                val shouldPopulateCard = !cardPopulated || lastMessageText != currentMessageKey
+                
                 if (message.diseaseName.lowercase() == "healthy") {
                     // Show healthy card
                     healthyCardContainer.visibility = View.VISIBLE
                     diseaseCardContainer.visibility = View.GONE
-                    populateHealthyCard(message)
+                    
+                    if (shouldPopulateCard) {
+                        populateHealthyCard(message)
+                        cardPopulated = true
+                        lastMessageText = currentMessageKey
+                    }
                 } else {
                     // Show disease card
                     diseaseCardContainer.visibility = View.VISIBLE
                     healthyCardContainer.visibility = View.GONE
-                    populateDiseaseCard(message)
+                    
+                    if (shouldPopulateCard) {
+                        populateDiseaseCard(message)
+                        cardPopulated = true
+                        lastMessageText = currentMessageKey
+                    }
                 }
                 
-                // Show only the intro message text before the card
-                val introText = extractIntroText(message.text)
-                messageText.text = TextFormattingUtil.formatWhatsAppStyle(introText)
+                // Hide message text entirely when card is shown to prevent duplication
+                // The card contains all the important information
+                messageText.visibility = View.GONE
             } else {
                 // No special card, show regular message
                 diseaseCardContainer.visibility = View.GONE
                 healthyCardContainer.visibility = View.GONE
+                cardPopulated = false
+                lastMessageText = ""
+                
+                messageText.visibility = View.VISIBLE
                 messageText.text = TextFormattingUtil.formatWhatsAppStyle(message.text)
             }
             
