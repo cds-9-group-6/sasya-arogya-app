@@ -207,9 +207,10 @@ class ChatAdapter(
                     }
                 }
                 
-                // Hide message text entirely when card is shown to prevent duplication
-                // The card contains all the important information
-                messageText.visibility = View.GONE
+                // Show empty message text when card is displayed to prevent duplication
+                // Keep it visible to maintain layout constraints, but show no content
+                messageText.visibility = View.VISIBLE
+                messageText.text = ""
             } else {
                 // No special card, show regular message
                 diseaseCardContainer.visibility = View.GONE
