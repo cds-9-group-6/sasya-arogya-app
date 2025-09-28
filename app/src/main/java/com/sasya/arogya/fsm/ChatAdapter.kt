@@ -164,18 +164,23 @@ class ChatAdapter(
         private val diseaseTitle: TextView = itemView.findViewById(R.id.diseaseTitle)
         private val diseaseConfidence: TextView = itemView.findViewById(R.id.diseaseConfidence)
         
-        // Insurance card elements
-        private val insuranceCardWrapper: androidx.cardview.widget.CardView = itemView.findViewById(R.id.insuranceCardWrapper)
-        private val insuranceCropInfo: TextView = itemView.findViewById(R.id.insuranceCropInfo)
-        private val totalPremiumAmount: TextView = itemView.findViewById(R.id.totalPremiumAmount)
-        private val subsidyAmount: TextView = itemView.findViewById(R.id.subsidyAmount)
-        private val farmerContributionAmount: TextView = itemView.findViewById(R.id.farmerContributionAmount)
-        private val areaDetails: TextView = itemView.findViewById(R.id.areaDetails)
-        private val premiumPerHectare: TextView = itemView.findViewById(R.id.premiumPerHectare)
-        private val diseaseContext: TextView = itemView.findViewById(R.id.diseaseContext)
-        private val diseaseInfoContainer: LinearLayout = itemView.findViewById(R.id.diseaseInfoContainer)
-        private val learnMoreButton: TextView = itemView.findViewById(R.id.learnMoreButton)
-        private val applyInsuranceButton: TextView = itemView.findViewById(R.id.applyInsuranceButton)
+        // Insurance card elements - nullable to prevent crashes
+        private val insuranceCardWrapper: androidx.cardview.widget.CardView? = try { 
+            itemView.findViewById(R.id.insuranceCardWrapper)
+        } catch (e: Exception) { 
+            Log.w("ChatAdapter", "Insurance card wrapper not found: ${e.message}")
+            null 
+        }
+        private val insuranceCropInfo: TextView? = try { itemView.findViewById(R.id.insuranceCropInfo) } catch (e: Exception) { null }
+        private val totalPremiumAmount: TextView? = try { itemView.findViewById(R.id.totalPremiumAmount) } catch (e: Exception) { null }
+        private val subsidyAmount: TextView? = try { itemView.findViewById(R.id.subsidyAmount) } catch (e: Exception) { null }
+        private val farmerContributionAmount: TextView? = try { itemView.findViewById(R.id.farmerContributionAmount) } catch (e: Exception) { null }
+        private val areaDetails: TextView? = try { itemView.findViewById(R.id.areaDetails) } catch (e: Exception) { null }
+        private val premiumPerHectare: TextView? = try { itemView.findViewById(R.id.premiumPerHectare) } catch (e: Exception) { null }
+        private val diseaseContext: TextView? = try { itemView.findViewById(R.id.diseaseContext) } catch (e: Exception) { null }
+        private val diseaseInfoContainer: LinearLayout? = try { itemView.findViewById(R.id.diseaseInfoContainer) } catch (e: Exception) { null }
+        private val learnMoreButton: TextView? = try { itemView.findViewById(R.id.learnMoreButton) } catch (e: Exception) { null }
+        private val applyInsuranceButton: TextView? = try { itemView.findViewById(R.id.applyInsuranceButton) } catch (e: Exception) { null }
         private val diseaseSeverity: TextView = itemView.findViewById(R.id.diseaseSeverity)
         private val diseaseContent: TextView = itemView.findViewById(R.id.diseaseContent)
         
@@ -197,14 +202,32 @@ class ChatAdapter(
             when {
                 // Insurance card takes highest priority
                 message.insuranceDetails != null -> {
-                    insuranceCardWrapper.visibility = View.VISIBLE
-                    diseaseCardWrapper.visibility = View.GONE
-                    healthyCardContainer.visibility = View.GONE
-                    
-                    populateInsuranceCard(message.insuranceDetails)
-                    
-                    messageText.visibility = View.VISIBLE
-                    messageText.text = TextFormattingUtil.formatWhatsAppStyle("🛡️ **Crop Insurance Premium Calculated**\n\nBased on your plant health analysis and location, here are your insurance options:")
+                    try {
+                        if (insuranceCardWrapper != null) {
+                            insuranceCardWrapper.visibility = View.VISIBLE
+                            diseaseCardWrapper.visibility = View.GONE
+                            healthyCardContainer.visibility = View.GONE
+                            
+                            populateInsuranceCard(message.insuranceDetails)
+                            
+                            messageText.visibility = View.VISIBLE
+                            messageText.text = TextFormattingUtil.formatWhatsAppStyle("🛡️ **Crop Insurance Premium Calculated**\n\nBased on your plant health analysis and location, here are your insurance options:")
+                        } else {
+                            Log.e("ChatAdapter", "Insurance card wrapper not found - showing fallback text")
+                            // Show fallback message instead of card
+                            insuranceCardWrapper?.visibility = View.GONE
+                            diseaseCardWrapper.visibility = View.GONE  
+                            healthyCardContainer.visibility = View.GONE
+                            
+                            messageText.visibility = View.VISIBLE
+                            messageText.text = TextFormattingUtil.formatWhatsAppStyle("🛡️ **Insurance Premium Calculated**\n\nCrop: ${message.insuranceDetails.crop}\nArea: ${message.insuranceDetails.area} hectares\nTotal Premium: ₹${String.format("%.2f", message.insuranceDetails.totalPremium)}\nYour Contribution: ₹${String.format("%.2f", message.insuranceDetails.farmerContribution)}")
+                        }
+                    } catch (e: Exception) {
+                        Log.e("ChatAdapter", "Critical error displaying insurance card: ${e.message}", e)
+                        // Emergency fallback
+                        messageText.visibility = View.VISIBLE
+                        messageText.text = "🛡️ Insurance premium calculated - see logs for details"
+                    }
                 }
                 // Disease/healthy card display
                 message.diseaseName != null && message.confidence != null -> {
@@ -246,7 +269,7 @@ class ChatAdapter(
                 }
                 else -> {
                     // No special card, show regular message
-                    insuranceCardWrapper.visibility = View.GONE
+                    insuranceCardWrapper?.visibility = View.GONE
                     diseaseCardWrapper.visibility = View.GONE
                     healthyCardContainer.visibility = View.GONE
                     cardPopulated = false
@@ -687,6 +710,12 @@ class ChatAdapter(
         private fun populateInsuranceCard(insuranceDetails: InsuranceDetails) {
             try {
                 Log.d("ChatAdapter", "🛡️ Populating insurance card for ${insuranceDetails.crop}")
+                
+                // Debug: Log view availability
+                Log.d("ChatAdapter", "Insurance views status:")
+                Log.d("ChatAdapter", "  - insuranceCardWrapper: ${if (insuranceCardWrapper != null) "✅ Found" else "❌ NULL"}")
+                Log.d("ChatAdapter", "  - insuranceCropInfo: ${if (insuranceCropInfo != null) "✅ Found" else "❌ NULL"}")
+                Log.d("ChatAdapter", "  - totalPremiumAmount: ${if (totalPremiumAmount != null) "✅ Found" else "❌ NULL"}")
                 
                 // Format crop information with null safety
                 insuranceCropInfo?.text = "${insuranceDetails.crop} • ${insuranceDetails.state} • ${String.format("%.1f", insuranceDetails.area)} hectares"
