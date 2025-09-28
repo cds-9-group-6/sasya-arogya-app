@@ -29,6 +29,9 @@ To help farmers worldwide save crops, reduce losses, and improve agricultural pr
 - **💡 Dynamic Treatment Recommendations** - Contextual advice based on disease type and severity
 - **🌟 Enhanced Visual Cards** - Professionally styled disease cards with prominent visual indicators
 - **📝 Smart Content Generation** - Generic system that works with any plant disease automatically
+- **🛡️ Crop Insurance Integration** - Professional insurance premium calculation and display system
+- **💰 Premium Breakdown** - Comprehensive cost analysis with government subsidies and farmer contributions
+- **🎨 Insurance Cards** - Blue-themed professional cards with Material Design elevation
 
 ### 🌐 Dual Server Architecture
 - **🚀 GPU Server** - High-performance processing for complex analysis
@@ -41,6 +44,8 @@ To help farmers worldwide save crops, reduce losses, and improve agricultural pr
 - **🚀 Welcome Actions** - 8 sample clickable actions for immediate user engagement
 - **📸 Smart Photo Analysis** - One-tap image capture with direct analysis integration
 - **🎯 Dynamic Content** - Contextual disease information based on confidence levels
+- **🛡️ Insurance Premium Cards** - Professional blue-themed insurance cards with comprehensive breakdowns
+- **💰 Financial Information** - Government subsidies, total premiums, and farmer contribution calculations
 - **🔧 Server Configuration** - Flexible backend switching with automatic failover
 - **📋 Session Management** - Track and review comprehensive diagnosis history
 
@@ -163,16 +168,18 @@ graph TB
     subgraph "📱 Android App"
         subgraph "🎨 Presentation Layer"
             UI[MainActivity/MainActivityFSM]
-            Chat[ChatAdapter with Disease Cards]
+            Chat[ChatAdapter with Disease & Insurance Cards]
             Welcome[Welcome Actions System]
             Camera[Camera Integration]
+            InsuranceCard[Insurance Premium Card UI]
         end
         
         subgraph "💼 Business Logic Layer"
-            FSM[FSMStreamHandler]
+            FSM[FSMStreamHandler with Insurance Processing]
             Session[SessionManager]
             Config[ServerConfig]
             Format[TextFormattingUtil]
+            InsuranceParser[Insurance Data Parser]
         end
         
         subgraph "🌐 Network Layer"
@@ -189,7 +196,9 @@ graph TB
     Welcome --> FSM
     FSM --> Session
     FSM --> API
+    FSM --> InsuranceParser
     API --> Retrofit
+    InsuranceCard --> InsuranceParser
     
     %% Server Selection Logic
     Config --> ServerSelect{🔄 Smart Server Selection}
@@ -222,6 +231,14 @@ graph TB
             Analytics[Usage Analytics]
             Logging[System Logging]
             Monitor[Performance Monitoring]
+            Insurance[Insurance Premium Service]
+        end
+        
+        subgraph "🛡️ Insurance Processing"
+            InsuranceEngine[Premium Calculation Engine]
+            SubsidyCalc[Government Subsidy Calculator]
+            StateData[State-wise Premium Data]
+            CropData[Crop Insurance Database]
         end
     end
     
@@ -247,11 +264,20 @@ graph TB
     GPUConfidence --> ResponseFormat{📋 Format Response}
     StdConfidence --> ResponseFormat
     
+    %% Insurance Processing Flow
+    ResponseFormat --> InsuranceCheck{🛡️ Insurance Required?}
+    InsuranceCheck -->|Yes| InsuranceEngine
+    InsuranceEngine --> SubsidyCalc
+    InsuranceEngine --> StateData
+    InsuranceEngine --> CropData
+    SubsidyCalc --> InsurancePremium[Insurance Premium Data]
+    
     subgraph "📤 Response Generation"
         ResponseFormat --> DiseaseCard[Disease Card Data]
         ResponseFormat --> Confidence[Confidence Assessment]
         ResponseFormat --> Treatment[Treatment Recommendations]
         ResponseFormat --> FollowUp[Follow-up Actions]
+        InsurancePremium --> InsuranceCard[Insurance Card Data]
     end
     
     %% Return to Mobile App
@@ -259,13 +285,17 @@ graph TB
     Confidence --> Stream
     Treatment --> Stream
     FollowUp --> Stream
+    InsuranceCard --> Stream
     Stream --> Chat
+    Stream --> InsuranceCard
     
     %% Analytics and Monitoring
     GPUServer --> Analytics
     NonGPUServer --> Analytics
+    InsuranceEngine --> Analytics
     GPUServer --> Logging
     NonGPUServer --> Logging
+    InsuranceEngine --> Logging
     Analytics --> Monitor
     Logging --> Monitor
     
@@ -285,11 +315,13 @@ graph TB
     classDef backend fill:#FFF3E0,stroke:#FF8A65,stroke-width:2px
     classDef aiml fill:#E3F2FD,stroke:#2196F3,stroke-width:2px
     classDef storage fill:#F3E5F5,stroke:#9C27B0,stroke-width:2px
+    classDef insurance fill:#E1F5FE,stroke:#1976D2,stroke-width:2px
     
-    class UI,Chat,Welcome,Camera,FSM,Session mobileApp
+    class UI,Chat,Welcome,Camera,FSM,Session,InsuranceCard mobileApp
     class GPUServer,NonGPUServer,Analytics,Logging backend
     class GPUModel,StdModel,GPUConfidence,StdConfidence aiml
     class GPUStorage,StdStorage,SessionData,ImageCache storage
+    class InsuranceEngine,SubsidyCalc,StateData,CropData,InsuranceParser insurance
 ```
 
 ### 🌐 Detailed Component Architecture
@@ -401,7 +433,7 @@ sequenceDiagram
     User->>App: Launch App
     App->>UI: Load Welcome Message
     UI->>User: Show 8 Sample Actions
-    Note over UI,User: 📸 Analyze Plant Photo<br/>🔍 Common Plant Problems<br/>🌱 Seasonal Care Tips<br/>💊 Treatment Guide<br/>📅 Care Schedule<br/>🚨 Emergency Plant Care<br/>🌿 Plant Health Guide<br/>🧪 Soil Testing Guide
+    Note over UI,User: 📸 Analyze Plant Photo<br/>🔍 Common Plant Problems<br/>🌱 Seasonal Care Tips<br/>📅 Care Schedule<br/>🚨 Emergency Plant Care<br/>🌿 Plant Health Guide<br/>🧪 Soil Testing Guide
     
     %% Photo Analysis Workflow
     User->>UI: Tap "📸 Analyze Plant Photo"
@@ -451,6 +483,20 @@ sequenceDiagram
     UI->>User: Display Results
     Note over User,UI: 🎯 Disease Detected: Stem Borer<br/>📊 Confidence: 42% (Preliminary)<br/>⚠️ Visual Warning with Orange Card<br/>💡 Treatment Recommendations<br/>📋 Follow-up Actions
     
+    %% Insurance Premium Calculation (if applicable)
+    alt Insurance Requested
+        FSM->>FSM: Extract Disease & Location Data
+        FSM->>FSM: Calculate Insurance Premium
+        Note over FSM: - Area-based premium calculation<br/>- Government subsidy computation<br/>- Farmer contribution assessment<br/>- Disease context integration
+        
+        FSM->>UI: Insurance Premium Data
+        UI->>UI: Render Insurance Card
+        Note over UI: - Professional blue theme<br/>- Premium breakdown display<br/>- Government subsidy highlighting<br/>- Interactive action buttons
+        
+        UI->>User: Display Insurance Card
+        Note over User,UI: 🛡️ Insurance: ₹40,702.76 Total<br/>💰 Your Contribution: ₹4,070.28<br/>🏛️ Government Subsidy: ₹36,632.48<br/>📝 Learn More & Apply Options
+    end
+    
     %% Follow-up Actions
     User->>UI: Select Follow-up Action
     UI->>FSM: Process Follow-up
@@ -486,18 +532,25 @@ sequenceDiagram
 - **WhatsApp-Style Formatting**: Proper **bold text** rendering without markdown symbols
 - **Optimal Layout**: Wider containers (90% width utilization) for better visual impact
 
+#### 🛡️ **Insurance Premium System**
+- **Professional Blue Theme**: Insurance cards styled with blue color scheme and shield icons
+- **Comprehensive Breakdown**: Total premium, government subsidy, and farmer contribution display
+- **Material Design**: Cards with elevation, shadows, and responsive layout
+- **Interactive Elements**: "Learn More" and "Apply Now" buttons with follow-up actions
+- **Multi-layer Fallbacks**: Graceful degradation from visual card to simple text display
+
 ### 📁 Project Structure
 ```
 app/src/main/java/com/sasya/arogya/
-├── 🎯 MainActivity.kt              # Main app entry point  
+├── 🎯 MainActivity.kt              # Main app entry point
 ├── 🤖 MainActivityFSM.kt          # Enhanced FSM activity with welcome actions
 ├── config/
 │   └── 🔧 ServerConfig.kt         # Server configuration management
 ├── fsm/                           # Enhanced Finite State Machine logic
-│   ├── 💬 ChatAdapter.kt          # Advanced chat interface with visual disease cards
+│   ├── 💬 ChatAdapter.kt          # Advanced chat interface with disease & insurance cards
 │   ├── 📱 SessionManager.kt       # Comprehensive session management
 │   ├── 🌐 FSMApiService.kt        # API service interface
-│   └── 🔄 FSMStreamHandler.kt     # Real-time streaming data handling
+│   └── 🔄 FSMStreamHandler.kt     # Real-time streaming event processor with insurance handling
 ├── network/                       # Networking components
 │   ├── 🌍 ApiService.kt           # REST API definitions
 │   └── 🏗 RetrofitClient.kt       # HTTP client setup
@@ -557,20 +610,32 @@ app/src/main/java/com/sasya/arogya/
 - **Zero Maintenance**: No code updates needed when new diseases are added
 - **WhatsApp-Style Formatting**: Proper **bold text** rendering with TextFormattingUtil
 
+#### 🛡️ Insurance Premium Card System
+- **Professional Blue Theme**: Dedicated insurance cards with shield icons and blue color scheme (#1976D2)
+- **Comprehensive Premium Breakdown**: Clear display of total premium, government subsidy, and farmer contribution
+- **Material Design Integration**: Professional cards with elevation, shadows, and responsive layout
+- **Interactive Elements**: "Learn More" and "Apply Now" buttons with contextual follow-up actions
+- **Crash-Resistant Architecture**: Multi-layer error handling with graceful fallbacks to text display
+- **State-Aware Calculations**: Premium calculations based on crop type, area, and location data
+- **Financial Transparency**: Clear cost breakdown showing government support vs farmer responsibility
+
 #### 📐 Layout & Visual Improvements  
 - **Wider Disease Containers**: Optimized margins (8dp/48dp → 4dp/16dp) for better proportions
 - **Enhanced Backgrounds**: Multi-layer design with drop shadows and warm tinting (#FFF3E0)
 - **CardView Integration**: Material Design elevation with proper depth perception
 - **Optimal Space Usage**: ~90% width utilization vs previous ~60%
+- **Multi-Card Priority System**: Insurance > Disease > Healthy > Regular message display hierarchy
 
 ### 🎨 Enhanced UI Theme
 The app features a beautiful **earth-themed design** with **WhatsApp-style messaging**:
 - **🌲 Forest Greens**: Primary colors for nature connection and healthy plant indicators
 - **🌿 Sage Tones**: Secondary colors for calm user experience and follow-up actions
 - **🍊 Orange Gradients**: Enhanced disease card borders (#FF7043 → #FF5722) for visual prominence
+- **🛡️ Insurance Blues**: Professional blue theme for insurance cards (#1976D2) with shield iconography
 - **🍯 Warm Ambers**: Accent colors for important actions and confidence indicators
 - **🌾 Earth Browns**: Professional text and background for optimal readability
 - **🎨 Modern Styling**: WhatsApp-inspired message bubbles with proper **bold formatting**
+- **💰 Financial Colors**: Green for subsidies (#4CAF50), orange for farmer contributions (#FF5722)
 
 ### 📱 Build Variants Configuration
 
