@@ -1,0 +1,412 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Sasya Arogya - Insurance Premium Card Demo</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #E8F5E8 0%, #F0F8FF 100%);
+            padding: 20px;
+            min-height: 100vh;
+        }
+        
+        .demo-header {
+            text-align: center;
+            margin-bottom: 30px;
+            background: white;
+            padding: 25px;
+            border-radius: 15px;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.1);
+        }
+        
+        .demo-header h1 {
+            color: #2E7D32;
+            font-size: 28px;
+            margin-bottom: 10px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 10px;
+        }
+        
+        .demo-header p {
+            color: #666;
+            font-size: 16px;
+        }
+        
+        .chat-container {
+            max-width: 800px;
+            margin: 0 auto;
+            background: white;
+            border-radius: 15px;
+            padding: 25px;
+            box-shadow: 0 8px 25px rgba(0,0,0,0.12);
+        }
+        
+        .message-container {
+            display: flex;
+            margin-bottom: 20px;
+            align-items: flex-start;
+        }
+        
+        .message-bubble {
+            background: #F5F5F5;
+            border-radius: 18px;
+            padding: 8px;
+            margin-left: 4px;
+            margin-right: 16px;
+            max-width: calc(100% - 20px);
+        }
+        
+        .intro-text {
+            font-size: 15px;
+            color: #333;
+            line-height: 1.6;
+            margin-bottom: 16px;
+            padding: 8px;
+        }
+        
+        .intro-text strong {
+            color: #1976D2;
+        }
+        
+        /* Insurance Card Styles */
+        .insurance-card {
+            background: white;
+            border-radius: 12px;
+            box-shadow: 0 6px 20px rgba(25, 118, 210, 0.15);
+            margin: 12px 0;
+            overflow: hidden;
+            border-left: 8px solid #1976D2;
+        }
+        
+        .insurance-content {
+            padding: 20px;
+            background: linear-gradient(135deg, #FAFBFF 0%, #F8FAFE 100%);
+        }
+        
+        .insurance-header {
+            display: flex;
+            align-items: center;
+            margin-bottom: 16px;
+        }
+        
+        .insurance-icon {
+            width: 40px;
+            height: 40px;
+            background: linear-gradient(135deg, #1976D2, #1565C0);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin-right: 16px;
+            box-shadow: 0 2px 8px rgba(25, 118, 210, 0.3);
+        }
+        
+        .insurance-icon span {
+            font-size: 20px;
+            color: white;
+        }
+        
+        .insurance-title h3 {
+            color: #333;
+            font-size: 16px;
+            font-weight: bold;
+            letter-spacing: 0.5px;
+            margin-bottom: 2px;
+        }
+        
+        .insurance-subtitle {
+            color: #666;
+            font-size: 13px;
+        }
+        
+        .premium-summary {
+            background: linear-gradient(135deg, #F8FAFE, #F1F6FE);
+            border: 1px solid #E1E8F7;
+            border-radius: 8px;
+            padding: 16px;
+            margin-bottom: 16px;
+        }
+        
+        .premium-row {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 12px;
+        }
+        
+        .premium-row:last-child {
+            margin-bottom: 0;
+        }
+        
+        .premium-label {
+            font-size: 15px;
+            color: #333;
+        }
+        
+        .premium-total .premium-label {
+            font-size: 18px;
+            font-weight: bold;
+        }
+        
+        .premium-amount {
+            font-size: 16px;
+            font-weight: bold;
+            color: #4CAF50;
+        }
+        
+        .premium-total .premium-amount {
+            font-size: 20px;
+            color: #1976D2;
+            background: #E3F2FD;
+            padding: 8px;
+            border-radius: 6px;
+            border: 1px solid #1976D2;
+        }
+        
+        .farmer-contribution {
+            background: linear-gradient(135deg, #FFF3E0, #FFECDB);
+            border: 2px solid #FF8A65;
+            border-radius: 8px;
+            padding: 12px;
+        }
+        
+        .farmer-contribution .premium-amount {
+            color: #FF5722;
+            background: #FFCCBC;
+            padding: 8px;
+            border-radius: 6px;
+            border: 1px solid #FF5722;
+            font-size: 18px;
+        }
+        
+        .breakdown-section {
+            margin-bottom: 16px;
+        }
+        
+        .breakdown-title {
+            font-size: 14px;
+            font-weight: bold;
+            color: #333;
+            margin-bottom: 12px;
+        }
+        
+        .breakdown-row {
+            display: flex;
+            margin-bottom: 8px;
+        }
+        
+        .breakdown-label {
+            width: 100px;
+            font-size: 14px;
+            color: #666;
+        }
+        
+        .breakdown-value {
+            flex: 1;
+            font-size: 14px;
+            font-weight: bold;
+            color: #333;
+        }
+        
+        .disease-info {
+            color: #FF5722;
+        }
+        
+        .action-buttons {
+            display: flex;
+            justify-content: flex-end;
+            gap: 8px;
+            margin-top: 16px;
+        }
+        
+        .action-button {
+            background: #4CAF50;
+            color: white;
+            border: none;
+            padding: 12px 16px;
+            border-radius: 20px;
+            font-size: 13px;
+            font-weight: bold;
+            cursor: pointer;
+            box-shadow: 0 2px 6px rgba(76, 175, 80, 0.3);
+            transition: all 0.2s ease;
+        }
+        
+        .action-button:hover {
+            background: #45A049;
+            box-shadow: 0 4px 12px rgba(76, 175, 80, 0.4);
+            transform: translateY(-1px);
+        }
+        
+        .action-button.primary {
+            background: linear-gradient(135deg, #1976D2, #1565C0);
+            box-shadow: 0 2px 6px rgba(25, 118, 210, 0.3);
+        }
+        
+        .action-button.primary:hover {
+            box-shadow: 0 4px 12px rgba(25, 118, 210, 0.4);
+        }
+        
+        .feature-highlight {
+            background: #E8F5E8;
+            border: 1px solid #4CAF50;
+            border-radius: 8px;
+            padding: 15px;
+            margin: 20px 0;
+        }
+        
+        .feature-highlight h4 {
+            color: #2E7D32;
+            margin-bottom: 8px;
+        }
+        
+        .feature-list {
+            list-style: none;
+            margin-left: 0;
+        }
+        
+        .feature-list li {
+            color: #4CAF50;
+            margin-bottom: 5px;
+            position: relative;
+            padding-left: 20px;
+        }
+        
+        .feature-list li:before {
+            content: "✅";
+            position: absolute;
+            left: 0;
+        }
+    </style>
+</head>
+<body>
+    <div class="demo-header">
+        <h1>🛡️ Crop Insurance Premium Card</h1>
+        <p>Professional insurance calculation display for plant health analysis</p>
+    </div>
+    
+    <div class="chat-container">
+        <div class="message-container">
+            <div class="message-bubble">
+                <div class="intro-text">
+                    🛡️ <strong>Crop Insurance Premium Calculated</strong><br><br>
+                    Based on your plant health analysis and location, here are your insurance options:
+                </div>
+                
+                <div class="insurance-card">
+                    <div class="insurance-content">
+                        <!-- Insurance Header -->
+                        <div class="insurance-header">
+                            <div class="insurance-icon">
+                                <span>🛡️</span>
+                            </div>
+                            <div class="insurance-title">
+                                <h3>💰 CROP INSURANCE PREMIUM</h3>
+                                <div class="insurance-subtitle">Potato • Tamil Nadu • 3.0 hectares</div>
+                            </div>
+                        </div>
+                        
+                        <!-- Premium Calculation Summary -->
+                        <div class="premium-summary">
+                            <div class="premium-row premium-total">
+                                <div class="premium-label">Total Premium</div>
+                                <div class="premium-amount">₹40,702.76</div>
+                            </div>
+                            
+                            <div class="premium-row">
+                                <div class="premium-label">🏛️ Government Subsidy</div>
+                                <div class="premium-amount">₹36,632.48</div>
+                            </div>
+                            
+                            <div class="premium-row farmer-contribution">
+                                <div class="premium-label">👨‍🌾 Your Contribution</div>
+                                <div class="premium-amount">₹4,070.28</div>
+                            </div>
+                        </div>
+                        
+                        <!-- Detailed Breakdown -->
+                        <div class="breakdown-section">
+                            <div class="breakdown-title">📊 Premium Breakdown</div>
+                            
+                            <div class="breakdown-row">
+                                <div class="breakdown-label">Area:</div>
+                                <div class="breakdown-value">3.0 hectares</div>
+                            </div>
+                            
+                            <div class="breakdown-row">
+                                <div class="breakdown-label">Rate:</div>
+                                <div class="breakdown-value">₹13,567.59 per hectare</div>
+                            </div>
+                            
+                            <div class="breakdown-row">
+                                <div class="breakdown-label">Disease:</div>
+                                <div class="breakdown-value disease-info">Mosaic Virus</div>
+                            </div>
+                        </div>
+                        
+                        <!-- Action Buttons -->
+                        <div class="action-buttons">
+                            <button class="action-button">📋 Learn More</button>
+                            <button class="action-button primary">🛡️ Apply Now</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+        <div class="feature-highlight">
+            <h4>🚀 Professional Insurance Card Features</h4>
+            <ul class="feature-list">
+                <li>Blue theme with shield icon for insurance branding</li>
+                <li>Material Design elevation and professional shadows</li>
+                <li>Comprehensive premium breakdown with currency formatting</li>
+                <li>Government subsidy vs farmer contribution highlighting</li>
+                <li>Disease context integration from plant health analysis</li>
+                <li>Interactive action buttons for learning and application</li>
+                <li>WhatsApp-style message integration</li>
+                <li>Priority-based card display system</li>
+                <li>Session management and persistence</li>
+                <li>Only displays for insurance node (not followup per requirements)</li>
+            </ul>
+        </div>
+    </div>
+    
+    <script>
+        // Add click interactions to demonstrate functionality
+        document.querySelectorAll('.action-button').forEach(button => {
+            button.addEventListener('click', function() {
+                this.style.transform = 'scale(0.95)';
+                setTimeout(() => {
+                    this.style.transform = '';
+                    if (this.textContent.includes('Learn More')) {
+                        alert('🛡️ Insurance Learning Module\n\nThis would show detailed information about:\n• Crop insurance benefits\n• Coverage details\n• Claim procedures\n• Risk assessment');
+                    } else if (this.textContent.includes('Apply Now')) {
+                        alert('📝 Insurance Application\n\nThis would help you apply for crop insurance with:\n• Pre-filled premium details\n• Digital application form\n• Document upload\n• Status tracking');
+                    }
+                }, 100);
+            });
+        });
+        
+        // Add subtle hover effects
+        document.querySelector('.insurance-card').addEventListener('mouseenter', function() {
+            this.style.transform = 'translateY(-2px)';
+            this.style.boxShadow = '0 8px 25px rgba(25, 118, 210, 0.2)';
+        });
+        
+        document.querySelector('.insurance-card').addEventListener('mouseleave', function() {
+            this.style.transform = '';
+            this.style.boxShadow = '0 6px 20px rgba(25, 118, 210, 0.15)';
+        });
+    </script>
+</body>
+</html>

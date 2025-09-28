@@ -45,6 +45,7 @@ import com.sasya.arogya.models.MessageFeedback
 import com.sasya.arogya.network.RetrofitClient
 import com.google.android.material.chip.Chip
 import com.google.android.material.chip.ChipGroup
+import com.sasya.arogya.fsm.InsuranceDetails
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
@@ -809,28 +810,45 @@ class MainActivityFSM : ComponentActivity(), FSMStreamHandler.StreamCallback {
     
     override fun onInsuranceDetails(insuranceDetails: InsuranceDetails) {
         Log.d(TAG, "🛡️ Received insurance details: ${insuranceDetails.crop} - ₹${insuranceDetails.totalPremium}")
-        runOnUiThread {
-            stopThinkingIndicator()
-            
-            // Create insurance message with details
-            val insuranceMessage = ChatMessage(
-                text = "Insurance premium calculated for your ${insuranceDetails.crop} crop",
-                isUser = false,
-                insuranceDetails = insuranceDetails
-            )
-            
-            // Add to chat
-            chatAdapter.addMessage(insuranceMessage)
-            currentSessionState.messages.add(insuranceMessage)
-            
-            // Save to session
-            currentSessionState.sessionId?.let { sessionId ->
-                sessionManager.addMessageToSession(sessionId, insuranceMessage)
+        
+        try {
+            runOnUiThread {
+                try {
+                    stopThinkingIndicator()
+                    
+                    // Create insurance message with details
+                    val insuranceMessage = ChatMessage(
+                        text = "Insurance premium calculated for your ${insuranceDetails.crop} crop",
+                        isUser = false,
+                        insuranceDetails = insuranceDetails
+                    )
+                    
+                    // Add to chat with error handling
+                    chatAdapter.addMessage(insuranceMessage)
+                    currentSessionState.messages.add(insuranceMessage)
+                    
+                    // Save to session
+                    currentSessionState.sessionId?.let { sessionId ->
+                        sessionManager.addMessageToSession(sessionId, insuranceMessage)
+                    }
+                    
+                    scrollToBottom()
+                    
+                    Log.d(TAG, "✅ Insurance card displayed successfully")
+                    
+                } catch (e: Exception) {
+                    Log.e(TAG, "❌ Error displaying insurance card: ${e.message}", e)
+                    // Show fallback text message if card fails
+                    val fallbackMessage = ChatMessage(
+                        text = "🛡️ Insurance premium calculated:\n\nCrop: ${insuranceDetails.crop}\nArea: ${insuranceDetails.area} hectares\nTotal Premium: ₹${String.format("%.2f", insuranceDetails.totalPremium)}\nYour Contribution: ₹${String.format("%.2f", insuranceDetails.farmerContribution)}",
+                        isUser = false
+                    )
+                    chatAdapter.addMessage(fallbackMessage)
+                    currentSessionState.messages.add(fallbackMessage)
+                }
             }
-            
-            scrollToBottom()
-            
-            Log.d(TAG, "✅ Insurance card displayed")
+        } catch (e: Exception) {
+            Log.e(TAG, "❌ Critical error in onInsuranceDetails: ${e.message}", e)
         }
     }
     

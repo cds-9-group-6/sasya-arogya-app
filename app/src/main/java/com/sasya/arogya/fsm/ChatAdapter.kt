@@ -682,44 +682,63 @@ class ChatAdapter(
         }
         
         /**
-         * Populate insurance premium card with calculated details
+         * Populate insurance premium card with calculated details (with crash prevention)
          */
         private fun populateInsuranceCard(insuranceDetails: InsuranceDetails) {
-            // Format crop information
-            insuranceCropInfo.text = "${insuranceDetails.crop} • ${insuranceDetails.state} • ${String.format("%.1f", insuranceDetails.area)} hectares"
-            
-            // Format total premium amount with proper currency formatting
-            totalPremiumAmount.text = "₹${formatCurrencyAmount(insuranceDetails.totalPremium)}"
-            
-            // Format government subsidy
-            subsidyAmount.text = "₹${formatCurrencyAmount(insuranceDetails.governmentSubsidy)}"
-            
-            // Format farmer contribution (highlighted as what farmer pays)
-            farmerContributionAmount.text = "₹${formatCurrencyAmount(insuranceDetails.farmerContribution)}"
-            
-            // Format area details
-            areaDetails.text = "${String.format("%.1f", insuranceDetails.area)} hectares"
-            
-            // Format premium per hectare
-            premiumPerHectare.text = "₹${formatCurrencyAmount(insuranceDetails.premiumPerHectare)} per hectare"
-            
-            // Handle disease context if present
-            if (!insuranceDetails.disease.isNullOrBlank()) {
-                diseaseInfoContainer.visibility = View.VISIBLE
-                diseaseContext.text = insuranceDetails.disease.replace("_", " ").split(" ").joinToString(" ") { 
-                    it.replaceFirstChar { char -> if (char.isLowerCase()) char.titlecase() else char.toString() }
+            try {
+                Log.d("ChatAdapter", "🛡️ Populating insurance card for ${insuranceDetails.crop}")
+                
+                // Format crop information with null safety
+                insuranceCropInfo?.text = "${insuranceDetails.crop} • ${insuranceDetails.state} • ${String.format("%.1f", insuranceDetails.area)} hectares"
+                
+                // Format total premium amount with proper currency formatting
+                totalPremiumAmount?.text = "₹${formatCurrencyAmount(insuranceDetails.totalPremium)}"
+                
+                // Format government subsidy
+                subsidyAmount?.text = "₹${formatCurrencyAmount(insuranceDetails.governmentSubsidy)}"
+                
+                // Format farmer contribution (highlighted as what farmer pays)
+                farmerContributionAmount?.text = "₹${formatCurrencyAmount(insuranceDetails.farmerContribution)}"
+                
+                // Format area details
+                areaDetails?.text = "${String.format("%.1f", insuranceDetails.area)} hectares"
+                
+                // Format premium per hectare
+                premiumPerHectare?.text = "₹${formatCurrencyAmount(insuranceDetails.premiumPerHectare)} per hectare"
+                
+                // Handle disease context if present
+                if (!insuranceDetails.disease.isNullOrBlank()) {
+                    diseaseInfoContainer?.visibility = View.VISIBLE
+                    diseaseContext?.text = insuranceDetails.disease.replace("_", " ").split(" ").joinToString(" ") { 
+                        it.replaceFirstChar { char -> if (char.isLowerCase()) char.titlecase() else char.toString() }
+                    }
+                } else {
+                    diseaseInfoContainer?.visibility = View.GONE
                 }
-            } else {
-                diseaseInfoContainer.visibility = View.GONE
-            }
-            
-            // Set up button click handlers
-            learnMoreButton.setOnClickListener {
-                onFollowUpClick("Tell me more about crop insurance benefits and coverage details")
-            }
-            
-            applyInsuranceButton.setOnClickListener {
-                onFollowUpClick("Help me apply for crop insurance with these premium details")
+                
+                // Set up button click handlers with null safety
+                learnMoreButton?.setOnClickListener {
+                    try {
+                        onFollowUpClick("Tell me more about crop insurance benefits and coverage details")
+                    } catch (e: Exception) {
+                        Log.e("ChatAdapter", "Error in learnMoreButton click: ${e.message}")
+                    }
+                }
+                
+                applyInsuranceButton?.setOnClickListener {
+                    try {
+                        onFollowUpClick("Help me apply for crop insurance with these premium details")
+                    } catch (e: Exception) {
+                        Log.e("ChatAdapter", "Error in applyInsuranceButton click: ${e.message}")
+                    }
+                }
+                
+                Log.d("ChatAdapter", "✅ Insurance card populated successfully")
+                
+            } catch (e: Exception) {
+                Log.e("ChatAdapter", "❌ Error populating insurance card: ${e.message}", e)
+                // Hide insurance card if population fails to prevent crash
+                insuranceCardWrapper?.visibility = View.GONE
             }
         }
         
