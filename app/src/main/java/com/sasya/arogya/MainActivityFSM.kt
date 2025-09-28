@@ -807,6 +807,33 @@ class MainActivityFSM : ComponentActivity(), FSMStreamHandler.StreamCallback {
         }
     }
     
+    override fun onInsuranceDetails(insuranceDetails: InsuranceDetails) {
+        Log.d(TAG, "🛡️ Received insurance details: ${insuranceDetails.crop} - ₹${insuranceDetails.totalPremium}")
+        runOnUiThread {
+            stopThinkingIndicator()
+            
+            // Create insurance message with details
+            val insuranceMessage = ChatMessage(
+                text = "Insurance premium calculated for your ${insuranceDetails.crop} crop",
+                isUser = false,
+                insuranceDetails = insuranceDetails
+            )
+            
+            // Add to chat
+            chatAdapter.addMessage(insuranceMessage)
+            currentSessionState.messages.add(insuranceMessage)
+            
+            // Save to session
+            currentSessionState.sessionId?.let { sessionId ->
+                sessionManager.addMessageToSession(sessionId, insuranceMessage)
+            }
+            
+            scrollToBottom()
+            
+            Log.d(TAG, "✅ Insurance card displayed")
+        }
+    }
+    
     /**
      * Update profile button based on user's agricultural profile setup status
      */

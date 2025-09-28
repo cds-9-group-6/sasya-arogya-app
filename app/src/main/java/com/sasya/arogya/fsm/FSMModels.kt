@@ -34,7 +34,9 @@ data class FSMStateUpdate(
     @SerializedName("error") val error: String? = null,
     @SerializedName("classification_result") val classificationResult: Map<String, Any>? = null,
     @SerializedName("prescription_details") val prescriptionDetails: Map<String, Any>? = null,
-    @SerializedName("vendor_details") val vendorDetails: Map<String, Any>? = null
+    @SerializedName("vendor_details") val vendorDetails: Map<String, Any>? = null,
+    @SerializedName("insurance_context") val insuranceContext: InsuranceContext? = null,
+    @SerializedName("insurance_premium_details") val insurancePremiumDetails: InsurancePremiumDetails? = null
 )
 
 // Message models
@@ -54,7 +56,8 @@ data class ChatMessage(
     val state: String? = null,
     val attentionOverlayBase64: String? = null,
     val diseaseName: String? = null,
-    val confidence: Double? = null
+    val confidence: Double? = null,
+    val insuranceDetails: InsuranceDetails? = null
 )
 
 // Follow-up item for UI
@@ -89,4 +92,34 @@ data class AttentionOverlayData(
     @SerializedName("disease_name") val diseaseName: String? = null,
     @SerializedName("confidence") val confidence: Double? = null,
     @SerializedName("source_node") val sourceNode: String? = null
+)
+
+// Insurance-related data models
+data class InsuranceContext(
+    @SerializedName("disease") val disease: String? = null,
+    @SerializedName("crop") val crop: String? = null,
+    @SerializedName("state") val state: String? = null,
+    @SerializedName("farmer_name") val farmerName: String? = null,
+    @SerializedName("area_hectare") val areaHectare: Double? = null
+)
+
+data class InsurancePremiumDetails(
+    @SerializedName("action") val action: String? = null,
+    @SerializedName("success") val success: Boolean? = null,
+    @SerializedName("premium_details") val premiumDetails: String? = null,
+    @SerializedName("crop") val crop: String? = null,
+    @SerializedName("area_hectare") val areaHectare: Double? = null,
+    @SerializedName("state") val state: String? = null
+)
+
+// Processed insurance data for UI display
+data class InsuranceDetails(
+    val crop: String,
+    val state: String,
+    val area: Double,
+    val premiumPerHectare: Double,
+    val totalPremium: Double,
+    val governmentSubsidy: Double,
+    val farmerContribution: Double,
+    val disease: String? = null
 )

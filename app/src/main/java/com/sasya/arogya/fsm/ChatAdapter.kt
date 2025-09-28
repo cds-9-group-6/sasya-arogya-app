@@ -163,6 +163,19 @@ class ChatAdapter(
         private val diseaseCardContainer: LinearLayout = itemView.findViewById(R.id.diseaseCardContainer)
         private val diseaseTitle: TextView = itemView.findViewById(R.id.diseaseTitle)
         private val diseaseConfidence: TextView = itemView.findViewById(R.id.diseaseConfidence)
+        
+        // Insurance card elements
+        private val insuranceCardWrapper: androidx.cardview.widget.CardView = itemView.findViewById(R.id.insuranceCardWrapper)
+        private val insuranceCropInfo: TextView = itemView.findViewById(R.id.insuranceCropInfo)
+        private val totalPremiumAmount: TextView = itemView.findViewById(R.id.totalPremiumAmount)
+        private val subsidyAmount: TextView = itemView.findViewById(R.id.subsidyAmount)
+        private val farmerContributionAmount: TextView = itemView.findViewById(R.id.farmerContributionAmount)
+        private val areaDetails: TextView = itemView.findViewById(R.id.areaDetails)
+        private val premiumPerHectare: TextView = itemView.findViewById(R.id.premiumPerHectare)
+        private val diseaseContext: TextView = itemView.findViewById(R.id.diseaseContext)
+        private val diseaseInfoContainer: LinearLayout = itemView.findViewById(R.id.diseaseInfoContainer)
+        private val learnMoreButton: TextView = itemView.findViewById(R.id.learnMoreButton)
+        private val applyInsuranceButton: TextView = itemView.findViewById(R.id.applyInsuranceButton)
         private val diseaseSeverity: TextView = itemView.findViewById(R.id.diseaseSeverity)
         private val diseaseContent: TextView = itemView.findViewById(R.id.diseaseContent)
         
@@ -180,50 +193,68 @@ class ChatAdapter(
         fun bind(message: ChatMessage) {
             messageTime.text = timeFormatter.format(Date(message.timestamp))
             
-            // Handle disease/healthy card display
-            if (message.diseaseName != null && message.confidence != null) {
-                // Check if this is the same message content to prevent duplication
-                val currentMessageKey = "${message.diseaseName}_${message.confidence}_${message.text.hashCode()}"
-                val shouldPopulateCard = !cardPopulated || lastMessageText != currentMessageKey
-                
-                if (message.diseaseName.lowercase() == "healthy") {
-                    // Show healthy card
-                    healthyCardContainer.visibility = View.VISIBLE
+            // Handle card display based on message type - insurance takes priority
+            when {
+                // Insurance card takes highest priority
+                message.insuranceDetails != null -> {
+                    insuranceCardWrapper.visibility = View.VISIBLE
                     diseaseCardWrapper.visibility = View.GONE
-                    
-                    if (shouldPopulateCard) {
-                        populateHealthyCard(message)
-                        cardPopulated = true
-                        lastMessageText = currentMessageKey
-                    }
-                } else {
-                    // Show disease card
-                    diseaseCardWrapper.visibility = View.VISIBLE
                     healthyCardContainer.visibility = View.GONE
                     
-                    if (shouldPopulateCard) {
-                        populateDiseaseCard(message)
-                        cardPopulated = true
-                        lastMessageText = currentMessageKey
+                    populateInsuranceCard(message.insuranceDetails)
+                    
+                    messageText.visibility = View.VISIBLE
+                    messageText.text = TextFormattingUtil.formatWhatsAppStyle("🛡️ **Crop Insurance Premium Calculated**\n\nBased on your plant health analysis and location, here are your insurance options:")
+                }
+                // Disease/healthy card display
+                message.diseaseName != null && message.confidence != null -> {
+                    // Check if this is the same message content to prevent duplication
+                    val currentMessageKey = "${message.diseaseName}_${message.confidence}_${message.text.hashCode()}"
+                    val shouldPopulateCard = !cardPopulated || lastMessageText != currentMessageKey
+                    
+                    insuranceCardWrapper.visibility = View.GONE
+                    
+                    if (message.diseaseName.lowercase() == "healthy") {
+                        // Show healthy card
+                        healthyCardContainer.visibility = View.VISIBLE
+                        diseaseCardWrapper.visibility = View.GONE
+                        
+                        if (shouldPopulateCard) {
+                            populateHealthyCard(message)
+                            cardPopulated = true
+                            lastMessageText = currentMessageKey
+                        }
+                    } else {
+                        // Show disease card
+                        diseaseCardWrapper.visibility = View.VISIBLE
+                        healthyCardContainer.visibility = View.GONE
+                        
+                        if (shouldPopulateCard) {
+                            populateDiseaseCard(message)
+                            cardPopulated = true
+                            lastMessageText = currentMessageKey
+                        }
+                    }
+                    
+                    // Show dynamic introductory content based on disease/health classification
+                    messageText.visibility = View.VISIBLE
+                    messageText.text = if (message.diseaseName.lowercase() == "healthy") {
+                        TextFormattingUtil.formatWhatsAppStyle(generateHealthyIntroText(message.confidence))
+                    } else {
+                        TextFormattingUtil.formatWhatsAppStyle(generateDiseaseIntroText(message.diseaseName, message.confidence))
                     }
                 }
-                
-                // Show dynamic introductory content based on disease/health classification
-                messageText.visibility = View.VISIBLE
-                messageText.text = if (message.diseaseName.lowercase() == "healthy") {
-                    TextFormattingUtil.formatWhatsAppStyle(generateHealthyIntroText(message.confidence))
-                } else {
-                    TextFormattingUtil.formatWhatsAppStyle(generateDiseaseIntroText(message.diseaseName, message.confidence))
+                else -> {
+                    // No special card, show regular message
+                    insuranceCardWrapper.visibility = View.GONE
+                    diseaseCardWrapper.visibility = View.GONE
+                    healthyCardContainer.visibility = View.GONE
+                    cardPopulated = false
+                    lastMessageText = ""
+                    
+                    messageText.visibility = View.VISIBLE
+                    messageText.text = TextFormattingUtil.formatWhatsAppStyle(message.text)
                 }
-            } else {
-                // No special card, show regular message
-                diseaseCardWrapper.visibility = View.GONE
-                healthyCardContainer.visibility = View.GONE
-                cardPopulated = false
-                lastMessageText = ""
-                
-                messageText.visibility = View.VISIBLE
-                messageText.text = TextFormattingUtil.formatWhatsAppStyle(message.text)
             }
             
             // Show state indicator if present
@@ -648,6 +679,59 @@ class ChatAdapter(
             }
             
             Log.d("ChatAdapter", "🔍 Zoom functionality initialized for attention overlay")
+        }
+        
+        /**
+         * Populate insurance premium card with calculated details
+         */
+        private fun populateInsuranceCard(insuranceDetails: InsuranceDetails) {
+            // Format crop information
+            insuranceCropInfo.text = "${insuranceDetails.crop} • ${insuranceDetails.state} • ${String.format("%.1f", insuranceDetails.area)} hectares"
+            
+            // Format total premium amount with proper currency formatting
+            totalPremiumAmount.text = "₹${formatCurrencyAmount(insuranceDetails.totalPremium)}"
+            
+            // Format government subsidy
+            subsidyAmount.text = "₹${formatCurrencyAmount(insuranceDetails.governmentSubsidy)}"
+            
+            // Format farmer contribution (highlighted as what farmer pays)
+            farmerContributionAmount.text = "₹${formatCurrencyAmount(insuranceDetails.farmerContribution)}"
+            
+            // Format area details
+            areaDetails.text = "${String.format("%.1f", insuranceDetails.area)} hectares"
+            
+            // Format premium per hectare
+            premiumPerHectare.text = "₹${formatCurrencyAmount(insuranceDetails.premiumPerHectare)} per hectare"
+            
+            // Handle disease context if present
+            if (!insuranceDetails.disease.isNullOrBlank()) {
+                diseaseInfoContainer.visibility = View.VISIBLE
+                diseaseContext.text = insuranceDetails.disease.replace("_", " ").split(" ").joinToString(" ") { 
+                    it.replaceFirstChar { char -> if (char.isLowerCase()) char.titlecase() else char.toString() }
+                }
+            } else {
+                diseaseInfoContainer.visibility = View.GONE
+            }
+            
+            // Set up button click handlers
+            learnMoreButton.setOnClickListener {
+                onFollowUpClick("Tell me more about crop insurance benefits and coverage details")
+            }
+            
+            applyInsuranceButton.setOnClickListener {
+                onFollowUpClick("Help me apply for crop insurance with these premium details")
+            }
+        }
+        
+        /**
+         * Format currency amounts with commas for readability
+         */
+        private fun formatCurrencyAmount(amount: Double): String {
+            return if (amount >= 1000) {
+                String.format("%,.2f", amount)
+            } else {
+                String.format("%.2f", amount)
+            }
         }
         
         /**

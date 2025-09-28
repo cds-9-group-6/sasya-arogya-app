@@ -203,6 +203,13 @@
                 
                 </androidx.cardview.widget.CardView>
 
+                <!-- Insurance Card Container -->
+                <include 
+                    layout="@layout/item_insurance_card"
+                    android:id="@+id/insuranceCard"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content" />
+
                 <!-- Healthy Plant Card Container -->
                 <LinearLayout
                     android:id="@+id/healthyCardContainer"

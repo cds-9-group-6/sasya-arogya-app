@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- Premium summary section background -->
+<shape xmlns:android="http://schemas.android.com/apk/res/android">
+    <gradient
+        android:startColor="#F8FAFE"
+        android:endColor="#F1F6FE"
+        android:angle="135" />
+    <stroke
+        android:width="1dp"
+        android:color="#E1E8F7" />
+    <corners android:radius="8dp" />
+</shape>
