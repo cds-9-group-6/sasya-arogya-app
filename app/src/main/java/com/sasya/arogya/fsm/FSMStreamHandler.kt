@@ -25,6 +25,7 @@ class FSMStreamHandler {
         fun onAttentionOverlay(overlayData: AttentionOverlayData)
         fun onError(error: String)
         fun onStreamComplete()
+        fun onInsuranceDetails(insuranceDetails: InsuranceDetails)
     }
     
     /**
@@ -95,7 +96,25 @@ class FSMStreamHandler {
                         // Handle specific parts of state update
                         stateUpdate.assistantResponse?.let { message ->
                             if (message.isNotBlank()) {
-                                callback.onMessage(message)
+                                // Only show response from insurance node, not followup node for insurance
+                                if (stateUpdate.currentNode == "insurance" || stateUpdate.currentNode != "followup") {
+                                    callback.onMessage(message)
+                                }
+                            }
+                        }
+                        
+                        // Handle insurance premium details
+                        if (stateUpdate.currentNode == "insurance" && 
+                            stateUpdate.insuranceContext != null && 
+                            stateUpdate.insurancePremiumDetails != null) {
+                            
+                            Log.d(TAG, "Processing insurance premium details")
+                            val insuranceDetails = parseInsuranceDetails(
+                                stateUpdate.insuranceContext,
+                                stateUpdate.insurancePremiumDetails
+                            )
+                            insuranceDetails?.let { details ->
+                                callback.onInsuranceDetails(details)
                             }
                         }
                         
@@ -203,6 +222,39 @@ class FSMStreamHandler {
             else -> currentNode?.replaceFirstChar { 
                 if (it.isLowerCase()) it.titlecase() else it.toString() 
             } ?: "Processing..."
+        }
+    }
+    
+    /**
+     * Parse insurance premium details from server response
+     */
+    private fun parseInsuranceDetails(
+        context: InsuranceContext,
+        premiumDetails: InsurancePremiumDetails
+    ): InsuranceDetails? {
+        return try {
+            // Parse the premium details string to extract individual amounts
+            val premiumText = premiumDetails.premiumDetails ?: return null
+            
+            // Extract amounts using regex patterns
+            val premiumPerHectareMatch = "Premium per hectare: ₹([\\d,]+\\.\\d+)".toRegex().find(premiumText)
+            val totalPremiumMatch = "Total premium: ₹([\\d,]+\\.\\d+)".toRegex().find(premiumText)
+            val subsidyMatch = "Government subsidy: ₹([\\d,]+\\.\\d+)".toRegex().find(premiumText)
+            val contributionMatch = "Farmer contribution: ₹([\\d,]+\\.\\d+)".toRegex().find(premiumText)
+            
+            InsuranceDetails(
+                crop = context.crop ?: premiumDetails.crop ?: "Unknown",
+                state = context.state ?: premiumDetails.state ?: "Unknown",
+                area = context.areaHectare ?: premiumDetails.areaHectare ?: 0.0,
+                premiumPerHectare = premiumPerHectareMatch?.groupValues?.get(1)?.replace(",", "")?.toDoubleOrNull() ?: 0.0,
+                totalPremium = totalPremiumMatch?.groupValues?.get(1)?.replace(",", "")?.toDoubleOrNull() ?: 0.0,
+                governmentSubsidy = subsidyMatch?.groupValues?.get(1)?.replace(",", "")?.toDoubleOrNull() ?: 0.0,
+                farmerContribution = contributionMatch?.groupValues?.get(1)?.replace(",", "")?.toDoubleOrNull() ?: 0.0,
+                disease = context.disease
+            )
+        } catch (e: Exception) {
+            Log.e(TAG, "Error parsing insurance details: ${e.message}")
+            null
         }
     }
 }

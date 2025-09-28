@@ -163,6 +163,24 @@ class ChatAdapter(
         private val diseaseCardContainer: LinearLayout = itemView.findViewById(R.id.diseaseCardContainer)
         private val diseaseTitle: TextView = itemView.findViewById(R.id.diseaseTitle)
         private val diseaseConfidence: TextView = itemView.findViewById(R.id.diseaseConfidence)
+        
+        // Insurance card elements - nullable to prevent crashes
+        private val insuranceCardWrapper: androidx.cardview.widget.CardView? = try { 
+            itemView.findViewById(R.id.insuranceCardWrapper)
+        } catch (e: Exception) { 
+            Log.w("ChatAdapter", "Insurance card wrapper not found: ${e.message}")
+            null 
+        }
+        private val insuranceCropInfo: TextView? = try { itemView.findViewById(R.id.insuranceCropInfo) } catch (e: Exception) { null }
+        private val totalPremiumAmount: TextView? = try { itemView.findViewById(R.id.totalPremiumAmount) } catch (e: Exception) { null }
+        private val subsidyAmount: TextView? = try { itemView.findViewById(R.id.subsidyAmount) } catch (e: Exception) { null }
+        private val farmerContributionAmount: TextView? = try { itemView.findViewById(R.id.farmerContributionAmount) } catch (e: Exception) { null }
+        private val areaDetails: TextView? = try { itemView.findViewById(R.id.areaDetails) } catch (e: Exception) { null }
+        private val premiumPerHectare: TextView? = try { itemView.findViewById(R.id.premiumPerHectare) } catch (e: Exception) { null }
+        private val diseaseContext: TextView? = try { itemView.findViewById(R.id.diseaseContext) } catch (e: Exception) { null }
+        private val diseaseInfoContainer: LinearLayout? = try { itemView.findViewById(R.id.diseaseInfoContainer) } catch (e: Exception) { null }
+        private val learnMoreButton: TextView? = try { itemView.findViewById(R.id.learnMoreButton) } catch (e: Exception) { null }
+        private val applyInsuranceButton: TextView? = try { itemView.findViewById(R.id.applyInsuranceButton) } catch (e: Exception) { null }
         private val diseaseSeverity: TextView = itemView.findViewById(R.id.diseaseSeverity)
         private val diseaseContent: TextView = itemView.findViewById(R.id.diseaseContent)
         
@@ -180,50 +198,86 @@ class ChatAdapter(
         fun bind(message: ChatMessage) {
             messageTime.text = timeFormatter.format(Date(message.timestamp))
             
-            // Handle disease/healthy card display
-            if (message.diseaseName != null && message.confidence != null) {
-                // Check if this is the same message content to prevent duplication
-                val currentMessageKey = "${message.diseaseName}_${message.confidence}_${message.text.hashCode()}"
-                val shouldPopulateCard = !cardPopulated || lastMessageText != currentMessageKey
-                
-                if (message.diseaseName.lowercase() == "healthy") {
-                    // Show healthy card
-                    healthyCardContainer.visibility = View.VISIBLE
+            // Handle card display based on message type - insurance takes priority
+            when {
+                // Insurance card takes highest priority
+                message.insuranceDetails != null -> {
+                    try {
+                        if (insuranceCardWrapper != null) {
+                            insuranceCardWrapper.visibility = View.VISIBLE
+                            diseaseCardWrapper.visibility = View.GONE
+                            healthyCardContainer.visibility = View.GONE
+                            
+                            populateInsuranceCard(message.insuranceDetails)
+                            
+                            messageText.visibility = View.VISIBLE
+                            messageText.text = TextFormattingUtil.formatWhatsAppStyle("🛡️ **Crop Insurance Premium Calculated**\n\nBased on your plant health analysis and location, here are your insurance options:")
+                        } else {
+                            Log.e("ChatAdapter", "Insurance card wrapper not found - showing fallback text")
+                            // Show fallback message instead of card
+                            insuranceCardWrapper?.visibility = View.GONE
+                            diseaseCardWrapper.visibility = View.GONE  
+                            healthyCardContainer.visibility = View.GONE
+                            
+                            messageText.visibility = View.VISIBLE
+                            messageText.text = TextFormattingUtil.formatWhatsAppStyle("🛡️ **Insurance Premium Calculated**\n\nCrop: ${message.insuranceDetails.crop}\nArea: ${message.insuranceDetails.area} hectares\nTotal Premium: ₹${String.format("%.2f", message.insuranceDetails.totalPremium)}\nYour Contribution: ₹${String.format("%.2f", message.insuranceDetails.farmerContribution)}")
+                        }
+                    } catch (e: Exception) {
+                        Log.e("ChatAdapter", "Critical error displaying insurance card: ${e.message}", e)
+                        // Emergency fallback
+                        messageText.visibility = View.VISIBLE
+                        messageText.text = "🛡️ Insurance premium calculated - see logs for details"
+                    }
+                }
+                // Disease/healthy card display
+                message.diseaseName != null && message.confidence != null -> {
+                    // Check if this is the same message content to prevent duplication
+                    val currentMessageKey = "${message.diseaseName}_${message.confidence}_${message.text.hashCode()}"
+                    val shouldPopulateCard = !cardPopulated || lastMessageText != currentMessageKey
+                    
+                    insuranceCardWrapper?.visibility = View.GONE
+                    
+                    if (message.diseaseName.lowercase() == "healthy") {
+                        // Show healthy card
+                        healthyCardContainer.visibility = View.VISIBLE
+                        diseaseCardWrapper.visibility = View.GONE
+                        
+                        if (shouldPopulateCard) {
+                            populateHealthyCard(message)
+                            cardPopulated = true
+                            lastMessageText = currentMessageKey
+                        }
+                    } else {
+                        // Show disease card
+                        diseaseCardWrapper.visibility = View.VISIBLE
+                        healthyCardContainer.visibility = View.GONE
+                        
+                        if (shouldPopulateCard) {
+                            populateDiseaseCard(message)
+                            cardPopulated = true
+                            lastMessageText = currentMessageKey
+                        }
+                    }
+                    
+                    // Show dynamic introductory content based on disease/health classification
+                    messageText.visibility = View.VISIBLE
+                    messageText.text = if (message.diseaseName.lowercase() == "healthy") {
+                        TextFormattingUtil.formatWhatsAppStyle(generateHealthyIntroText(message.confidence))
+                    } else {
+                        TextFormattingUtil.formatWhatsAppStyle(generateDiseaseIntroText(message.diseaseName, message.confidence))
+                    }
+                }
+                else -> {
+                    // No special card, show regular message
+                    insuranceCardWrapper?.visibility = View.GONE
                     diseaseCardWrapper.visibility = View.GONE
-                    
-                    if (shouldPopulateCard) {
-                        populateHealthyCard(message)
-                        cardPopulated = true
-                        lastMessageText = currentMessageKey
-                    }
-                } else {
-                    // Show disease card
-                    diseaseCardWrapper.visibility = View.VISIBLE
                     healthyCardContainer.visibility = View.GONE
+                    cardPopulated = false
+                    lastMessageText = ""
                     
-                    if (shouldPopulateCard) {
-                        populateDiseaseCard(message)
-                        cardPopulated = true
-                        lastMessageText = currentMessageKey
-                    }
+                    messageText.visibility = View.VISIBLE
+                    messageText.text = TextFormattingUtil.formatWhatsAppStyle(message.text)
                 }
-                
-                // Show dynamic introductory content based on disease/health classification
-                messageText.visibility = View.VISIBLE
-                messageText.text = if (message.diseaseName.lowercase() == "healthy") {
-                    TextFormattingUtil.formatWhatsAppStyle(generateHealthyIntroText(message.confidence))
-                } else {
-                    TextFormattingUtil.formatWhatsAppStyle(generateDiseaseIntroText(message.diseaseName, message.confidence))
-                }
-            } else {
-                // No special card, show regular message
-                diseaseCardWrapper.visibility = View.GONE
-                healthyCardContainer.visibility = View.GONE
-                cardPopulated = false
-                lastMessageText = ""
-                
-                messageText.visibility = View.VISIBLE
-                messageText.text = TextFormattingUtil.formatWhatsAppStyle(message.text)
             }
             
             // Show state indicator if present
@@ -648,6 +702,84 @@ class ChatAdapter(
             }
             
             Log.d("ChatAdapter", "🔍 Zoom functionality initialized for attention overlay")
+        }
+        
+        /**
+         * Populate insurance premium card with calculated details (with crash prevention)
+         */
+        private fun populateInsuranceCard(insuranceDetails: InsuranceDetails) {
+            try {
+                Log.d("ChatAdapter", "🛡️ Populating insurance card for ${insuranceDetails.crop}")
+                
+                // Debug: Log view availability
+                Log.d("ChatAdapter", "Insurance views status:")
+                Log.d("ChatAdapter", "  - insuranceCardWrapper: ${if (insuranceCardWrapper != null) "✅ Found" else "❌ NULL"}")
+                Log.d("ChatAdapter", "  - insuranceCropInfo: ${if (insuranceCropInfo != null) "✅ Found" else "❌ NULL"}")
+                Log.d("ChatAdapter", "  - totalPremiumAmount: ${if (totalPremiumAmount != null) "✅ Found" else "❌ NULL"}")
+                
+                // Format crop information with null safety
+                insuranceCropInfo?.text = "${insuranceDetails.crop} • ${insuranceDetails.state} • ${String.format("%.1f", insuranceDetails.area)} hectares"
+                
+                // Format total premium amount with proper currency formatting
+                totalPremiumAmount?.text = "₹${formatCurrencyAmount(insuranceDetails.totalPremium)}"
+                
+                // Format government subsidy
+                subsidyAmount?.text = "₹${formatCurrencyAmount(insuranceDetails.governmentSubsidy)}"
+                
+                // Format farmer contribution (highlighted as what farmer pays)
+                farmerContributionAmount?.text = "₹${formatCurrencyAmount(insuranceDetails.farmerContribution)}"
+                
+                // Format area details
+                areaDetails?.text = "${String.format("%.1f", insuranceDetails.area)} hectares"
+                
+                // Format premium per hectare
+                premiumPerHectare?.text = "₹${formatCurrencyAmount(insuranceDetails.premiumPerHectare)} per hectare"
+                
+                // Handle disease context if present
+                if (!insuranceDetails.disease.isNullOrBlank()) {
+                    diseaseInfoContainer?.visibility = View.VISIBLE
+                    diseaseContext?.text = insuranceDetails.disease.replace("_", " ").split(" ").joinToString(" ") { 
+                        it.replaceFirstChar { char -> if (char.isLowerCase()) char.titlecase() else char.toString() }
+                    }
+                } else {
+                    diseaseInfoContainer?.visibility = View.GONE
+                }
+                
+                // Set up button click handlers with null safety
+                learnMoreButton?.setOnClickListener {
+                    try {
+                        onFollowUpClick("Tell me more about crop insurance benefits and coverage details")
+                    } catch (e: Exception) {
+                        Log.e("ChatAdapter", "Error in learnMoreButton click: ${e.message}")
+                    }
+                }
+                
+                applyInsuranceButton?.setOnClickListener {
+                    try {
+                        onFollowUpClick("Help me apply for crop insurance with these premium details")
+                    } catch (e: Exception) {
+                        Log.e("ChatAdapter", "Error in applyInsuranceButton click: ${e.message}")
+                    }
+                }
+                
+                Log.d("ChatAdapter", "✅ Insurance card populated successfully")
+                
+            } catch (e: Exception) {
+                Log.e("ChatAdapter", "❌ Error populating insurance card: ${e.message}", e)
+                // Hide insurance card if population fails to prevent crash
+                insuranceCardWrapper?.visibility = View.GONE
+            }
+        }
+        
+        /**
+         * Format currency amounts with commas for readability
+         */
+        private fun formatCurrencyAmount(amount: Double): String {
+            return if (amount >= 1000) {
+                String.format("%,.2f", amount)
+            } else {
+                String.format("%.2f", amount)
+            }
         }
         
         /**
