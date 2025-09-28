@@ -235,7 +235,7 @@ class ChatAdapter(
                     val currentMessageKey = "${message.diseaseName}_${message.confidence}_${message.text.hashCode()}"
                     val shouldPopulateCard = !cardPopulated || lastMessageText != currentMessageKey
                     
-                    insuranceCardWrapper.visibility = View.GONE
+                    insuranceCardWrapper?.visibility = View.GONE
                     
                     if (message.diseaseName.lowercase() == "healthy") {
                         // Show healthy card
