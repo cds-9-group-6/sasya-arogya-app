@@ -1,0 +1,57 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- PDF Viewer Dialog Layout -->
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical"
+    android:background="@color/clean_white">
+
+    <!-- Header -->
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        android:gravity="center_vertical"
+        android:background="@color/earth_text_primary"
+        android:padding="16dp">
+
+        <TextView
+            android:id="@+id/pdfTitle"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:text="Insurance Certificate"
+            android:textSize="18sp"
+            android:textStyle="bold"
+            android:textColor="@color/clean_white" />
+
+        <ImageButton
+            android:id="@+id/btnClosePdf"
+            android:layout_width="40dp"
+            android:layout_height="40dp"
+            android:src="@drawable/ic_close"
+            android:background="?android:attr/selectableItemBackgroundBorderless"
+            android:contentDescription="Close PDF viewer" />
+
+    </LinearLayout>
+
+    <!-- PDF Content -->
+    <androidx.core.widget.NestedScrollView
+        android:id="@+id/pdfScrollView"
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:layout_weight="1"
+        android:padding="20dp">
+
+        <TextView
+            android:id="@+id/pdfContent"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="PDF content will be displayed here"
+            android:textSize="14sp"
+            android:textColor="@color/earth_text_primary"
+            android:lineSpacingExtra="4dp" />
+
+    </androidx.core.widget.NestedScrollView>
+
+</LinearLayout>

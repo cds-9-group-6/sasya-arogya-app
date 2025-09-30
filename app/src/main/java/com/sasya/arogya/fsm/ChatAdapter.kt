@@ -18,8 +18,9 @@ import android.widget.ImageButton
 import android.widget.ImageView
 import android.widget.LinearLayout
 import android.widget.TextView
-import androidx.core.content.ContextCompat
 import androidx.recyclerview.widget.RecyclerView
+import androidx.recyclerview.widget.LinearLayoutManager
+import androidx.core.content.ContextCompat
 import com.bumptech.glide.Glide
 import com.sasya.arogya.models.FeedbackManager
 import com.sasya.arogya.models.FeedbackType
@@ -151,7 +152,7 @@ class ChatAdapter(
         private val messageTime: TextView = itemView.findViewById(R.id.messageTime)
         private val stateIndicator: TextView = itemView.findViewById(R.id.stateIndicator)
         private val followUpContainer: LinearLayout = itemView.findViewById(R.id.followUpContainer)
-        private val followUpChipGroup: ChipGroup = itemView.findViewById(R.id.followUpChipGroup)
+        private val quickActionsRecyclerView: RecyclerView = itemView.findViewById(R.id.quickActionsRecyclerView)
         private val thumbsUpButton: ImageButton = itemView.findViewById(R.id.thumbsUpButton)
         private val thumbsDownButton: ImageButton = itemView.findViewById(R.id.thumbsDownButton)
         private val attentionOverlayContainer: LinearLayout = itemView.findViewById(R.id.attentionOverlayContainer)
@@ -171,6 +172,14 @@ class ChatAdapter(
             Log.w("ChatAdapter", "Insurance card wrapper not found: ${e.message}")
             null 
         }
+        
+        // Insurance certificate card elements - nullable to prevent crashes
+        private val insuranceCertificateCardWrapper: androidx.cardview.widget.CardView? = try { 
+            itemView.findViewById(R.id.insuranceCertificateCardWrapper)
+        } catch (e: Exception) { 
+            Log.w("ChatAdapter", "Insurance certificate card wrapper not found: ${e.message}")
+            null 
+        }
         private val insuranceCropInfo: TextView? = try { itemView.findViewById(R.id.insuranceCropInfo) } catch (e: Exception) { null }
         private val totalPremiumAmount: TextView? = try { itemView.findViewById(R.id.totalPremiumAmount) } catch (e: Exception) { null }
         private val subsidyAmount: TextView? = try { itemView.findViewById(R.id.subsidyAmount) } catch (e: Exception) { null }
@@ -179,8 +188,18 @@ class ChatAdapter(
         private val premiumPerHectare: TextView? = try { itemView.findViewById(R.id.premiumPerHectare) } catch (e: Exception) { null }
         private val diseaseContext: TextView? = try { itemView.findViewById(R.id.diseaseContext) } catch (e: Exception) { null }
         private val diseaseInfoContainer: LinearLayout? = try { itemView.findViewById(R.id.diseaseInfoContainer) } catch (e: Exception) { null }
-        private val learnMoreButton: TextView? = try { itemView.findViewById(R.id.learnMoreButton) } catch (e: Exception) { null }
         private val applyInsuranceButton: TextView? = try { itemView.findViewById(R.id.applyInsuranceButton) } catch (e: Exception) { null }
+        
+        // Insurance certificate card elements
+        private val certificatePolicyId: TextView? = try { itemView.findViewById(R.id.certificatePolicyId) } catch (e: Exception) { null }
+        private val certificatePolicyIdValue: TextView? = try { itemView.findViewById(R.id.certificatePolicyIdValue) } catch (e: Exception) { null }
+        private val certificateCompanyName: TextView? = try { itemView.findViewById(R.id.certificateCompanyName) } catch (e: Exception) { null }
+        private val certificateTotalCoverage: TextView? = try { itemView.findViewById(R.id.certificateTotalCoverage) } catch (e: Exception) { null }
+        private val certificateFarmerName: TextView? = try { itemView.findViewById(R.id.certificateFarmerName) } catch (e: Exception) { null }
+        private val certificateCropInfo: TextView? = try { itemView.findViewById(R.id.certificateCropInfo) } catch (e: Exception) { null }
+        private val certificatePremiumBreakdown: TextView? = try { itemView.findViewById(R.id.certificatePremiumBreakdown) } catch (e: Exception) { null }
+        private val viewCertificateButton: TextView? = try { itemView.findViewById(R.id.viewCertificateButton) } catch (e: Exception) { null }
+        
         private val diseaseSeverity: TextView = itemView.findViewById(R.id.diseaseSeverity)
         private val diseaseContent: TextView = itemView.findViewById(R.id.diseaseContent)
         
@@ -198,9 +217,40 @@ class ChatAdapter(
         fun bind(message: ChatMessage) {
             messageTime.text = timeFormatter.format(Date(message.timestamp))
             
-            // Handle card display based on message type - insurance takes priority
+            // Handle card display based on message type - insurance certificate takes highest priority
             when {
-                // Insurance card takes highest priority
+                // Insurance certificate card takes highest priority
+                message.insuranceCertificate != null -> {
+                    try {
+                        if (insuranceCertificateCardWrapper != null) {
+                            insuranceCertificateCardWrapper.visibility = View.VISIBLE
+                            insuranceCardWrapper?.visibility = View.GONE
+                            diseaseCardWrapper.visibility = View.GONE
+                            healthyCardContainer.visibility = View.GONE
+                            
+                            populateInsuranceCertificateCard(message.insuranceCertificate)
+                            
+                            messageText.visibility = View.VISIBLE
+                            messageText.text = TextFormattingUtil.formatWhatsAppStyle("📄 **Insurance Certificate Generated**\n\nYour crop insurance certificate has been successfully generated and is ready for download.")
+                        } else {
+                            Log.e("ChatAdapter", "Insurance certificate card wrapper not found - showing fallback text")
+                            // Show fallback message instead of card
+                            insuranceCertificateCardWrapper?.visibility = View.GONE
+                            insuranceCardWrapper?.visibility = View.GONE
+                            diseaseCardWrapper.visibility = View.GONE  
+                            healthyCardContainer.visibility = View.GONE
+                            
+                            messageText.visibility = View.VISIBLE
+                            messageText.text = TextFormattingUtil.formatWhatsAppStyle("📄 **Insurance Certificate Generated**\n\nPolicy ID: ${message.insuranceCertificate.policyId}\nCompany: ${message.insuranceCertificate.companyName}\nCoverage: ₹${String.format("%.2f", message.insuranceCertificate.totalSumInsured)}")
+                        }
+                    } catch (e: Exception) {
+                        Log.e("ChatAdapter", "Critical error displaying insurance certificate card: ${e.message}", e)
+                        // Emergency fallback
+                        messageText.visibility = View.VISIBLE
+                        messageText.text = "📄 Insurance certificate generated - see logs for details"
+                    }
+                }
+                // Insurance premium card
                 message.insuranceDetails != null -> {
                     try {
                         if (insuranceCardWrapper != null) {
@@ -269,6 +319,7 @@ class ChatAdapter(
                 }
                 else -> {
                     // No special card, show regular message
+                    insuranceCertificateCardWrapper?.visibility = View.GONE
                     insuranceCardWrapper?.visibility = View.GONE
                     diseaseCardWrapper.visibility = View.GONE
                     healthyCardContainer.visibility = View.GONE
@@ -302,38 +353,7 @@ class ChatAdapter(
             // Add follow-up buttons
             if (message.followUpItems != null && message.followUpItems.isNotEmpty()) {
                 followUpContainer.visibility = View.VISIBLE
-                followUpChipGroup.removeAllViews()
-                
-                message.followUpItems.forEach { followUpText ->
-                    val chip = Chip(itemView.context).apply {
-                        text = followUpText
-                        isClickable = true
-                        isCheckable = false
-                        
-                        // Light green styling as requested
-                        chipBackgroundColor = ContextCompat.getColorStateList(
-                            itemView.context, R.color.followup_chip_background
-                        )
-                        setTextColor(ContextCompat.getColor(itemView.context, R.color.followup_chip_text))
-                        chipStrokeColor = ContextCompat.getColorStateList(
-                            itemView.context, R.color.followup_chip_stroke
-                        )
-                        chipStrokeWidth = 2f
-                        
-                        setOnClickListener {
-                            // Change appearance to show clicked state
-                            chipBackgroundColor = ContextCompat.getColorStateList(
-                                itemView.context, R.color.followup_chip_clicked
-                            )
-                            isClickable = false
-                            text = "✓ $followUpText"
-                            
-                            // Trigger callback
-                            onFollowUpClick(followUpText)
-                        }
-                    }
-                    followUpChipGroup.addView(chip)
-                }
+                setupQuickActionsRecyclerView(message.followUpItems)
             } else {
                 followUpContainer.visibility = View.GONE
             }
@@ -705,6 +725,105 @@ class ChatAdapter(
         }
         
         /**
+         * Populate insurance certificate card with generated certificate details (with crash prevention)
+         */
+        private fun populateInsuranceCertificateCard(certificateDetails: InsuranceCertificateDetails) {
+            try {
+                Log.d("ChatAdapter", "📄 Populating insurance certificate card for ${certificateDetails.policyId}")
+                
+                // Debug: Log view availability
+                Log.d("ChatAdapter", "Certificate views status:")
+                Log.d("ChatAdapter", "  - insuranceCertificateCardWrapper: ${if (insuranceCertificateCardWrapper != null) "✅ Found" else "❌ NULL"}")
+                Log.d("ChatAdapter", "  - certificatePolicyIdValue: ${if (certificatePolicyIdValue != null) "✅ Found" else "❌ NULL"}")
+                Log.d("ChatAdapter", "  - certificateCompanyName: ${if (certificateCompanyName != null) "✅ Found" else "❌ NULL"}")
+                
+                // Set policy ID
+                certificatePolicyIdValue?.text = certificateDetails.policyId
+                
+                // Set company name
+                certificateCompanyName?.text = certificateDetails.companyName
+                
+                // Set total coverage amount
+                certificateTotalCoverage?.text = "₹${formatCurrencyAmount(certificateDetails.totalSumInsured)}"
+                
+                // Set farmer name
+                certificateFarmerName?.text = certificateDetails.farmerName
+                
+                // Set crop information
+                certificateCropInfo?.text = "${certificateDetails.crop} • ${certificateDetails.state} • ${String.format("%.1f", certificateDetails.area)} hectares"
+                
+                // Set premium breakdown
+                certificatePremiumBreakdown?.text = "₹${formatCurrencyAmount(certificateDetails.premiumPaidByFarmer)} (Farmer) + ₹${formatCurrencyAmount(certificateDetails.premiumPaidByGovt)} (Government)"
+                
+                // Set up PDF viewer button click handler
+                viewCertificateButton?.setOnClickListener {
+                    try {
+                        if (certificateDetails.pdfBase64 != null) {
+                            showPdfViewer(certificateDetails.pdfBase64, certificateDetails.policyId)
+                        } else {
+                            Log.w("ChatAdapter", "No PDF data available for certificate")
+                            onFollowUpClick("Please regenerate the insurance certificate PDF")
+                        }
+                    } catch (e: Exception) {
+                        Log.e("ChatAdapter", "Error in viewCertificateButton click: ${e.message}")
+                    }
+                }
+                
+                Log.d("ChatAdapter", "✅ Insurance certificate card populated successfully")
+                
+            } catch (e: Exception) {
+                Log.e("ChatAdapter", "❌ Error populating insurance certificate card: ${e.message}", e)
+                // Hide certificate card if population fails to prevent crash
+                insuranceCertificateCardWrapper?.visibility = View.GONE
+            }
+        }
+        
+        /**
+         * Show PDF viewer for insurance certificate
+         */
+        private fun showPdfViewer(pdfBase64: String, policyId: String) {
+            try {
+                // Create custom dialog for PDF viewing
+                val dialog = Dialog(itemView.context, android.R.style.Theme_Black_NoTitleBar_Fullscreen)
+                dialog.setContentView(R.layout.dialog_pdf_viewer)
+                
+                // Set up dialog views
+                val pdfView = dialog.findViewById<androidx.core.widget.NestedScrollView>(R.id.pdfScrollView)
+                val pdfContent = dialog.findViewById<TextView>(R.id.pdfContent)
+                val btnClose = dialog.findViewById<ImageButton>(R.id.btnClosePdf)
+                val pdfTitle = dialog.findViewById<TextView>(R.id.pdfTitle)
+                
+                // Set title
+                pdfTitle.text = "Insurance Certificate - $policyId"
+                
+                // For now, show certificate details as text (in a real app, you'd use a PDF library)
+                pdfContent.text = "📄 Insurance Certificate\n\n" +
+                        "Policy ID: $policyId\n" +
+                        "PDF Data Available: ${if (pdfBase64.isNotEmpty()) "Yes (${pdfBase64.length} characters)" else "No"}\n\n" +
+                        "Note: In a production app, this would display the actual PDF using a PDF viewer library like AndroidPdfViewer or similar."
+                
+                // Close button functionality
+                btnClose.setOnClickListener {
+                    dialog.dismiss()
+                }
+                
+                // Allow tapping outside to close
+                dialog.setCancelable(true)
+                dialog.setCanceledOnTouchOutside(true)
+                
+                // Show the dialog
+                dialog.show()
+                
+                Log.d("ChatAdapter", "📄 Opened PDF viewer for certificate: $policyId")
+                
+            } catch (e: Exception) {
+                Log.e("ChatAdapter", "Error showing PDF viewer: ${e.message}", e)
+                // Fallback: trigger follow-up action
+                onFollowUpClick("Please help me view the insurance certificate PDF")
+            }
+        }
+        
+        /**
          * Populate insurance premium card with calculated details (with crash prevention)
          */
         private fun populateInsuranceCard(insuranceDetails: InsuranceDetails) {
@@ -746,14 +865,6 @@ class ChatAdapter(
                 }
                 
                 // Set up button click handlers with null safety
-                learnMoreButton?.setOnClickListener {
-                    try {
-                        onFollowUpClick("Tell me more about crop insurance benefits and coverage details")
-                    } catch (e: Exception) {
-                        Log.e("ChatAdapter", "Error in learnMoreButton click: ${e.message}")
-                    }
-                }
-                
                 applyInsuranceButton?.setOnClickListener {
                     try {
                         onFollowUpClick("Help me apply for crop insurance with these premium details")
@@ -841,5 +952,61 @@ class ChatAdapter(
             
             return "$introText\n\n$assessmentMessage"
         }
+        
+        /**
+         * Setup horizontal scrolling RecyclerView for quick actions
+         */
+        private fun setupQuickActionsRecyclerView(quickActions: List<String>) {
+            try {
+                // Setup horizontal LinearLayoutManager
+                val layoutManager = LinearLayoutManager(itemView.context, LinearLayoutManager.HORIZONTAL, false)
+                quickActionsRecyclerView.layoutManager = layoutManager
+                
+                // Create adapter for quick actions
+                val adapter = QuickActionAdapter(quickActions) { action ->
+                    onFollowUpClick(action)
+                }
+                quickActionsRecyclerView.adapter = adapter
+                
+                Log.d("ChatAdapter", "✅ Quick actions RecyclerView setup complete with ${quickActions.size} actions")
+            } catch (e: Exception) {
+                Log.e("ChatAdapter", "❌ Error setting up quick actions RecyclerView: ${e.message}", e)
+            }
+        }
     }
+}
+
+/**
+ * Adapter for horizontal scrolling quick action buttons
+ */
+class QuickActionAdapter(
+    private val actions: List<String>,
+    private val onActionClick: (String) -> Unit
+) : RecyclerView.Adapter<QuickActionAdapter.QuickActionViewHolder>() {
+
+    class QuickActionViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
+        val actionButton: TextView = itemView.findViewById(R.id.quickActionText)
+    }
+
+    override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): QuickActionViewHolder {
+        val view = LayoutInflater.from(parent.context)
+            .inflate(R.layout.item_quick_action_button, parent, false)
+        return QuickActionViewHolder(view)
+    }
+
+    override fun onBindViewHolder(holder: QuickActionViewHolder, position: Int) {
+        val action = actions[position]
+        holder.actionButton.text = action
+        
+        holder.actionButton.setOnClickListener {
+            // Visual feedback
+            holder.actionButton.text = "✓ $action"
+            holder.actionButton.isClickable = false
+            
+            // Trigger callback
+            onActionClick(action)
+        }
+    }
+
+    override fun getItemCount(): Int = actions.size
 }

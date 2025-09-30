@@ -46,6 +46,7 @@ import com.sasya.arogya.network.RetrofitClient
 import com.google.android.material.chip.Chip
 import com.google.android.material.chip.ChipGroup
 import com.sasya.arogya.fsm.InsuranceDetails
+import com.sasya.arogya.fsm.InsuranceCertificateDetails
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
@@ -311,6 +312,12 @@ class MainActivityFSM : ComponentActivity(), FSMStreamHandler.StreamCallback {
                     chatAdapter.addMessage(message)
                 }
                 
+                // Add welcome message if session is empty
+                if (session.messages.isEmpty()) {
+                    Log.d(TAG, "Empty session detected in switchToSession, adding welcome message")
+                    addWelcomeMessage()
+                }
+                
                 scrollToBottom()
                 
                 // Update adapter to highlight current session
@@ -377,15 +384,12 @@ class MainActivityFSM : ComponentActivity(), FSMStreamHandler.StreamCallback {
     
     private fun addWelcomeMessage() {
         val welcomeMessage = ChatMessage(
-            text = "🌿 Welcome to Sasya Arogya! I'm your intelligent plant health assistant.\n\nI can help you:\n• Diagnose plant diseases from images\n• Recommend treatments and medicines\n• Connect you with local vendors\n• Provide seasonal care advice\n\nTap any action below to get started instantly:",
+            text = "🌿 **Welcome to Sasya Arogya!**\n\nI'm your intelligent plant health assistant, designed specifically for Indian farmers. I can help you with comprehensive agricultural support.\n\n**🌱 What I can do for you:**\n• **🔬 Diagnose plant diseases** from photos with AI precision\n• **💊 Recommend treatments** and organic medicines\n• **🛡️ Help with crop insurance** and premium calculations\n• **📅 Provide seasonal care** advice for your crops\n• **🌾 Connect with local suppliers** for agricultural needs",
             isUser = false,
             state = "Ready",
             followUpItems = listOf(
                 "📸 Analyze Plant Photo",
-                "🔍 Common Plant Problems", 
                 "🌱 Seasonal Care Tips",
-                "📅 Care Schedule",
-                "🚨 Emergency Plant Care",
                 "🌿 Plant Health Guide",
                 "🧪 Soil Testing Guide"
             )
@@ -637,26 +641,11 @@ class MainActivityFSM : ComponentActivity(), FSMStreamHandler.StreamCallback {
                 stopThinkingIndicator() // Don't show thinking indicator for image picker
                 return
             }
-            
-            "🔍 Common Plant Problems" -> {
-                // Send enhanced query for common problems
-                sendToFSMAgent("Show me the most common plant problems and diseases I should watch out for, with symptoms and treatment options.", null)
-            }
-            
+
             "🌱 Seasonal Care Tips" -> {
                 // Send season-specific query
                 val season = getCurrentSeason()
                 sendToFSMAgent("Give me seasonal plant care tips and recommendations for $season season, including what to plant, water, and watch for.", null)
-            }
-            
-            "📅 Care Schedule" -> {
-                // Send query for care scheduling
-                sendToFSMAgent("Help me create a plant care schedule including watering, fertilizing, pruning, and pest monitoring timelines.", null)
-            }
-            
-            "🚨 Emergency Plant Care" -> {
-                // Send query for emergency care
-                sendToFSMAgent("I need emergency plant care help. Show me how to diagnose and treat urgent plant health issues like wilting, yellowing, or pest infestations.", null)
             }
             
             "🌿 Plant Health Guide" -> {
@@ -805,6 +794,49 @@ class MainActivityFSM : ComponentActivity(), FSMStreamHandler.StreamCallback {
             
             // Refresh session spinner to update any metadata changes
             refreshSessionSpinner()
+        }
+    }
+    
+    override fun onInsuranceCertificate(certificateDetails: InsuranceCertificateDetails) {
+        Log.d(TAG, "📄 Received insurance certificate: ${certificateDetails.policyId} - ₹${certificateDetails.totalSumInsured}")
+        
+        try {
+            runOnUiThread {
+                try {
+                    stopThinkingIndicator()
+                    
+                    // Create insurance certificate message with details
+                    val certificateMessage = ChatMessage(
+                        text = "Insurance certificate generated for your ${certificateDetails.crop} crop",
+                        isUser = false,
+                        insuranceCertificate = certificateDetails
+                    )
+                    
+                    // Add to chat with error handling
+                    chatAdapter.addMessage(certificateMessage)
+                    currentSessionState.messages.add(certificateMessage)
+                    
+                    // Save to session
+                    currentSessionState.sessionId?.let { sessionId ->
+                        sessionManager.addMessageToSession(sessionId, certificateMessage)
+                    }
+                    
+                    scrollToBottom()
+                    
+                    Log.d(TAG, "✅ Insurance certificate card displayed successfully")
+                    
+                } catch (e: Exception) {
+                    Log.e(TAG, "❌ Error displaying insurance certificate card: ${e.message}", e)
+                    // Show fallback text message if card fails
+                    val fallbackMessage = ChatMessage(
+                        text = "📄 Insurance certificate generated:\n\nPolicy ID: ${certificateDetails.policyId}\nCompany: ${certificateDetails.companyName}\nCoverage: ₹${String.format("%.2f", certificateDetails.totalSumInsured)}",
+                        isUser = false
+                    )
+                    chatAdapter.addMessage(fallbackMessage)
+                }
+            }
+        } catch (e: Exception) {
+            Log.e(TAG, "❌ Critical error in onInsuranceCertificate: ${e.message}", e)
         }
     }
     

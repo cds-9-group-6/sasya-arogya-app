@@ -26,6 +26,7 @@ class FSMStreamHandler {
         fun onError(error: String)
         fun onStreamComplete()
         fun onInsuranceDetails(insuranceDetails: InsuranceDetails)
+        fun onInsuranceCertificate(certificateDetails: InsuranceCertificateDetails)
     }
     
     /**
@@ -115,6 +116,17 @@ class FSMStreamHandler {
                             )
                             insuranceDetails?.let { details ->
                                 callback.onInsuranceDetails(details)
+                            }
+                        }
+                        
+                        // Handle insurance certificate
+                        if (stateUpdate.currentNode == "insurance" && 
+                            stateUpdate.insuranceCertificate != null) {
+                            
+                            Log.d(TAG, "Processing insurance certificate")
+                            val certificateDetails = parseInsuranceCertificate(stateUpdate.insuranceCertificate)
+                            certificateDetails?.let { details ->
+                                callback.onInsuranceCertificate(details)
                             }
                         }
                         
@@ -222,6 +234,36 @@ class FSMStreamHandler {
             else -> currentNode?.replaceFirstChar { 
                 if (it.isLowerCase()) it.titlecase() else it.toString() 
             } ?: "Processing..."
+        }
+    }
+    
+    /**
+     * Parse insurance certificate from server response
+     */
+    private fun parseInsuranceCertificate(certificate: InsuranceCertificate): InsuranceCertificateDetails? {
+        return try {
+            // Extract PDF data from raw MCP response
+            val pdfBase64 = certificate.rawMcpResponse?.content?.find { 
+                it.type == "resource" && it.uri?.startsWith("data:application/pdf;base64,") == true 
+            }?.uri?.substringAfter("data:application/pdf;base64,")
+            
+            InsuranceCertificateDetails(
+                policyId = certificate.policyId ?: "N/A",
+                farmerName = certificate.farmerName ?: "N/A",
+                farmerId = certificate.farmerId ?: "N/A",
+                crop = certificate.crop ?: "N/A",
+                area = certificate.areaHectare ?: 0.0,
+                state = certificate.state ?: "N/A",
+                companyName = certificate.companyName ?: "N/A",
+                premiumPaidByFarmer = certificate.premiumPaidByFarmer ?: 0.0,
+                premiumPaidByGovt = certificate.premiumPaidByGovt ?: 0.0,
+                totalSumInsured = certificate.totalSumInsured ?: 0.0,
+                certificateDetails = certificate.certificateDetails ?: "",
+                pdfBase64 = pdfBase64
+            )
+        } catch (e: Exception) {
+            Log.e(TAG, "Error parsing insurance certificate: ${e.message}")
+            null
         }
     }
     

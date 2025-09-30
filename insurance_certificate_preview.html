@@ -1,0 +1,314 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Insurance Certificate Card Preview</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            padding: 20px;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+        }
+        
+        .phone-container {
+            width: 375px;
+            height: 812px;
+            background: #f5f5f5;
+            border-radius: 25px;
+            box-shadow: 0 20px 40px rgba(0,0,0,0.3);
+            overflow: hidden;
+            position: relative;
+        }
+        
+        .status-bar {
+            height: 44px;
+            background: #000;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 0 20px;
+            color: white;
+            font-size: 14px;
+        }
+        
+        .chat-container {
+            height: calc(100% - 44px);
+            background: #f0f0f0;
+            padding: 20px;
+            overflow-y: auto;
+        }
+        
+        .message {
+            margin-bottom: 20px;
+            display: flex;
+            flex-direction: column;
+        }
+        
+        .assistant-message {
+            align-items: flex-start;
+        }
+        
+        .message-text {
+            background: white;
+            padding: 15px;
+            border-radius: 18px 18px 18px 4px;
+            margin-bottom: 10px;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+            max-width: 85%;
+        }
+        
+        .message-text h3 {
+            color: #2c3e50;
+            margin-bottom: 8px;
+            font-size: 16px;
+        }
+        
+        .message-text p {
+            color: #7f8c8d;
+            font-size: 14px;
+            line-height: 1.4;
+        }
+        
+        .certificate-card {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            border-radius: 12px;
+            padding: 20px;
+            margin-top: 10px;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.15);
+            max-width: 100%;
+        }
+        
+        .certificate-header {
+            display: flex;
+            align-items: center;
+            margin-bottom: 20px;
+        }
+        
+        .certificate-icon {
+            width: 40px;
+            height: 40px;
+            background: rgba(255,255,255,0.2);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin-right: 16px;
+            font-size: 20px;
+        }
+        
+        .certificate-title {
+            flex: 1;
+        }
+        
+        .certificate-title h2 {
+            color: white;
+            font-size: 16px;
+            font-weight: bold;
+            letter-spacing: 0.5px;
+            margin-bottom: 4px;
+        }
+        
+        .certificate-title p {
+            color: rgba(255,255,255,0.8);
+            font-size: 13px;
+        }
+        
+        .certificate-summary {
+            background: rgba(255,255,255,0.15);
+            border-radius: 8px;
+            padding: 16px;
+            margin-bottom: 20px;
+        }
+        
+        .summary-row {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 12px;
+        }
+        
+        .summary-row:last-child {
+            margin-bottom: 0;
+        }
+        
+        .summary-label {
+            color: white;
+            font-size: 15px;
+        }
+        
+        .summary-value {
+            color: white;
+            font-size: 15px;
+            font-weight: bold;
+        }
+        
+        .coverage-row {
+            background: rgba(255,255,255,0.2);
+            padding: 12px;
+            border-radius: 6px;
+        }
+        
+        .coverage-value {
+            color: #4CAF50;
+            font-size: 18px;
+            font-weight: bold;
+            background: rgba(255,255,255,0.2);
+            padding: 8px;
+            border-radius: 4px;
+        }
+        
+        .certificate-details {
+            margin-bottom: 20px;
+        }
+        
+        .details-title {
+            color: white;
+            font-size: 14px;
+            font-weight: bold;
+            margin-bottom: 12px;
+        }
+        
+        .detail-row {
+            display: flex;
+            margin-bottom: 8px;
+        }
+        
+        .detail-label {
+            width: 100px;
+            color: rgba(255,255,255,0.8);
+            font-size: 14px;
+        }
+        
+        .detail-value {
+            flex: 1;
+            color: white;
+            font-size: 14px;
+            font-weight: bold;
+        }
+        
+        .view-button {
+            background: linear-gradient(45deg, #FF6B6B, #FF8E53);
+            color: white;
+            border: none;
+            border-radius: 25px;
+            padding: 16px;
+            font-size: 16px;
+            font-weight: bold;
+            width: 100%;
+            cursor: pointer;
+            box-shadow: 0 4px 12px rgba(255,107,107,0.3);
+            transition: transform 0.2s;
+        }
+        
+        .view-button:hover {
+            transform: translateY(-2px);
+        }
+        
+        .state-indicator {
+            background: #4CAF50;
+            color: white;
+            padding: 6px 12px;
+            border-radius: 12px;
+            font-size: 12px;
+            font-weight: bold;
+            margin-bottom: 10px;
+            display: inline-block;
+        }
+        
+        .time-stamp {
+            color: #95a5a6;
+            font-size: 12px;
+            margin-bottom: 5px;
+        }
+    </style>
+</head>
+<body>
+    <div class="phone-container">
+        <div class="status-bar">
+            <span>9:41</span>
+            <span>📶 📶 📶 🔋</span>
+        </div>
+        
+        <div class="chat-container">
+            <!-- User Message -->
+            <div class="message">
+                <div class="time-stamp">10:20 AM</div>
+                <div class="message-text" style="background: #DCF8C6; margin-left: auto; border-radius: 18px 18px 4px 18px;">
+                    <p>Help me apply for crop insurance with these premium details</p>
+                </div>
+            </div>
+            
+            <!-- Assistant Message with Certificate -->
+            <div class="message assistant-message">
+                <div class="time-stamp">10:20 AM</div>
+                <div class="state-indicator">Calculating Insurance...</div>
+                <div class="message-text">
+                    <h3>📄 **Insurance Certificate Generated**</h3>
+                    <p>Your crop insurance certificate has been successfully generated and is ready for download.</p>
+                </div>
+                
+                <!-- Insurance Certificate Card -->
+                <div class="certificate-card">
+                    <!-- Header -->
+                    <div class="certificate-header">
+                        <div class="certificate-icon">📄</div>
+                        <div class="certificate-title">
+                            <h2>📋 INSURANCE CERTIFICATE</h2>
+                            <p>Policy ID: POL-AB8E7A02</p>
+                        </div>
+                    </div>
+                    
+                    <!-- Summary -->
+                    <div class="certificate-summary">
+                        <div class="summary-row">
+                            <span class="summary-label">Policy ID</span>
+                            <span class="summary-value" style="color: #87CEEB;">POL-AB8E7A02</span>
+                        </div>
+                        <div class="summary-row">
+                            <span class="summary-label">🏢 Insurance Company</span>
+                            <span class="summary-value">Tamil Nadu Crop Insurance Ltd</span>
+                        </div>
+                        <div class="summary-row coverage-row">
+                            <span class="summary-label">💰 Total Coverage</span>
+                            <span class="coverage-value">₹18,211.50</span>
+                        </div>
+                    </div>
+                    
+                    <!-- Details -->
+                    <div class="certificate-details">
+                        <div class="details-title">📊 Certificate Details</div>
+                        <div class="detail-row">
+                            <span class="detail-label">Farmer:</span>
+                            <span class="detail-value">Farmer</span>
+                        </div>
+                        <div class="detail-row">
+                            <span class="detail-label">Crop:</span>
+                            <span class="detail-value">Potato • Tamil Nadu • 0.4 hectares</span>
+                        </div>
+                        <div class="detail-row">
+                            <span class="detail-label">Premium:</span>
+                            <span class="detail-value">₹1,517.62 (Farmer) + ₹4,552.88 (Government)</span>
+                        </div>
+                    </div>
+                    
+                    <!-- Action Button -->
+                    <button class="view-button">
+                        📄 View Certificate PDF
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+</body>
+</html>

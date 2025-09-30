@@ -36,7 +36,8 @@ data class FSMStateUpdate(
     @SerializedName("prescription_details") val prescriptionDetails: Map<String, Any>? = null,
     @SerializedName("vendor_details") val vendorDetails: Map<String, Any>? = null,
     @SerializedName("insurance_context") val insuranceContext: InsuranceContext? = null,
-    @SerializedName("insurance_premium_details") val insurancePremiumDetails: InsurancePremiumDetails? = null
+    @SerializedName("insurance_premium_details") val insurancePremiumDetails: InsurancePremiumDetails? = null,
+    @SerializedName("insurance_certificate") val insuranceCertificate: InsuranceCertificate? = null
 )
 
 // Message models
@@ -57,7 +58,8 @@ data class ChatMessage(
     val attentionOverlayBase64: String? = null,
     val diseaseName: String? = null,
     val confidence: Double? = null,
-    val insuranceDetails: InsuranceDetails? = null
+    val insuranceDetails: InsuranceDetails? = null,
+    val insuranceCertificate: InsuranceCertificateDetails? = null
 )
 
 // Follow-up item for UI
@@ -122,4 +124,50 @@ data class InsuranceDetails(
     val governmentSubsidy: Double,
     val farmerContribution: Double,
     val disease: String? = null
+)
+
+// Insurance certificate data from server
+data class InsuranceCertificate(
+    @SerializedName("action") val action: String? = null,
+    @SerializedName("success") val success: Boolean? = null,
+    @SerializedName("policy_id") val policyId: String? = null,
+    @SerializedName("farmer_name") val farmerName: String? = null,
+    @SerializedName("farmer_id") val farmerId: String? = null,
+    @SerializedName("crop") val crop: String? = null,
+    @SerializedName("area_hectare") val areaHectare: Double? = null,
+    @SerializedName("state") val state: String? = null,
+    @SerializedName("company_name") val companyName: String? = null,
+    @SerializedName("premium_paid_by_farmer") val premiumPaidByFarmer: Double? = null,
+    @SerializedName("premium_paid_by_govt") val premiumPaidByGovt: Double? = null,
+    @SerializedName("total_sum_insured") val totalSumInsured: Double? = null,
+    @SerializedName("pdf_generated") val pdfGenerated: Boolean? = null,
+    @SerializedName("certificate_details") val certificateDetails: String? = null,
+    @SerializedName("raw_mcp_response") val rawMcpResponse: RawMcpResponse? = null
+)
+
+// Raw MCP response containing PDF data
+data class RawMcpResponse(
+    @SerializedName("content") val content: List<McpContent>? = null
+)
+
+data class McpContent(
+    @SerializedName("type") val type: String? = null,
+    @SerializedName("text") val text: String? = null,
+    @SerializedName("uri") val uri: String? = null
+)
+
+// Processed insurance certificate for UI display
+data class InsuranceCertificateDetails(
+    val policyId: String,
+    val farmerName: String,
+    val farmerId: String,
+    val crop: String,
+    val area: Double,
+    val state: String,
+    val companyName: String,
+    val premiumPaidByFarmer: Double,
+    val premiumPaidByGovt: Double,
+    val totalSumInsured: Double,
+    val certificateDetails: String,
+    val pdfBase64: String? = null
 )

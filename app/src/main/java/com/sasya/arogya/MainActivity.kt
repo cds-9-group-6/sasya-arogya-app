@@ -254,7 +254,7 @@ class MainActivity : ComponentActivity() {
         // Initialize conversation history if empty
         if (conversationHistory.length == 0) {
                 val welcomeMessage =
-                    "MAIN_ANSWER: Welcome to Sasya Chikitsa! I'm your AI plant health assistant. I can help diagnose plant diseases, provide care recommendations, and guide you through treatment procedures. Each app session starts fresh with a new conversation. Upload a photo or ask me about plant care to get started.\n\nACTION_ITEMS: Send Image | Give me watering schedule | Show fertilization procedure | Explain prevention methods"
+                    "MAIN_ANSWER: Welcome to Sasya Arogya! I'm your AI plant health assistant designed for Indian farmers. I can help diagnose plant diseases, provide care recommendations, guide you through treatment procedures, and assist with crop insurance. Each app session starts fresh with a new conversation. Upload a photo or ask me about plant care to get started.\n\nACTION_ITEMS: Send Image | Get Crop Insurance | Give me watering schedule | Show fertilization procedure | Explain prevention methods"
             addAssistantMessage(welcomeMessage)
             
             // Add some test content to demonstrate action items
