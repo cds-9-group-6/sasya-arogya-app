@@ -1,0 +1,369 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Sasya Arogya - Quick Actions Demo</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #E8F5E8 0%, #F1F8E9 100%);
+            min-height: 100vh;
+            padding: 20px;
+        }
+
+        .container {
+            max-width: 400px;
+            margin: 0 auto;
+            background: white;
+            border-radius: 16px;
+            box-shadow: 0 8px 32px rgba(0, 0, 0, 0.1);
+            overflow: hidden;
+        }
+
+        .header {
+            background: linear-gradient(135deg, #2E7D32 0%, #4CAF50 100%);
+            color: white;
+            padding: 20px;
+            text-align: center;
+        }
+
+        .app-title {
+            font-size: 24px;
+            font-weight: bold;
+            margin-bottom: 8px;
+            text-shadow: 0 2px 4px rgba(0, 0, 0, 0.3);
+        }
+
+        .app-subtitle {
+            font-size: 14px;
+            opacity: 0.9;
+            margin-bottom: 12px;
+        }
+
+        .status-badge {
+            display: inline-block;
+            background: rgba(255, 255, 255, 0.2);
+            padding: 6px 16px;
+            border-radius: 20px;
+            font-size: 12px;
+            font-weight: bold;
+            letter-spacing: 0.5px;
+        }
+
+        .chat-container {
+            padding: 20px;
+            min-height: 500px;
+        }
+
+        .message {
+            margin-bottom: 16px;
+            display: flex;
+            align-items: flex-start;
+        }
+
+        .message.assistant {
+            justify-content: flex-start;
+        }
+
+        .message-content {
+            max-width: 85%;
+            background: #FFFFFF;
+            border-radius: 12px;
+            padding: 16px;
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+            border: 1px solid #E0E0E0;
+        }
+
+        .message-header {
+            display: flex;
+            align-items: center;
+            margin-bottom: 8px;
+        }
+
+        .bot-icon {
+            width: 20px;
+            height: 20px;
+            background: #4CAF50;
+            border-radius: 50%;
+            margin-right: 8px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 12px;
+        }
+
+        .bot-name {
+            font-size: 12px;
+            font-weight: bold;
+            color: #2E7D32;
+        }
+
+        .state-indicator {
+            background: #4CAF50;
+            color: white;
+            padding: 4px 8px;
+            border-radius: 12px;
+            font-size: 10px;
+            font-weight: bold;
+            letter-spacing: 0.5px;
+            margin-left: 8px;
+        }
+
+        .message-text {
+            font-size: 14px;
+            line-height: 1.5;
+            color: #2E2E2E;
+            margin-bottom: 16px;
+        }
+
+        .message-text strong {
+            color: #1B5E20;
+        }
+
+        .features-list {
+            margin: 16px 0;
+        }
+
+        .feature-item {
+            margin: 8px 0;
+            font-size: 14px;
+            line-height: 1.4;
+        }
+
+        .feature-item strong {
+            color: #1B5E20;
+        }
+
+        /* Quick Actions Section */
+        .quick-actions-section {
+            background: linear-gradient(135deg, #F1F8E9 0%, #E8F5E8 100%);
+            border: 1px solid #C8E6C9;
+            border-radius: 12px;
+            padding: 16px;
+            margin-top: 16px;
+        }
+
+        .quick-actions-title {
+            font-size: 16px;
+            font-weight: bold;
+            color: #2E7D32;
+            margin-bottom: 12px;
+        }
+
+        .quick-actions-container {
+            display: flex;
+            overflow-x: auto;
+            gap: 8px;
+            padding-bottom: 8px;
+            scrollbar-width: thin;
+            scrollbar-color: #2E7D32 #E8F5E8;
+        }
+
+        .quick-actions-container::-webkit-scrollbar {
+            height: 6px;
+        }
+
+        .quick-actions-container::-webkit-scrollbar-track {
+            background: #E8F5E8;
+            border-radius: 3px;
+        }
+
+        .quick-actions-container::-webkit-scrollbar-thumb {
+            background: #2E7D32;
+            border-radius: 3px;
+        }
+
+        .quick-actions-container::-webkit-scrollbar-thumb:hover {
+            background: #1B5E20;
+        }
+
+        .quick-action-button {
+            background: #A5D6A7;
+            color: #1B5E20;
+            border: 1.5px solid #66BB6A;
+            border-radius: 20px;
+            padding: 8px 16px;
+            font-size: 14px;
+            font-weight: bold;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            min-height: 56px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            text-align: center;
+            min-width: 120px;
+            max-width: 200px;
+            white-space: nowrap;
+            flex-shrink: 0;
+        }
+
+        .quick-action-button:hover {
+            background: #81C784;
+            transform: translateY(-2px);
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+        }
+
+        .quick-action-button:active {
+            background: #66BB6A;
+            transform: translateY(0);
+        }
+
+        .quick-action-button.clicked {
+            background: #81C784;
+            color: #1B5E20;
+        }
+
+        .quick-action-button.clicked::before {
+            content: "✓ ";
+        }
+
+        .timestamp {
+            font-size: 12px;
+            color: #999;
+            margin-left: 8px;
+            margin-top: 4px;
+        }
+
+        /* Responsive design */
+        @media (max-width: 480px) {
+            .container {
+                margin: 10px;
+                border-radius: 12px;
+            }
+            
+            .quick-action-button {
+                min-width: 100px;
+                font-size: 13px;
+                padding: 6px 12px;
+            }
+        }
+
+        /* Demo instructions */
+        .demo-instructions {
+            background: #FFF3E0;
+            border: 1px solid #FFB74D;
+            border-radius: 8px;
+            padding: 12px;
+            margin-bottom: 20px;
+            font-size: 14px;
+            color: #E65100;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <!-- Header -->
+        <div class="header">
+            <div class="app-title">Sasya Arogya</div>
+            <div class="app-subtitle">A comprehensive Plant Care Expert</div>
+            <div class="status-badge">Ready</div>
+        </div>
+
+        <!-- Demo Instructions -->
+        <div class="demo-instructions">
+            <strong>🎯 Demo Features:</strong><br>
+            • Welcome message without buttons<br>
+            • Horizontal scrolling quick actions<br>
+            • Same height buttons with variable width<br>
+            • Text wrapping for consistent height<br>
+            • Scroll horizontally to see all options
+        </div>
+
+        <!-- Chat Container -->
+        <div class="chat-container">
+            <!-- Assistant Message -->
+            <div class="message assistant">
+                <div class="message-content">
+                    <div class="message-header">
+                        <div class="bot-icon">🤖</div>
+                        <div class="bot-name">Sasya Arogya</div>
+                        <div class="state-indicator">Ready</div>
+                    </div>
+                    
+                    <div class="message-text">
+                        <strong>🌿 Welcome to Sasya Arogya!</strong><br><br>
+                        
+                        I'm your intelligent plant health assistant, designed specifically for Indian farmers. I can help you with comprehensive agricultural support.<br><br>
+                        
+                        <strong>🌱 What I can do for you:</strong>
+                        <div class="features-list">
+                            <div class="feature-item">• <strong>🔬 Diagnose plant diseases</strong> from photos with AI precision</div>
+                            <div class="feature-item">• <strong>💊 Recommend treatments</strong> and organic medicines</div>
+                            <div class="feature-item">• <strong>🛡️ Help with crop insurance</strong> and premium calculations</div>
+                            <div class="feature-item">• <strong>📅 Provide seasonal care</strong> advice for your crops</div>
+                            <div class="feature-item">• <strong>🌾 Connect with local suppliers</strong> for agricultural needs</div>
+                        </div>
+                    </div>
+
+                    <!-- Quick Actions Section -->
+                    <div class="quick-actions-section">
+                        <div class="quick-actions-title">🚀 Quick Actions</div>
+                        <div class="quick-actions-container">
+                            <div class="quick-action-button" onclick="handleQuickAction(this)">📸 Analyze Plant Photo</div>
+                            <div class="quick-action-button" onclick="handleQuickAction(this)">🛡️ Get Crop Insurance</div>
+                            <div class="quick-action-button" onclick="handleQuickAction(this)">🌱 Seasonal Care Tips</div>
+                            <div class="quick-action-button" onclick="handleQuickAction(this)">🌿 Plant Health Guide</div>
+                            <div class="quick-action-button" onclick="handleQuickAction(this)">🧪 Soil Testing Guide</div>
+                            <div class="quick-action-button" onclick="handleQuickAction(this)">🌾 Find Suppliers</div>
+                            <div class="quick-action-button" onclick="handleQuickAction(this)">📊 Market Prices</div>
+                            <div class="quick-action-button" onclick="handleQuickAction(this)">🌦️ Weather Forecast</div>
+                            <div class="quick-action-button" onclick="handleQuickAction(this)">💧 Irrigation Schedule</div>
+                            <div class="quick-action-button" onclick="handleQuickAction(this)">🐛 Pest Control</div>
+                        </div>
+                    </div>
+                </div>
+                <div class="timestamp">12:34</div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        function handleQuickAction(button) {
+            // Add clicked class
+            button.classList.add('clicked');
+            
+            // Disable further clicks
+            button.style.pointerEvents = 'none';
+            
+            // Show feedback
+            console.log('Selected:', button.textContent);
+            
+            // Simulate action
+            setTimeout(() => {
+                alert('Action: ' + button.textContent + '\n\nIn the actual app, this would trigger the corresponding feature.');
+            }, 300);
+        }
+
+        // Add some interactive effects
+        document.querySelectorAll('.quick-action-button').forEach(button => {
+            button.addEventListener('mouseenter', function() {
+                if (!this.classList.contains('clicked')) {
+                    this.style.transform = 'translateY(-2px)';
+                }
+            });
+            
+            button.addEventListener('mouseleave', function() {
+                if (!this.classList.contains('clicked')) {
+                    this.style.transform = 'translateY(0)';
+                }
+            });
+        });
+
+        // Add smooth scrolling behavior
+        document.querySelector('.quick-actions-container').addEventListener('wheel', function(e) {
+            if (e.deltaY !== 0) {
+                e.preventDefault();
+                this.scrollLeft += e.deltaY;
+            }
+        });
+    </script>
+</body>
+</html>

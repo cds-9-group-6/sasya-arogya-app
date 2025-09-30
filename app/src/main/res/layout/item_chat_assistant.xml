@@ -210,6 +210,13 @@
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content" />
 
+                <!-- Insurance Certificate Card Container -->
+                <include 
+                    layout="@layout/item_insurance_certificate_card"
+                    android:id="@+id/insuranceCertificateCardWrapper"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content" />
+
                 <!-- Healthy Plant Card Container -->
                 <LinearLayout
                     android:id="@+id/healthyCardContainer"
@@ -406,26 +413,27 @@
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:orientation="vertical"
-                    android:layout_marginTop="12dp"
+                    android:layout_marginTop="16dp"
+                    android:background="@drawable/followup_container_background"
+                    android:padding="16dp"
                     android:visibility="gone">
 
                     <TextView
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:text="📝 What would you like to know next?"
-                        android:textSize="14sp"
+                        android:text="🚀 Quick Actions"
+                        android:textSize="16sp"
                         android:textStyle="bold"
-                        android:textColor="#2D3748"
-                        android:layout_marginBottom="8dp" />
+                        android:textColor="@color/forest_green"
+                        android:layout_marginBottom="12dp"
+                        android:drawablePadding="8dp" />
 
-                    <!-- Follow-up Chips -->
-                    <com.google.android.material.chip.ChipGroup
-                        android:id="@+id/followUpChipGroup"
+                    <!-- Horizontal Scrolling Quick Actions -->
+                    <androidx.recyclerview.widget.RecyclerView
+                        android:id="@+id/quickActionsRecyclerView"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        app:chipSpacing="8dp"
-                        app:chipSpacingHorizontal="8dp"
-                        app:chipSpacingVertical="4dp" />
+                        android:scrollbars="horizontal" />
 
                 </LinearLayout>
 

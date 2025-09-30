@@ -1,0 +1,322 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Sasya Arogya - Welcome Screen Demo</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #E8F5E8 0%, #F1F8E9 100%);
+            min-height: 100vh;
+            padding: 20px;
+        }
+
+        .container {
+            max-width: 400px;
+            margin: 0 auto;
+            background: white;
+            border-radius: 16px;
+            box-shadow: 0 8px 32px rgba(0, 0, 0, 0.1);
+            overflow: hidden;
+        }
+
+        .header {
+            background: linear-gradient(135deg, #2E7D32 0%, #4CAF50 100%);
+            color: white;
+            padding: 20px;
+            text-align: center;
+        }
+
+        .app-title {
+            font-size: 24px;
+            font-weight: bold;
+            margin-bottom: 8px;
+            text-shadow: 0 2px 4px rgba(0, 0, 0, 0.3);
+        }
+
+        .app-subtitle {
+            font-size: 14px;
+            opacity: 0.9;
+            margin-bottom: 12px;
+        }
+
+        .status-badge {
+            display: inline-block;
+            background: rgba(255, 255, 255, 0.2);
+            padding: 6px 16px;
+            border-radius: 20px;
+            font-size: 12px;
+            font-weight: bold;
+            letter-spacing: 0.5px;
+        }
+
+        .chat-container {
+            padding: 20px;
+            min-height: 500px;
+        }
+
+        .message {
+            margin-bottom: 16px;
+            display: flex;
+            align-items: flex-start;
+        }
+
+        .message.assistant {
+            justify-content: flex-start;
+        }
+
+        .message-content {
+            max-width: 85%;
+            background: #FFFFFF;
+            border-radius: 12px;
+            padding: 16px;
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+            border: 1px solid #E0E0E0;
+        }
+
+        .message-header {
+            display: flex;
+            align-items: center;
+            margin-bottom: 8px;
+        }
+
+        .bot-icon {
+            width: 20px;
+            height: 20px;
+            background: #4CAF50;
+            border-radius: 50%;
+            margin-right: 8px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 12px;
+        }
+
+        .bot-name {
+            font-size: 12px;
+            font-weight: bold;
+            color: #2E7D32;
+        }
+
+        .state-indicator {
+            background: #4CAF50;
+            color: white;
+            padding: 4px 8px;
+            border-radius: 12px;
+            font-size: 10px;
+            font-weight: bold;
+            letter-spacing: 0.5px;
+            margin-left: 8px;
+        }
+
+        .message-text {
+            font-size: 14px;
+            line-height: 1.5;
+            color: #2E2E2E;
+            margin-bottom: 16px;
+        }
+
+        .message-text strong {
+            color: #1B5E20;
+        }
+
+        .followup-container {
+            background: linear-gradient(135deg, #F1F8E9 0%, #E8F5E8 100%);
+            border: 1px solid #C8E6C9;
+            border-radius: 12px;
+            padding: 16px;
+            margin-top: 16px;
+        }
+
+        .followup-title {
+            font-size: 16px;
+            font-weight: bold;
+            color: #2E7D32;
+            margin-bottom: 12px;
+        }
+
+        .chips-container {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 12px;
+        }
+
+        .chip {
+            background: #A5D6A7;
+            color: #1B5E20;
+            border: 1.5px solid #66BB6A;
+            border-radius: 24px;
+            padding: 12px 16px;
+            font-size: 14px;
+            font-weight: bold;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            min-height: 48px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            text-align: center;
+            flex: 1;
+            min-width: 140px;
+        }
+
+        .chip:hover {
+            background: #81C784;
+            transform: translateY(-2px);
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+        }
+
+        .chip:active {
+            background: #66BB6A;
+            transform: translateY(0);
+        }
+
+        .chip.clicked {
+            background: #81C784;
+            color: #1B5E20;
+        }
+
+        .chip.clicked::before {
+            content: "✓ ";
+        }
+
+        .timestamp {
+            font-size: 12px;
+            color: #999;
+            margin-left: 8px;
+            margin-top: 4px;
+        }
+
+        .features-list {
+            margin: 16px 0;
+        }
+
+        .feature-item {
+            margin: 8px 0;
+            font-size: 14px;
+            line-height: 1.4;
+        }
+
+        .feature-item strong {
+            color: #1B5E20;
+        }
+
+        .cta-text {
+            font-size: 16px;
+            font-weight: bold;
+            color: #2E7D32;
+            margin: 16px 0;
+        }
+
+        @media (max-width: 480px) {
+            .container {
+                margin: 10px;
+                border-radius: 12px;
+            }
+            
+            .chip {
+                min-width: 120px;
+                font-size: 13px;
+                padding: 10px 14px;
+            }
+            
+            .chips-container {
+                gap: 8px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <!-- Header -->
+        <div class="header">
+            <div class="app-title">Sasya Arogya</div>
+            <div class="app-subtitle">A comprehensive Plant Care Expert</div>
+            <div class="status-badge">Ready</div>
+        </div>
+
+        <!-- Chat Container -->
+        <div class="chat-container">
+            <!-- Assistant Message -->
+            <div class="message assistant">
+                <div class="message-content">
+                    <div class="message-header">
+                        <div class="bot-icon">🤖</div>
+                        <div class="bot-name">Sasya Arogya</div>
+                        <div class="state-indicator">Ready</div>
+                    </div>
+                    
+                    <div class="message-text">
+                        <strong>🌿 Welcome to Sasya Arogya!</strong><br><br>
+                        
+                        I'm your intelligent plant health assistant, designed specifically for Indian farmers. I can help you with comprehensive agricultural support.<br><br>
+                        
+                        <strong>🌱 What I can do for you:</strong>
+                        <div class="features-list">
+                            <div class="feature-item">• <strong>🔬 Diagnose plant diseases</strong> from photos with AI precision</div>
+                            <div class="feature-item">• <strong>💊 Recommend treatments</strong> and organic medicines</div>
+                            <div class="feature-item">• <strong>🛡️ Help with crop insurance</strong> and premium calculations</div>
+                            <div class="feature-item">• <strong>📅 Provide seasonal care</strong> advice for your crops</div>
+                        </div>
+                        
+                        <div class="cta-text">🚀 Ready to get started? Choose any option below:</div>
+                    </div>
+
+                    <!-- Follow-up Container -->
+                    <div class="followup-container">
+                        <div class="followup-title">🚀 Quick Actions</div>
+                        <div class="chips-container">
+                            <div class="chip" onclick="handleChipClick(this)">📸 Analyze Plant Photo</div>
+                            <div class="chip" onclick="handleChipClick(this)">🛡️ Get Crop Insurance</div>
+                            <div class="chip" onclick="handleChipClick(this)">🌱 Seasonal Care Tips</div>
+                            <div class="chip" onclick="handleChipClick(this)">🌿 Plant Health Guide</div>
+                            <div class="chip" onclick="handleChipClick(this)">🧪 Soil Testing Guide</div>
+                        </div>
+                    </div>
+                </div>
+                <div class="timestamp">12:34</div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        function handleChipClick(chip) {
+            // Add clicked class
+            chip.classList.add('clicked');
+            
+            // Disable further clicks
+            chip.style.pointerEvents = 'none';
+            
+            // Show feedback
+            console.log('Selected:', chip.textContent);
+            
+            // Simulate action
+            setTimeout(() => {
+                alert('Action: ' + chip.textContent + '\n\nIn the actual app, this would trigger the corresponding feature.');
+            }, 300);
+        }
+
+        // Add some interactive effects
+        document.querySelectorAll('.chip').forEach(chip => {
+            chip.addEventListener('mouseenter', function() {
+                if (!this.classList.contains('clicked')) {
+                    this.style.transform = 'translateY(-2px)';
+                }
+            });
+            
+            chip.addEventListener('mouseleave', function() {
+                if (!this.classList.contains('clicked')) {
+                    this.style.transform = 'translateY(0)';
+                }
+            });
+        });
+    </script>
+</body>
+</html>

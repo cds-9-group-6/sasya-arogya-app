@@ -1,8 +1,8 @@
 <?xml version="1.0" encoding="utf-8"?>
-<!-- Professional Insurance Premium Card Layout -->
+<!-- Professional Insurance Certificate Card Layout -->
 <androidx.cardview.widget.CardView xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
-    android:id="@+id/insuranceCardWrapper"
+    android:id="@+id/insuranceCertificateCardWrapper"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     android:layout_marginTop="12dp"
@@ -21,7 +21,7 @@
         android:padding="20dp"
         android:paddingBottom="40dp">
 
-        <!-- Insurance Header -->
+        <!-- Certificate Header -->
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
@@ -29,7 +29,7 @@
             android:gravity="center_vertical"
             android:layout_marginBottom="16dp">
 
-            <!-- Insurance Icon -->
+            <!-- Certificate Icon -->
             <LinearLayout
                 android:layout_width="40dp"
                 android:layout_height="40dp"
@@ -40,12 +40,12 @@
                 <TextView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:text="🛡️"
+                    android:text="📄"
                     android:textSize="20sp"
                     android:textColor="@color/clean_white" />
             </LinearLayout>
 
-            <!-- Insurance Title Section -->
+            <!-- Certificate Title Section -->
             <LinearLayout
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
@@ -53,19 +53,21 @@
                 android:orientation="vertical">
 
                 <TextView
-                    android:layout_width="wrap_content"
+                    android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:text="💰 CROP INSURANCE"
-                    android:textSize="16sp"
+                    android:text="📋 INSURANCE CERTIFICATE"
+                    android:textSize="15sp"
                     android:textStyle="bold"
                     android:textColor="@color/earth_text_primary"
-                    android:letterSpacing="0.05" />
+                    android:letterSpacing="0.02"
+                    android:singleLine="true"
+                    android:ellipsize="none" />
 
                 <TextView
-                    android:id="@+id/insuranceCropInfo"
-                    android:layout_width="wrap_content"
+                    android:id="@+id/certificatePolicyId"
+                    android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:text="Potato • Tamil Nadu • 3.0 hectares"
+                    android:text="Policy ID: POL-AB8E7A02"
                     android:textSize="13sp"
                     android:textColor="@color/earth_text_secondary"
                     android:layout_marginTop="2dp" />
@@ -73,7 +75,7 @@
 
         </LinearLayout>
 
-        <!-- Premium Calculation Summary -->
+        <!-- Certificate Details Summary -->
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
@@ -82,7 +84,7 @@
             android:padding="16dp"
             android:layout_marginBottom="16dp">
 
-            <!-- Total Premium (Most Important) -->
+            <!-- Policy Information -->
             <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
@@ -94,50 +96,48 @@
                     android:layout_width="0dp"
                     android:layout_weight="1"
                     android:layout_height="wrap_content"
-                    android:text="Total Premium"
-                    android:textSize="18sp"
-                    android:textStyle="bold"
-                    android:textColor="@color/earth_text_primary" />
-
-                <TextView
-                    android:id="@+id/totalPremiumAmount"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:text="₹40,702.76"
-                    android:textSize="20sp"
-                    android:textStyle="bold"
-                    android:textColor="#1976D2"
-                    android:background="@drawable/amount_highlight_background"
-                    android:padding="8dp" />
-            </LinearLayout>
-
-            <!-- Government Subsidy -->
-            <LinearLayout
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:orientation="horizontal"
-                android:gravity="center_vertical"
-                android:layout_marginBottom="8dp">
-
-                <TextView
-                    android:layout_width="0dp"
-                    android:layout_weight="1"
-                    android:layout_height="wrap_content"
-                    android:text="🏛️ Government Subsidy"
+                    android:text="Policy ID"
                     android:textSize="15sp"
                     android:textColor="@color/earth_text_primary" />
 
                 <TextView
-                    android:id="@+id/subsidyAmount"
+                    android:id="@+id/certificatePolicyIdValue"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:text="₹36,632.48"
-                    android:textSize="16sp"
+                    android:text="POL-AB8E7A02"
+                    android:textSize="15sp"
                     android:textStyle="bold"
-                    android:textColor="#4CAF50" />
+                    android:textColor="#1976D2" />
             </LinearLayout>
 
-            <!-- Farmer Contribution (What farmer pays) -->
+            <!-- Company Information -->
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="vertical"
+                android:layout_marginBottom="8dp">
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="🏢 Insurance Company"
+                    android:textSize="15sp"
+                    android:textColor="@color/earth_text_primary"
+                    android:layout_marginBottom="4dp" />
+
+                <TextView
+                    android:id="@+id/certificateCompanyName"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:text="Tamil Nadu Crop Insurance Ltd"
+                    android:textSize="15sp"
+                    android:textStyle="bold"
+                    android:textColor="@color/earth_text_primary"
+                    android:singleLine="true"
+                    android:ellipsize="end" />
+            </LinearLayout>
+
+            <!-- Coverage Amount -->
             <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
@@ -150,19 +150,19 @@
                     android:layout_width="0dp"
                     android:layout_weight="1"
                     android:layout_height="wrap_content"
-                    android:text="👨‍🌾 Your Contribution"
+                    android:text="💰 Total Coverage"
                     android:textSize="16sp"
                     android:textStyle="bold"
                     android:textColor="@color/earth_text_primary" />
 
                 <TextView
-                    android:id="@+id/farmerContributionAmount"
+                    android:id="@+id/certificateTotalCoverage"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:text="₹4,070.28"
+                    android:text="₹18,211.50"
                     android:textSize="18sp"
                     android:textStyle="bold"
-                    android:textColor="#FF5722"
+                    android:textColor="#4CAF50"
                     android:background="@drawable/farmer_amount_highlight"
                     android:padding="8dp" />
             </LinearLayout>
@@ -173,92 +173,90 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:orientation="vertical"
-            android:layout_marginBottom="16dp">
+            android:layout_marginBottom="12dp">
 
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="📊 Premium Breakdown"
+                android:text="📊 Certificate Details"
                 android:textSize="14sp"
                 android:textStyle="bold"
                 android:textColor="@color/earth_text_primary"
                 android:layout_marginBottom="12dp" />
 
-            <!-- Area Information -->
+            <!-- Farmer Information -->
             <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:orientation="horizontal"
+                android:orientation="vertical"
                 android:layout_marginBottom="8dp">
 
                 <TextView
-                    android:layout_width="100dp"
+                    android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:text="Area:"
+                    android:text="Farmer:"
                     android:textSize="14sp"
-                    android:textColor="@color/earth_text_secondary" />
+                    android:textColor="@color/earth_text_secondary"
+                    android:layout_marginBottom="2dp" />
 
                 <TextView
-                    android:id="@+id/areaDetails"
-                    android:layout_width="0dp"
-                    android:layout_weight="1"
+                    android:id="@+id/certificateFarmerName"
+                    android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:text="3.0 hectares"
+                    android:text="Farmer"
                     android:textSize="14sp"
                     android:textStyle="bold"
                     android:textColor="@color/earth_text_primary" />
             </LinearLayout>
 
-            <!-- Premium per hectare -->
+            <!-- Crop Information -->
             <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:orientation="horizontal"
+                android:orientation="vertical"
                 android:layout_marginBottom="8dp">
 
                 <TextView
-                    android:layout_width="100dp"
+                    android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:text="Rate:"
+                    android:text="Crop:"
                     android:textSize="14sp"
-                    android:textColor="@color/earth_text_secondary" />
+                    android:textColor="@color/earth_text_secondary"
+                    android:layout_marginBottom="2dp" />
 
                 <TextView
-                    android:id="@+id/premiumPerHectare"
-                    android:layout_width="0dp"
-                    android:layout_weight="1"
+                    android:id="@+id/certificateCropInfo"
+                    android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:text="₹13,567.59 per hectare"
+                    android:text="Potato • Tamil Nadu • 0.4 hectares"
                     android:textSize="14sp"
                     android:textStyle="bold"
                     android:textColor="@color/earth_text_primary" />
             </LinearLayout>
 
-            <!-- Disease Context -->
+            <!-- Premium Breakdown -->
             <LinearLayout
-                android:id="@+id/diseaseInfoContainer"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:orientation="horizontal"
-                android:layout_marginBottom="8dp"
-                android:visibility="gone">
+                android:orientation="vertical"
+                android:layout_marginBottom="8dp">
 
                 <TextView
-                    android:layout_width="100dp"
+                    android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:text="Disease:"
+                    android:text="Premium:"
                     android:textSize="14sp"
-                    android:textColor="@color/earth_text_secondary" />
+                    android:textColor="@color/earth_text_secondary"
+                    android:layout_marginBottom="2dp" />
 
                 <TextView
-                    android:id="@+id/diseaseContext"
-                    android:layout_width="0dp"
-                    android:layout_weight="1"
+                    android:id="@+id/certificatePremiumBreakdown"
+                    android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:text="Mosaic Virus"
+                    android:text="₹1,517.62 (Farmer) + ₹4,552.88 (Government)"
                     android:textSize="14sp"
                     android:textStyle="bold"
-                    android:textColor="#FF5722" />
+                    android:textColor="@color/earth_text_primary" />
             </LinearLayout>
         </LinearLayout>
 
@@ -278,10 +276,10 @@
                 app:cardElevation="4dp">
 
                 <TextView
-                    android:id="@+id/applyInsuranceButton"
+                    android:id="@+id/viewCertificateButton"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:text="🛡️ Apply for Insurance"
+                    android:text="📄 View Certificate PDF"
                     android:textSize="16sp"
                     android:textStyle="bold"
                     android:textColor="@color/clean_white"
