@@ -1,6 +1,8 @@
 package com.sasya.arogya
 
 import android.content.ContentValues
+import android.content.Intent
+import android.app.Activity
 import android.graphics.Bitmap
 import android.graphics.ImageDecoder
 import android.net.Uri
@@ -112,11 +114,22 @@ class MainActivityFSM : ComponentActivity(), FSMStreamHandler.StreamCallback {
     private var thinkingAnimation: Runnable? = null
     private var thinkingMessage: ChatMessage? = null
     
-    // Image picker launcher
+    // Image picker launcher with enhanced error handling
     private val imagePickerLauncher = registerForActivityResult(
         ActivityResultContracts.GetContent()
     ) { uri ->
         uri?.let { handleSelectedImage(it) }
+    }
+    
+    // Alternative image picker using older intent method as fallback
+    private val legacyImagePickerLauncher = registerForActivityResult(
+        ActivityResultContracts.StartActivityForResult()
+    ) { result ->
+        if (result.resultCode == Activity.RESULT_OK) {
+            result.data?.data?.let { uri ->
+                handleSelectedImage(uri)
+            }
+        }
     }
     
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -408,10 +421,20 @@ class MainActivityFSM : ComponentActivity(), FSMStreamHandler.StreamCallback {
     
     private fun openImagePicker() {
         try {
+            // Try modern image picker first
             imagePickerLauncher.launch("image/*")
         } catch (e: Exception) {
-            Log.e(TAG, "Error opening image picker", e)
-            showError("Failed to open image picker: ${e.message}")
+            Log.w(TAG, "Modern image picker failed, trying legacy method: ${e.message}")
+            try {
+                // Fallback to legacy intent method
+                val intent = Intent(Intent.ACTION_PICK, MediaStore.Images.Media.EXTERNAL_CONTENT_URI).apply {
+                    type = "image/*"
+                }
+                legacyImagePickerLauncher.launch(intent)
+            } catch (legacyException: Exception) {
+                Log.e(TAG, "Both image picker methods failed", legacyException)
+                showError("Unable to open image picker. This might be a system issue. Please try restarting the app or device.")
+            }
         }
     }
     

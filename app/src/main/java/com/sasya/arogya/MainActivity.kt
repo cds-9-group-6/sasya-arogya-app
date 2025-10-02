@@ -1,6 +1,8 @@
 package com.sasya.arogya
 
 import android.annotation.SuppressLint
+import android.app.Activity
+import android.content.Intent
 import android.graphics.Bitmap
 import android.graphics.BitmapFactory
 import android.graphics.ImageDecoder
@@ -102,7 +104,7 @@ class MainActivity : ComponentActivity() {
 
     private val TAG = "MainActivity" // For logging
     
-    // Modern Activity Result API for image selection
+    // Modern Activity Result API for image selection with fallback
     private val imagePickerLauncher =
         registerForActivityResult(ActivityResultContracts.GetContent()) { uri ->
         if (uri != null) {
@@ -116,6 +118,22 @@ class MainActivity : ComponentActivity() {
                 }
             }
         }
+    
+    // Alternative image picker using older intent method as fallback
+    private val legacyImagePickerLauncher = registerForActivityResult(
+        ActivityResultContracts.StartActivityForResult()
+    ) { result ->
+        if (result.resultCode == Activity.RESULT_OK) {
+            result.data?.data?.let { uri ->
+                try {
+                    showSelectedImage(uri)
+                } catch (e: Exception) {
+                    Log.e(TAG, "Error handling selected image from legacy picker", e)
+                    Toast.makeText(this, "Error processing image: ${e.message}", Toast.LENGTH_LONG).show()
+                }
+            }
+        }
+    }
 
     // Conversation persistence functions
     private fun saveConversations() {
@@ -275,7 +293,22 @@ class MainActivity : ComponentActivity() {
 
         // Upload Button
         uploadBtn.setOnClickListener {
-            imagePickerLauncher.launch("image/*")
+            try {
+                // Try modern image picker first
+                imagePickerLauncher.launch("image/*")
+            } catch (e: Exception) {
+                Log.w(TAG, "Modern image picker failed, trying legacy method: ${e.message}")
+                try {
+                    // Fallback to legacy intent method
+                    val intent = Intent(Intent.ACTION_PICK, MediaStore.Images.Media.EXTERNAL_CONTENT_URI).apply {
+                        type = "image/*"
+                    }
+                    legacyImagePickerLauncher.launch(intent)
+                } catch (legacyException: Exception) {
+                    Log.e(TAG, "Both image picker methods failed", legacyException)
+                    Toast.makeText(this, "Unable to open image picker. This might be a system issue. Please try restarting the app or device.", Toast.LENGTH_LONG).show()
+                }
+            }
         }
 
         // Remove Image Button
