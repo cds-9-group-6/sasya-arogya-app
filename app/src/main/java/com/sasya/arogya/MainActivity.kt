@@ -549,7 +549,7 @@ class MainActivity : ComponentActivity() {
         // Add message text if not empty - Show text below image
         if (message.text.isNotEmpty()) {
             val textView = TextView(this).apply {
-                text = TextFormattingUtil.formatWhatsAppStyle(message.text) // Format bold text
+                text = TextFormattingUtil.formatWhatsAppStyle(message.text, this@MainActivity) // Format bold text
                 textSize = 16f // Standard message text size
                 setTextColor(ContextCompat.getColor(this@MainActivity, R.color.user_text))
                 setLineSpacing(4f, 1.1f) // WhatsApp-like line spacing

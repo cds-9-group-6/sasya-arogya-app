@@ -123,7 +123,7 @@ class ChatAdapter(
         private val messageImage: ImageView = itemView.findViewById(R.id.messageImage)
         
         fun bind(message: ChatMessage) {
-            messageText.text = TextFormattingUtil.formatWhatsAppStyle(message.text)
+            messageText.text = TextFormattingUtil.formatWhatsAppStyle(message.text, itemView.context)
             messageTime.text = timeFormatter.format(Date(message.timestamp))
             
             // Show image if present
@@ -231,7 +231,7 @@ class ChatAdapter(
                             populateInsuranceCertificateCard(message.insuranceCertificate)
                             
                             messageText.visibility = View.VISIBLE
-                            messageText.text = TextFormattingUtil.formatWhatsAppStyle("📄 **Insurance Certificate Generated**\n\nYour crop insurance certificate has been successfully generated and is ready for download.")
+                            messageText.text = TextFormattingUtil.formatWhatsAppStyle("📄 **Insurance Certificate Generated**\n\nYour crop insurance certificate has been successfully generated and is ready for download.", itemView.context)
                         } else {
                             Log.e("ChatAdapter", "Insurance certificate card wrapper not found - showing fallback text")
                             // Show fallback message instead of card
@@ -241,7 +241,7 @@ class ChatAdapter(
                             healthyCardContainer.visibility = View.GONE
                             
                             messageText.visibility = View.VISIBLE
-                            messageText.text = TextFormattingUtil.formatWhatsAppStyle("📄 **Insurance Certificate Generated**\n\nPolicy ID: ${message.insuranceCertificate.policyId}\nCompany: ${message.insuranceCertificate.companyName}\nCoverage: ₹${String.format("%.2f", message.insuranceCertificate.totalSumInsured)}")
+                            messageText.text = TextFormattingUtil.formatWhatsAppStyle("📄 **Insurance Certificate Generated**\n\nPolicy ID: ${message.insuranceCertificate.policyId}\nCompany: ${message.insuranceCertificate.companyName}\nCoverage: ₹${String.format("%.2f", message.insuranceCertificate.totalSumInsured)}", itemView.context)
                         }
                     } catch (e: Exception) {
                         Log.e("ChatAdapter", "Critical error displaying insurance certificate card: ${e.message}", e)
@@ -261,7 +261,7 @@ class ChatAdapter(
                             populateInsuranceCard(message.insuranceDetails)
                             
                             messageText.visibility = View.VISIBLE
-                            messageText.text = TextFormattingUtil.formatWhatsAppStyle("🛡️ **Crop Insurance Premium Calculated**\n\nBased on your plant health analysis and location, here are your insurance options:")
+                            messageText.text = TextFormattingUtil.formatWhatsAppStyle("🛡️ **Crop Insurance Premium Calculated**\n\nBased on your plant health analysis and location, here are your insurance options:", itemView.context)
                         } else {
                             Log.e("ChatAdapter", "Insurance card wrapper not found - showing fallback text")
                             // Show fallback message instead of card
@@ -270,7 +270,7 @@ class ChatAdapter(
                             healthyCardContainer.visibility = View.GONE
                             
                             messageText.visibility = View.VISIBLE
-                            messageText.text = TextFormattingUtil.formatWhatsAppStyle("🛡️ **Insurance Premium Calculated**\n\nCrop: ${message.insuranceDetails.crop}\nArea: ${message.insuranceDetails.area} hectares\nTotal Premium: ₹${String.format("%.2f", message.insuranceDetails.totalPremium)}\nYour Contribution: ₹${String.format("%.2f", message.insuranceDetails.farmerContribution)}")
+                            messageText.text = TextFormattingUtil.formatWhatsAppStyle("🛡️ **Insurance Premium Calculated**\n\nCrop: ${message.insuranceDetails.crop}\nArea: ${message.insuranceDetails.area} hectares\nTotal Premium: ₹${String.format("%.2f", message.insuranceDetails.totalPremium)}\nYour Contribution: ₹${String.format("%.2f", message.insuranceDetails.farmerContribution)}", itemView.context)
                         }
                     } catch (e: Exception) {
                         Log.e("ChatAdapter", "Critical error displaying insurance card: ${e.message}", e)
@@ -312,9 +312,9 @@ class ChatAdapter(
                     // Show dynamic introductory content based on disease/health classification
                     messageText.visibility = View.VISIBLE
                     messageText.text = if (message.diseaseName.lowercase() == "healthy") {
-                        TextFormattingUtil.formatWhatsAppStyle(generateHealthyIntroText(message.confidence))
+                        TextFormattingUtil.formatWhatsAppStyle(generateHealthyIntroText(message.confidence), itemView.context)
                     } else {
-                        TextFormattingUtil.formatWhatsAppStyle(generateDiseaseIntroText(message.diseaseName, message.confidence))
+                        TextFormattingUtil.formatWhatsAppStyle(generateDiseaseIntroText(message.diseaseName, message.confidence), itemView.context)
                     }
                 }
                 else -> {
@@ -327,7 +327,7 @@ class ChatAdapter(
                     lastMessageText = ""
                     
                     messageText.visibility = View.VISIBLE
-                    messageText.text = TextFormattingUtil.formatWhatsAppStyle(message.text)
+                    messageText.text = TextFormattingUtil.formatWhatsAppStyle(message.text, itemView.context)
                 }
             }
             
@@ -453,7 +453,7 @@ class ChatAdapter(
             
             // Extract and format symptoms and treatment from message text
             val diseaseDetails = extractDiseaseDetails(message.text)
-            diseaseContent.text = TextFormattingUtil.formatWhatsAppStyle(diseaseDetails)
+            diseaseContent.text = TextFormattingUtil.formatWhatsAppStyle(diseaseDetails, itemView.context)
         }
         
         private fun populateHealthyCard(message: ChatMessage) {
@@ -470,7 +470,7 @@ class ChatAdapter(
             
             // Extract and format care recommendations from message text
             val healthyDetails = extractHealthyDetails(message.text)
-            healthyContent.text = TextFormattingUtil.formatWhatsAppStyle(healthyDetails)
+            healthyContent.text = TextFormattingUtil.formatWhatsAppStyle(healthyDetails, itemView.context)
         }
         
         private fun extractHealthyStatus(text: String): String? {

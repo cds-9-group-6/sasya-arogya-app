@@ -384,7 +384,7 @@ class MainActivityFSM : ComponentActivity(), FSMStreamHandler.StreamCallback {
     
     private fun addWelcomeMessage() {
         val welcomeMessage = ChatMessage(
-            text = "🌿 **Welcome to Sasya Arogya!**\n\nI'm your intelligent plant health assistant, designed specifically for Indian farmers. I can help you with comprehensive agricultural support.\n\n**🌱 What I can do for you:**\n• **🔬 Diagnose plant diseases** from photos with AI precision\n• **💊 Recommend treatments** and organic medicines\n• **🛡️ Help with crop insurance** and premium calculations\n• **📅 Provide seasonal care** advice for your crops\n• **🌾 Connect with local suppliers** for agricultural needs",
+            text = "🌿 **Welcome to Sasya Arogya!**\n\nI'm your intelligent plant health assistant, designed specifically for Indian farmers. I can help you with comprehensive agricultural support.\n\n**🌱 What I can do for you:**\n• **🔬 Diagnose plant diseases** from photos with AI precision\n• **💊 Recommend treatments** and organic medicines\n• **🛡️ Help with crop insurance** and premium calculations\n• **📅 Provide seasonal care** advice for your crops\n",
             isUser = false,
             state = "Ready",
             followUpItems = listOf(
