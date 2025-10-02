@@ -25,7 +25,7 @@ android {
             versionNameSuffix = "-gpu"
             
             buildConfigField("String", "SERVER_URL_GPU", "\"http://engine-sasya-chikitsa.apps.cluster-mqklc.mqklc.sandbox601.opentlc.com/\"")
-            buildConfigField("String", "SERVER_URL_NON_GPU", "\"http://engine-sasya-chikitsa.apps.cluster-6twrd.6twrd.sandbox1818.opentlc.com/\"")
+            buildConfigField("String", "SERVER_URL_NON_GPU", "\"http://engine-sasya-arogya.apps.cluster-dg9gp.dg9gp.sandbox1039.opentlc.com/\"")
             buildConfigField("String", "DEFAULT_SERVER_TYPE", "\"GPU\"")
             buildConfigField("String", "APP_VARIANT", "\"GPU\"")
         }
@@ -36,7 +36,7 @@ android {
             versionNameSuffix = "-nongpu"
             
             buildConfigField("String", "SERVER_URL_GPU", "\"http://engine-sasya-chikitsa.apps.cluster-mqklc.mqklc.sandbox601.opentlc.com/\"")
-            buildConfigField("String", "SERVER_URL_NON_GPU", "\"http://engine-sasya-chikitsa.apps.cluster-6twrd.6twrd.sandbox1818.opentlc.com/\"")
+            buildConfigField("String", "SERVER_URL_NON_GPU", "\"http://engine-sasya-arogya.apps.cluster-dg9gp.dg9gp.sandbox1039.opentlc.com/\"")
             buildConfigField("String", "DEFAULT_SERVER_TYPE", "\"NON_GPU\"")
             buildConfigField("String", "APP_VARIANT", "\"Non-GPU\"")
             
@@ -166,7 +166,7 @@ tasks.register("buildAllReleaseVariants") {
         println("   3. Deploy to respective environments")
         println("\n🔗 Server URLs:")
         println("   GPU:     http://engine-sasya-chikitsa.apps.cluster-mqklc.mqklc.sandbox601.opentlc.com/")
-        println("   Non-GPU: http://engine-sasya-chikitsa.apps.cluster-6twrd.6twrd.sandbox1818.opentlc.com/")
+        println("   Non-GPU: http://engine-sasya-arogya.apps.cluster-dg9gp.dg9gp.sandbox1039.opentlc.com/")
     }
 }
 

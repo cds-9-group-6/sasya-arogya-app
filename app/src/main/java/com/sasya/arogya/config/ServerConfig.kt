@@ -14,7 +14,7 @@ import com.sasya.arogya.BuildConfig
  * 
  * Production URLs:
  * - GPU Cluster: http://engine-sasya-chikitsa.apps.cluster-mqklc.mqklc.sandbox601.opentlc.com/
- * - Non-GPU Cluster: http://engine-sasya-chikitsa.apps.cluster-6twrd.6twrd.sandbox1818.opentlc.com/
+ * - Non-GPU Cluster: http://engine-sasya-arogya.apps.cluster-dg9gp.dg9gp.sandbox1039.opentlc.com/
  */
 object ServerConfig {
     private const val PREF_NAME = "sasya_chikitsa_config"
