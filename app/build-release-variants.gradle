@@ -23,7 +23,7 @@ task buildGpuRelease(dependsOn: 'assembleGpuRelease') {
 
 task buildNonGpuRelease(dependsOn: 'assembleNongpuRelease') {
     group 'build'
-    description 'Build release APK for Non-GPU cluster (http://engine-sasya-chikitsa.apps.cluster-6twrd.6twrd.sandbox1818.opentlc.com/)'
+    description 'Build release APK for Non-GPU cluster (http://engine-sasya-arogya.apps.cluster-dg9gp.dg9gp.sandbox1039.opentlc.com/)'
     
     doLast {
         def apkPath = "${project.buildDir}/outputs/apk/nongpu/release"
@@ -33,7 +33,7 @@ task buildNonGpuRelease(dependsOn: 'assembleNongpuRelease') {
             println "✅ Non-GPU Release APK built successfully:"
             println "   📱 File: ${apkFile.name}"
             println "   📂 Path: ${apkFile.absolutePath}"
-            println "   🌐 Server: Non-GPU Cluster (6twrd.sandbox1818)"
+            println "   🌐 Server: Non-GPU Cluster (dg9gp.sandbox1039)"
             println "   📏 Size: ${(apkFile.length() / 1024 / 1024).round(2)} MB"
         } else {
             println "❌ Non-GPU Release APK not found at: ${apkPath}"
@@ -56,7 +56,7 @@ task buildAllReleaseVariants {
         println "   3. Deploy to respective environments"
         println "\n🔗 Server URLs:"
         println "   GPU:     http://engine-sasya-chikitsa.apps.cluster-mqklc.mqklc.sandbox601.opentlc.com/"
-        println "   Non-GPU: http://engine-sasya-chikitsa.apps.cluster-6twrd.6twrd.sandbox1818.opentlc.com/"
+        println "   Non-GPU: http://engine-sasya-arogya.apps.cluster-dg9gp.dg9gp.sandbox1039.opentlc.com/"
     }
 }
 

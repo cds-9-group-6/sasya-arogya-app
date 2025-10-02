@@ -55,9 +55,11 @@ android {
         }
         debug {
             isDebuggable = true
-            buildConfigField("String", "SERVER_URL_GPU", "\"http://10.0.2.2:8080/\"")
-            buildConfigField("String", "SERVER_URL_NON_GPU", "\"http://10.0.2.2:8080/\"")
-            buildConfigField("String", "DEFAULT_SERVER_TYPE", "\"DEBUG\"")
+            // Use the same URLs as production flavors, but with DEBUG server type
+            // This allows debug builds to connect to production servers when needed
+            buildConfigField("String", "SERVER_URL_GPU", "\"http://engine-sasya-chikitsa.apps.cluster-mqklc.mqklc.sandbox601.opentlc.com/\"")
+            buildConfigField("String", "SERVER_URL_NON_GPU", "\"http://engine-sasya-arogya.apps.cluster-dg9gp.dg9gp.sandbox1039.opentlc.com/\"")
+            buildConfigField("String", "DEFAULT_SERVER_TYPE", "\"NON_GPU\"") // Default to Non-GPU for debug
         }
     }
     kotlinOptions {
@@ -132,7 +134,7 @@ tasks.register("buildGpuRelease") {
 
 tasks.register("buildNonGpuRelease") {
     group = "build"
-    description = "Build release APK for Non-GPU cluster (http://engine-sasya-chikitsa.apps.cluster-6twrd.6twrd.sandbox1818.opentlc.com/)"
+    description = "Build release APK for Non-GPU cluster (http://engine-sasya-arogya.apps.cluster-dg9gp.dg9gp.sandbox1039.opentlc.com/)"
     dependsOn("assembleNongpuRelease")
     
     doLast {
@@ -143,7 +145,7 @@ tasks.register("buildNonGpuRelease") {
             println("✅ Non-GPU Release APK built successfully:")
             println("   📱 File: ${apkFile.name}")
             println("   📂 Path: ${apkFile.absolutePath}")
-            println("   🌐 Server: Non-GPU Cluster (6twrd.sandbox1818)")
+            println("   🌐 Server: Non-GPU Cluster (dg9gp.sandbox1039)")
             println("   📏 Size: ${String.format("%.2f", apkFile.length() / 1024.0 / 1024.0)} MB")
         } else {
             println("❌ Non-GPU Release APK not found at: $apkPath")

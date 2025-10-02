@@ -15,6 +15,29 @@ class CsrfTokenInterceptor : Interceptor {
         private const val TAG = "CsrfTokenInterceptor"
         private const val CSRF_HEADER_NAME = "X-CSRF-TOKEN"
         private const val CSRF_COOKIE_NAME = "XSRF-TOKEN"
+        
+        /**
+         * Check if the host is a local development URL that should skip CSRF protection
+         */
+        private fun isLocalDevelopmentUrl(host: String): Boolean {
+            return host == "localhost" ||
+                   host == "127.0.0.1" ||
+                   host == "10.0.2.2" ||  // Android emulator localhost
+                   host.startsWith("192.168.") ||  // Local network
+                   host.startsWith("10.") ||       // Private network ranges
+                   host.startsWith("172.16.") ||   // Private network ranges
+                   host.endsWith(".local")         // mDNS local domains
+        }
+        
+        /**
+         * Check if the host is a production cluster URL that should skip CSRF protection
+         * (Some servers may be misconfigured to require CSRF for API endpoints)
+         */
+        private fun isProductionClusterUrl(host: String): Boolean {
+            return host.contains("opentlc.com") ||
+                   host.contains("cluster-") ||
+                   host.contains("sandbox")
+        }
     }
     
     private var csrfToken: String? = null
@@ -23,10 +46,27 @@ class CsrfTokenInterceptor : Interceptor {
     override fun intercept(chain: Interceptor.Chain): Response {
         val originalRequest = chain.request()
         
+        Log.d(TAG, "Intercepting request to: ${originalRequest.url}")
+        
         // Skip CSRF for GET requests and health checks
         if (originalRequest.method == "GET" || 
             originalRequest.url.encodedPath.contains("health") ||
             originalRequest.url.encodedPath.contains("csrf-token")) {
+            Log.d(TAG, "Skipping CSRF for GET/health/csrf-token request")
+            return chain.proceed(originalRequest)
+        }
+        
+        // Skip CSRF for local development URLs
+        val host = originalRequest.url.host
+        Log.d(TAG, "Checking host: $host")
+        if (isLocalDevelopmentUrl(host)) {
+            Log.d(TAG, "Skipping CSRF for local development URL: $host")
+            return chain.proceed(originalRequest)
+        }
+        
+        // Skip CSRF for production cluster URLs (temporarily to fix server issues)
+        if (isProductionClusterUrl(host)) {
+            Log.d(TAG, "Skipping CSRF for production cluster URL: $host")
             return chain.proceed(originalRequest)
         }
         

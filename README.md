@@ -358,7 +358,7 @@ graph TB
 - **Features**: Faster processing, higher accuracy, support for complex diseases
 
 ##### ⚡ **Non-GPU Cluster (Standard Processing)**
-- **URL**: `http://engine-sasya-chikitsa.apps.cluster-6twrd.6twrd.sandbox1818.opentlc.com/`
+- **URL**: `http://engine-sasya-arogya.apps.cluster-dg9gp.dg9gp.sandbox1039.opentlc.com/`
 - **Purpose**: Standard disease detection for common cases with reliable availability
 - **ML Pipeline**:
   - **Image Preprocessing**: Efficient image processing optimized for CPU
