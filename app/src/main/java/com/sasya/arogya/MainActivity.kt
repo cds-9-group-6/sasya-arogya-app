@@ -104,23 +104,8 @@ class MainActivity : ComponentActivity() {
 
     private val TAG = "MainActivity" // For logging
     
-    // Modern Activity Result API for image selection with fallback
-    private val imagePickerLauncher =
-        registerForActivityResult(ActivityResultContracts.GetContent()) { uri ->
-        if (uri != null) {
-            try {
-                showSelectedImage(uri)
-//                Toast.makeText(this, "Image selected.", Toast.LENGTH_SHORT).show()
-            } catch (e: Exception) {
-                Log.e(TAG, "Error handling selected image", e)
-                    Toast.makeText(this, "Error processing image: ${e.message}", Toast.LENGTH_LONG)
-                        .show()
-                }
-            }
-        }
-    
-    // Alternative image picker using older intent method as fallback
-    private val legacyImagePickerLauncher = registerForActivityResult(
+    // Primary image picker using legacy intent method to avoid Photo Picker issues
+    private val imagePickerLauncher = registerForActivityResult(
         ActivityResultContracts.StartActivityForResult()
     ) { result ->
         if (result.resultCode == Activity.RESULT_OK) {
@@ -128,7 +113,7 @@ class MainActivity : ComponentActivity() {
                 try {
                     showSelectedImage(uri)
                 } catch (e: Exception) {
-                    Log.e(TAG, "Error handling selected image from legacy picker", e)
+                    Log.e(TAG, "Error handling selected image", e)
                     Toast.makeText(this, "Error processing image: ${e.message}", Toast.LENGTH_LONG).show()
                 }
             }
@@ -294,20 +279,31 @@ class MainActivity : ComponentActivity() {
         // Upload Button
         uploadBtn.setOnClickListener {
             try {
-                // Try modern image picker first
-                imagePickerLauncher.launch("image/*")
-            } catch (e: Exception) {
-                Log.w(TAG, "Modern image picker failed, trying legacy method: ${e.message}")
-                try {
-                    // Fallback to legacy intent method
-                    val intent = Intent(Intent.ACTION_PICK, MediaStore.Images.Media.EXTERNAL_CONTENT_URI).apply {
-                        type = "image/*"
-                    }
-                    legacyImagePickerLauncher.launch(intent)
-                } catch (legacyException: Exception) {
-                    Log.e(TAG, "Both image picker methods failed", legacyException)
-                    Toast.makeText(this, "Unable to open image picker. This might be a system issue. Please try restarting the app or device.", Toast.LENGTH_LONG).show()
+                // Create chooser with multiple options to avoid Photo Picker completely
+                val galleryIntent = Intent(Intent.ACTION_PICK, MediaStore.Images.Media.EXTERNAL_CONTENT_URI).apply {
+                    type = "image/*"
                 }
+                
+                val documentsIntent = Intent(Intent.ACTION_GET_CONTENT).apply {
+                    type = "image/*"
+                    addCategory(Intent.CATEGORY_OPENABLE)
+                }
+                
+                // Create camera intent as backup
+                val cameraIntent = Intent(MediaStore.ACTION_IMAGE_CAPTURE)
+                
+                // Create chooser to let user pick between gallery and camera
+                val chooserIntent = Intent.createChooser(galleryIntent, "Select Image").apply {
+                    putExtra(Intent.EXTRA_INITIAL_INTENTS, arrayOf(documentsIntent, cameraIntent))
+                }
+                
+                imagePickerLauncher.launch(chooserIntent)
+                
+                Log.d(TAG, "Image picker launched with legacy intent chooser")
+                
+            } catch (e: Exception) {
+                Log.e(TAG, "Error opening image picker", e)
+                Toast.makeText(this, "Unable to open image picker. This appears to be a system issue. Please try restarting the app.", Toast.LENGTH_LONG).show()
             }
         }
 

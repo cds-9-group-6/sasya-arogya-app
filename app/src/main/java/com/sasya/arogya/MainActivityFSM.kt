@@ -3,6 +3,7 @@ package com.sasya.arogya
 import android.content.ContentValues
 import android.content.Intent
 import android.app.Activity
+import androidx.core.content.FileProvider
 import android.graphics.Bitmap
 import android.graphics.ImageDecoder
 import android.net.Uri
@@ -114,15 +115,8 @@ class MainActivityFSM : ComponentActivity(), FSMStreamHandler.StreamCallback {
     private var thinkingAnimation: Runnable? = null
     private var thinkingMessage: ChatMessage? = null
     
-    // Image picker launcher with enhanced error handling
+    // Primary image picker using legacy intent method to avoid Photo Picker issues
     private val imagePickerLauncher = registerForActivityResult(
-        ActivityResultContracts.GetContent()
-    ) { uri ->
-        uri?.let { handleSelectedImage(it) }
-    }
-    
-    // Alternative image picker using older intent method as fallback
-    private val legacyImagePickerLauncher = registerForActivityResult(
         ActivityResultContracts.StartActivityForResult()
     ) { result ->
         if (result.resultCode == Activity.RESULT_OK) {
@@ -131,6 +125,18 @@ class MainActivityFSM : ComponentActivity(), FSMStreamHandler.StreamCallback {
             }
         }
     }
+    
+    // Backup camera launcher for devices with gallery issues
+    private val cameraLauncher = registerForActivityResult(
+        ActivityResultContracts.TakePicture()
+    ) { success ->
+        if (success && tempImageUri != null) {
+            handleSelectedImage(tempImageUri!!)
+        }
+    }
+    
+    // Temporary URI for camera capture
+    private var tempImageUri: Uri? = null
     
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -421,20 +427,32 @@ class MainActivityFSM : ComponentActivity(), FSMStreamHandler.StreamCallback {
     
     private fun openImagePicker() {
         try {
-            // Try modern image picker first
-            imagePickerLauncher.launch("image/*")
-        } catch (e: Exception) {
-            Log.w(TAG, "Modern image picker failed, trying legacy method: ${e.message}")
-            try {
-                // Fallback to legacy intent method
-                val intent = Intent(Intent.ACTION_PICK, MediaStore.Images.Media.EXTERNAL_CONTENT_URI).apply {
-                    type = "image/*"
-                }
-                legacyImagePickerLauncher.launch(intent)
-            } catch (legacyException: Exception) {
-                Log.e(TAG, "Both image picker methods failed", legacyException)
-                showError("Unable to open image picker. This might be a system issue. Please try restarting the app or device.")
+            // Create chooser with multiple options to avoid Photo Picker completely
+            val galleryIntent = Intent(Intent.ACTION_PICK, MediaStore.Images.Media.EXTERNAL_CONTENT_URI).apply {
+                type = "image/*"
             }
+            
+            val documentsIntent = Intent(Intent.ACTION_GET_CONTENT).apply {
+                type = "image/*"
+                addCategory(Intent.CATEGORY_OPENABLE)
+            }
+            
+            // Create camera intent as backup
+            val cameraIntent = Intent(MediaStore.ACTION_IMAGE_CAPTURE)
+            
+            // Create chooser to let user pick between gallery and camera
+            val chooserIntent = Intent.createChooser(galleryIntent, "Select Image").apply {
+                putExtra(Intent.EXTRA_INITIAL_INTENTS, arrayOf(documentsIntent, cameraIntent))
+            }
+            
+            imagePickerLauncher.launch(chooserIntent)
+            
+            Log.d(TAG, "Image picker launched with legacy intent chooser")
+            
+        } catch (e: Exception) {
+            Log.e(TAG, "Error opening image picker", e)
+            // Final fallback - show error with helpful message
+            showError("Unable to open image picker. This appears to be a system issue. Please try:\n1. Restarting the app\n2. Clearing app cache\n3. Restarting your device")
         }
     }
     
