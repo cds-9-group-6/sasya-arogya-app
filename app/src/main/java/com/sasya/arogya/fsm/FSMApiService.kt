@@ -36,6 +36,12 @@ interface FSMApiService {
     fun healthCheck(): Call<Map<String, Any>>
     
     /**
+     * Get CSRF token endpoint
+     */
+    @GET("csrf-token")
+    fun getCsrfToken(): Call<Map<String, String>>
+    
+    /**
      * Session info endpoint
      */
     @GET("sasya-chikitsa/session/{sessionId}")

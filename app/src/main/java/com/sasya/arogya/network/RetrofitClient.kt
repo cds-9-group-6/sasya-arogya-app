@@ -2,6 +2,7 @@ package com.sasya.arogya.network
 
 import android.content.Context
 import com.sasya.arogya.config.ServerConfig
+import com.sasya.arogya.fsm.CsrfTokenInterceptor
 import okhttp3.OkHttpClient
 import okhttp3.logging.HttpLoggingInterceptor
 import retrofit2.Retrofit
@@ -30,7 +31,12 @@ object RetrofitClient {
         val loggingInterceptor = HttpLoggingInterceptor().apply {
             level = HttpLoggingInterceptor.Level.BODY // Or Level.BASIC for less verbosity
         }
+        
+        // Create CSRF token interceptor
+        val csrfInterceptor = CsrfTokenInterceptor()
+        
         val okHttpClient = OkHttpClient.Builder()
+            .addInterceptor(csrfInterceptor) // Add CSRF interceptor first
             .addInterceptor(loggingInterceptor)
             .connectTimeout(30, TimeUnit.SECONDS)
             .readTimeout(0, TimeUnit.SECONDS)

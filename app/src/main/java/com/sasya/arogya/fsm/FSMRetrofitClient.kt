@@ -48,8 +48,12 @@ object FSMRetrofitClient {
             level = HttpLoggingInterceptor.Level.BODY
         }
         
+        // Create CSRF token interceptor
+        val csrfInterceptor = CsrfTokenInterceptor()
+        
         // Configure OkHttp client for streaming
         val okHttpClient = OkHttpClient.Builder()
+            .addInterceptor(csrfInterceptor) // Add CSRF interceptor first
             .addInterceptor(loggingInterceptor)
             .connectTimeout(30, TimeUnit.SECONDS)
             .readTimeout(0, TimeUnit.SECONDS) // No timeout for streaming
