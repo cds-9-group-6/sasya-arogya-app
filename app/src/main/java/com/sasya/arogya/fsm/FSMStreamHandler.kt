@@ -163,6 +163,22 @@ class FSMStreamHandler {
                         val stateUpdate = gson.fromJson(data, FSMStateUpdate::class.java)
                         callback.onStateUpdate(stateUpdate)
                         
+                        // Handle errors in state updates (e.g., MCP server unavailable)
+                        if (stateUpdate.nextAction == "error" && stateUpdate.errorMessage != null) {
+                            Log.e(TAG, "State update contains error: ${stateUpdate.errorMessage}")
+                            callback.onError(stateUpdate.errorMessage)
+                            return@withContext // Don't process other parts if there's an error
+                        }
+                        
+                        // Handle legacy error field as well
+                        stateUpdate.error?.let { errorMsg ->
+                            if (errorMsg.isNotBlank()) {
+                                Log.e(TAG, "State update contains legacy error: $errorMsg")
+                                callback.onError(errorMsg)
+                                return@withContext // Don't process other parts if there's an error
+                            }
+                        }
+                        
                         // Handle specific parts of state update
                         stateUpdate.assistantResponse?.let { message ->
                             if (message.isNotBlank()) {
