@@ -38,9 +38,11 @@ object RetrofitClient {
         val okHttpClient = OkHttpClient.Builder()
             .addInterceptor(csrfInterceptor) // Add CSRF interceptor first
             .addInterceptor(loggingInterceptor)
-            .connectTimeout(30, TimeUnit.SECONDS)
-            .readTimeout(0, TimeUnit.SECONDS)
-            .writeTimeout(30, TimeUnit.SECONDS)
+            .connectTimeout(30, TimeUnit.SECONDS) // Connection timeout
+            .readTimeout(120, TimeUnit.SECONDS) // Read timeout for streaming (2 minutes)
+            .writeTimeout(30, TimeUnit.SECONDS) // Write timeout
+            .callTimeout(300, TimeUnit.SECONDS) // Overall call timeout (5 minutes max)
+            .retryOnConnectionFailure(true)
             .build()
 
         val retrofit = Retrofit.Builder()

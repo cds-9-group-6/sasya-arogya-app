@@ -54,6 +54,7 @@ import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
+import kotlinx.coroutines.withTimeout
 import java.io.ByteArrayOutputStream
 import java.io.InputStream
 import java.util.Calendar
@@ -114,6 +115,9 @@ class MainActivityFSM : ComponentActivity(), FSMStreamHandler.StreamCallback {
     private var isThinking = false
     private var thinkingAnimation: Runnable? = null
     private var thinkingMessage: ChatMessage? = null
+    
+    // Request management
+    private var currentRequestJob: kotlinx.coroutines.Job? = null
     
     // Primary image picker using legacy intent method to avoid Photo Picker issues
     private val imagePickerLauncher = registerForActivityResult(
@@ -558,8 +562,22 @@ class MainActivityFSM : ComponentActivity(), FSMStreamHandler.StreamCallback {
     }
     
     private fun sendToFSMAgent(message: String, imageBase64: String?) {
-        CoroutineScope(Dispatchers.IO).launch {
+        // Cancel any existing request
+        currentRequestJob?.cancel()
+        
+        currentRequestJob = CoroutineScope(Dispatchers.IO).launch {
             try {
+                withContext(Dispatchers.Main) {
+                    // Show appropriate loading state based on server type
+                    val serverType = ServerConfig.getServerType(this@MainActivityFSM)
+                    val loadingMessage = when (serverType) {
+                        ServerConfig.SERVER_TYPE_NON_GPU -> "Processing on Non-GPU cluster (this may take 2-3 minutes)..."
+                        ServerConfig.SERVER_TYPE_GPU -> "Processing on GPU cluster..."
+                        else -> "Processing your request..."
+                    }
+                    updateStateIndicator(loadingMessage)
+                }
+                
                 // Get agricultural profile for personalized responses
                 val userProfile = getUserAgriculturalProfile()
                 
@@ -580,23 +598,72 @@ class MainActivityFSM : ComponentActivity(), FSMStreamHandler.StreamCallback {
                 
                 Log.d(TAG, "Sending request to FSM agent: $message")
                 
+                // Set different timeouts based on server type
+                val timeoutMillis = when (ServerConfig.getServerType(this@MainActivityFSM)) {
+                    ServerConfig.SERVER_TYPE_NON_GPU -> 300_000L // 5 minutes for non-GPU
+                    ServerConfig.SERVER_TYPE_GPU -> 120_000L // 2 minutes for GPU
+                    else -> 180_000L // 3 minutes for others
+                }
+                
                 val call = FSMRetrofitClient.apiService.chatStream(request)
-                val response = call.execute()
+                
+                // Execute with timeout
+                val response = withTimeout(timeoutMillis) {
+                    call.execute()
+                }
                 
                 if (response.isSuccessful && response.body() != null) {
                     streamHandler.processStream(response.body()!!, this@MainActivityFSM)
                 } else {
                     withContext(Dispatchers.Main) {
-                        showError("Failed to connect to FSM agent: ${response.message()}")
-                        // Error state handled by user interaction, not status indicator
+                        val errorMsg = when (response.code()) {
+                            408 -> "Request timeout. The server is taking too long to respond."
+                            500 -> "Server error. Please try again in a few moments."
+                            503 -> "Server temporarily unavailable. Please try again."
+                            else -> "Failed to connect to server: ${response.message()}"
+                        }
+                        showError(errorMsg)
+                        clearStateIndicator()
                     }
                 }
                 
+            } catch (e: kotlinx.coroutines.TimeoutCancellationException) {
+                Log.e(TAG, "Request timeout", e)
+                withContext(Dispatchers.Main) {
+                    val serverType = ServerConfig.getServerType(this@MainActivityFSM)
+                    val timeoutMessage = when (serverType) {
+                        ServerConfig.SERVER_TYPE_NON_GPU -> 
+                            "Non-GPU cluster is taking longer than expected (>5 min). Please try the GPU cluster for faster processing or try again later."
+                        ServerConfig.SERVER_TYPE_GPU -> 
+                            "GPU cluster timeout. Please check your connection and try again."
+                        else -> 
+                            "Request timeout. Please try again or switch to a different server."
+                    }
+                    showTimeoutError(timeoutMessage, serverType)
+                    clearStateIndicator()
+                }
+            } catch (e: java.net.SocketTimeoutException) {
+                Log.e(TAG, "Socket timeout", e)
+                withContext(Dispatchers.Main) {
+                    showError("Connection timeout. Please check your internet connection and try again.")
+                    clearStateIndicator()
+                }
+            } catch (e: java.net.ConnectException) {
+                Log.e(TAG, "Connection failed", e)
+                withContext(Dispatchers.Main) {
+                    showError("Cannot connect to server. Please check server availability and your internet connection.")
+                    clearStateIndicator()
+                }
             } catch (e: Exception) {
                 Log.e(TAG, "Error sending message to FSM agent", e)
                 withContext(Dispatchers.Main) {
-                    showError("Connection error: ${e.message}")
-                    // Error state handled by user interaction, not status indicator
+                    val errorMsg = when (e) {
+                        is java.net.UnknownHostException -> "Cannot reach server. Please check your internet connection."
+                        is javax.net.ssl.SSLException -> "Secure connection failed. Please check server configuration."
+                        else -> "Connection error: ${e.message}"
+                    }
+                    showError(errorMsg)
+                    clearStateIndicator()
                 }
             }
         }
@@ -985,6 +1052,10 @@ class MainActivityFSM : ComponentActivity(), FSMStreamHandler.StreamCallback {
         Toast.makeText(this, message, Toast.LENGTH_LONG).show()
     }
     
+    private fun showSuccess(message: String) {
+        Toast.makeText(this, message, Toast.LENGTH_SHORT).show()
+    }
+    
     /**
      * Show dedicated server configuration dialog
      */
@@ -1327,6 +1398,76 @@ class MainActivityFSM : ComponentActivity(), FSMStreamHandler.StreamCallback {
         return Base64.encodeToString(byteArray, Base64.DEFAULT)
     }
     
+    /**
+     * Update state indicator with message
+     */
+    private fun updateStateIndicator(message: String) {
+        // Update the last assistant message with state info if it exists
+        if (currentSessionState.messages.isNotEmpty()) {
+            val lastMessage = currentSessionState.messages.last()
+            if (!lastMessage.isUser) {
+                val updatedMessage = lastMessage.copy(state = message)
+                currentSessionState.messages[currentSessionState.messages.size - 1] = updatedMessage
+                chatAdapter.updateLastMessage(updatedMessage.text, message)
+            }
+        }
+    }
+    
+    /**
+     * Clear state indicator
+     */
+    private fun clearStateIndicator() {
+        // Remove thinking indicator if present
+        hideThinkingIndicator()
+        
+        // Clear state from last message if it exists
+        if (currentSessionState.messages.isNotEmpty()) {
+            val lastMessage = currentSessionState.messages.last()
+            if (!lastMessage.isUser && lastMessage.state != null) {
+                val updatedMessage = lastMessage.copy(state = null)
+                currentSessionState.messages[currentSessionState.messages.size - 1] = updatedMessage
+                chatAdapter.updateLastMessage(updatedMessage.text, null)
+            }
+        }
+    }
+    
+    /**
+     * Show timeout error with server-specific suggestions
+     */
+    private fun showTimeoutError(message: String, serverType: String) {
+        val alertDialog = AlertDialog.Builder(this)
+            .setTitle("⏰ Request Timeout")
+            .setMessage(message)
+            .setPositiveButton("Try Again") { _, _ ->
+                // Retry with the same server
+                val lastUserMessage = currentSessionState.messages.findLast { it.isUser }
+                lastUserMessage?.let { msg ->
+                    val imageB64 = if (msg.imageUri != null) selectedImageBase64 else null
+                    sendToFSMAgent(msg.text, imageB64)
+                }
+            }
+        
+        // Add server switching option for non-GPU timeouts
+        if (serverType == ServerConfig.SERVER_TYPE_NON_GPU) {
+            alertDialog.setNeutralButton("Switch to GPU") { _, _ ->
+                // Switch to GPU server and retry
+                ServerConfig.setServerType(this, ServerConfig.SERVER_TYPE_GPU)
+                showSuccess("Switched to GPU cluster for faster processing")
+                val lastUserMessage = currentSessionState.messages.findLast { it.isUser }
+                lastUserMessage?.let { msg ->
+                    val imageB64 = if (msg.imageUri != null) selectedImageBase64 else null
+                    sendToFSMAgent(msg.text, imageB64)
+                }
+            }
+        }
+        
+        alertDialog.setNegativeButton("Cancel") { dialog, _ ->
+            dialog.dismiss()
+        }
+        
+        alertDialog.create().show()
+    }
+    
     // Thinking Indicator Methods
     private fun showThinkingIndicator() {
         Log.d(TAG, "🤔 Showing thinking indicator")
@@ -1409,6 +1550,10 @@ class MainActivityFSM : ComponentActivity(), FSMStreamHandler.StreamCallback {
             }
             thinkingMessage = null
         }
+    }
+    
+    private fun hideThinkingIndicator() {
+        stopThinkingIndicator()
     }
     
     // Feedback handling methods

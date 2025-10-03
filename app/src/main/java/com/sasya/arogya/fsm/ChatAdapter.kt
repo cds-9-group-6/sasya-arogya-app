@@ -92,6 +92,16 @@ class ChatAdapter(
         }
     }
     
+    fun updateLastMessage(text: String, state: String?) {
+        if (messages.isNotEmpty()) {
+            val lastMessage = messages[messages.size - 1]
+            if (!lastMessage.isUser) {
+                messages[messages.size - 1] = lastMessage.copy(text = text, state = state)
+                notifyItemChanged(messages.size - 1)
+            }
+        }
+    }
+    
     fun addFollowUpToLastMessage(followUpItems: List<String>) {
         if (messages.isNotEmpty()) {
             val lastMessage = messages[messages.size - 1]
