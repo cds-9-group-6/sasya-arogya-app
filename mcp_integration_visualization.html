@@ -1,0 +1,482 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Sasya Arogya - MCP Integration & Insurance Tools</title>
+    <script src="https://cdn.jsdelivr.net/npm/mermaid@10.6.1/dist/mermaid.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/html2canvas@1.4.1/dist/html2canvas.min.js"></script>
+    <style>
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            margin: 0;
+            padding: 20px;
+            background: linear-gradient(135deg, #880e4f 0%, #ad1457 100%);
+            min-height: 100vh;
+        }
+        
+        .container {
+            max-width: 100%;
+            margin: 0 auto;
+            background: white;
+            border-radius: 15px;
+            box-shadow: 0 20px 40px rgba(0,0,0,0.1);
+            overflow: hidden;
+        }
+        
+        .header {
+            background: linear-gradient(135deg, #880e4f 0%, #ad1457 100%);
+            color: white;
+            padding: 30px;
+            text-align: center;
+        }
+        
+        .header h1 {
+            margin: 0;
+            font-size: 2.5em;
+            font-weight: 300;
+        }
+        
+        .header p {
+            margin: 10px 0 0 0;
+            opacity: 0.9;
+            font-size: 1.1em;
+        }
+        
+        .diagram-container {
+            padding: 40px;
+            background: white;
+            overflow-x: auto;
+        }
+        
+        .mermaid {
+            text-align: center;
+            background: white;
+        }
+        
+        .controls {
+            padding: 20px 40px;
+            background: #f8f9fa;
+            border-top: 1px solid #e9ecef;
+            text-align: center;
+        }
+        
+        .btn {
+            display: inline-block;
+            padding: 12px 24px;
+            margin: 0 10px;
+            background: #ad1457;
+            color: white;
+            text-decoration: none;
+            border-radius: 6px;
+            font-weight: 500;
+            transition: all 0.3s ease;
+        }
+        
+        .btn:hover {
+            background: #880e4f;
+            transform: translateY(-2px);
+            box-shadow: 0 4px 8px rgba(173,20,87,0.3);
+        }
+        
+        .btn-secondary {
+            background: #6c757d;
+        }
+        
+        .btn-secondary:hover {
+            background: #545b62;
+        }
+        
+        .info-panel {
+            padding: 30px 40px;
+            background: #f8f9fa;
+            border-top: 1px solid #e9ecef;
+        }
+        
+        .protocol-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(350px, 1fr));
+            gap: 20px;
+            margin-top: 20px;
+        }
+        
+        .protocol-card {
+            background: white;
+            padding: 20px;
+            border-radius: 8px;
+            border-left: 4px solid #ad1457;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+        }
+        
+        .protocol-card h3 {
+            margin: 0 0 10px 0;
+            color: #880e4f;
+            display: flex;
+            align-items: center;
+        }
+        
+        .protocol-icon {
+            margin-right: 10px;
+            font-size: 1.5em;
+        }
+        
+        .message-flow {
+            background: #f8f9fa;
+            padding: 15px;
+            border-radius: 6px;
+            margin-top: 10px;
+            font-family: 'Courier New', monospace;
+            font-size: 0.85em;
+        }
+        
+        .streaming-indicator {
+            background: linear-gradient(90deg, #ad1457, #e91e63, #ad1457);
+            background-size: 200% 100%;
+            animation: streaming 2s linear infinite;
+            color: white;
+            padding: 5px 10px;
+            border-radius: 3px;
+            display: inline-block;
+            margin: 5px 0;
+        }
+        
+        @keyframes streaming {
+            0% { background-position: 200% 0; }
+            100% { background-position: -200% 0; }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <h1>🛡️ MCP Integration & Insurance Tools</h1>
+            <p>Model Context Protocol & Streaming Insurance Services</p>
+        </div>
+        
+        <div class="diagram-container">
+            <div class="mermaid">
+graph TD
+    %% Styling
+    classDef agentClass fill:#f3e5f5,stroke:#7b1fa2,stroke-width:3px,color:#000
+    classDef mcpClass fill:#fce4ec,stroke:#ad1457,stroke-width:3px,color:#000
+    classDef toolClass fill:#fff3e0,stroke:#f57c00,stroke-width:2px,color:#000
+    classDef streamClass fill:#e0f2f1,stroke:#00796b,stroke-width:3px,color:#000
+    classDef dataClass fill:#e3f2fd,stroke:#1976d2,stroke-width:2px,color:#000
+    classDef protocolClass fill:#f1f8e9,stroke:#689f38,stroke-width:2px,color:#000
+
+    %% Agent Layer
+    subgraph AgentLayer["🤖 LangGraph Agent Layer"]
+        InsuranceIntent[🎯 Insurance Intent<br/>Detected]
+        AgentOrchestrator[🎼 Agent Orchestrator<br/>LangGraph]
+        ContextManager[📋 Context Manager<br/>Session State]
+    end
+
+    %% MCP Protocol Layer
+    subgraph MCPProtocol["🔌 MCP Protocol Layer"]
+        MCPClient[📡 MCP Client<br/>Protocol Handler]
+        MessageRouter[🚦 Message Router<br/>Request/Response]
+        StreamManager[📊 Stream Manager<br/>SSE Coordination]
+        ProtocolValidator[✅ Protocol Validator<br/>Message Validation]
+    end
+
+    %% MCP Server Core
+    subgraph MCPServer["🖥️ MCP Server Core"]
+        ServerRuntime[⚙️ Server Runtime<br/>MCP Implementation]
+        ToolRegistry[🛠️ Tool Registry<br/>Available Tools]
+        ResourceManager[📦 Resource Manager<br/>Data Access]
+        SessionHandler[🔐 Session Handler<br/>State Management]
+    end
+
+    %% Insurance Tools
+    subgraph InsuranceTools["🛡️ Insurance Tools Collection"]
+        ClaimAnalyzer[📋 Claim Analyzer<br/>Automated Assessment]
+        PolicyMatcher[🔍 Policy Matcher<br/>Coverage Validation]
+        DocumentGenerator[📄 Document Generator<br/>Certificate Creation]
+        RiskAssessment[⚖️ Risk Assessment<br/>Premium Calculator]
+        FraudDetection[🚨 Fraud Detection<br/>Anomaly Analysis]
+        ComplianceChecker[✅ Compliance Checker<br/>Regulatory Validation]
+    end
+
+    %% Streaming Components
+    subgraph StreamingLayer["📡 Streaming Response Layer"]
+        SSEHandler[📊 SSE Handler<br/>Server-Sent Events]
+        ResponseBuffer[📦 Response Buffer<br/>Chunk Management]
+        StreamFormatter[🎨 Stream Formatter<br/>JSON Streaming]
+        ClientNotifier[📢 Client Notifier<br/>Real-time Updates]
+    end
+
+    %% Data Sources
+    subgraph DataSources["💾 Insurance Data Sources"]
+        PolicyDB[📚 Policy Database<br/>Insurance Policies]
+        ClaimsDB[📋 Claims Database<br/>Historical Claims]
+        RegulatoryDB[⚖️ Regulatory Database<br/>Compliance Rules]
+        RiskModels[📊 Risk Models<br/>ML Predictions]
+        ExternalAPIs[🌐 External APIs<br/>Third-party Services]
+    end
+
+    %% Agent Flow
+    InsuranceIntent --> AgentOrchestrator
+    AgentOrchestrator --> ContextManager
+    AgentOrchestrator --> MCPClient
+
+    %% MCP Protocol Flow
+    MCPClient --> MessageRouter
+    MessageRouter --> ProtocolValidator
+    ProtocolValidator --> ServerRuntime
+    MessageRouter --> StreamManager
+
+    %% Server Processing
+    ServerRuntime --> ToolRegistry
+    ServerRuntime --> ResourceManager
+    ServerRuntime --> SessionHandler
+
+    %% Tool Execution
+    ToolRegistry --> ClaimAnalyzer
+    ToolRegistry --> PolicyMatcher
+    ToolRegistry --> DocumentGenerator
+    ToolRegistry --> RiskAssessment
+    ToolRegistry --> FraudDetection
+    ToolRegistry --> ComplianceChecker
+
+    %% Data Access
+    ResourceManager --> PolicyDB
+    ResourceManager --> ClaimsDB
+    ResourceManager --> RegulatoryDB
+    ResourceManager --> RiskModels
+    ResourceManager --> ExternalAPIs
+
+    %% Tool Data Flow
+    ClaimAnalyzer --> ClaimsDB
+    PolicyMatcher --> PolicyDB
+    DocumentGenerator --> PolicyDB
+    RiskAssessment --> RiskModels
+    FraudDetection --> ClaimsDB
+    ComplianceChecker --> RegulatoryDB
+
+    %% Streaming Response Flow
+    ClaimAnalyzer --> SSEHandler
+    PolicyMatcher --> SSEHandler
+    DocumentGenerator --> SSEHandler
+    RiskAssessment --> SSEHandler
+    FraudDetection --> SSEHandler
+    ComplianceChecker --> SSEHandler
+
+    SSEHandler --> ResponseBuffer
+    ResponseBuffer --> StreamFormatter
+    StreamFormatter --> ClientNotifier
+    StreamManager --> ClientNotifier
+
+    %% Response Back to Agent
+    ClientNotifier --> MCPClient
+    MCPClient --> AgentOrchestrator
+    AgentOrchestrator --> ContextManager
+
+    %% MCP Protocol Messages (dotted lines for protocol communication)
+    MCPClient -.->|"initialize"| ServerRuntime
+    MCPClient -.->|"list_tools"| ToolRegistry
+    MCPClient -.->|"call_tool"| ToolRegistry
+    MCPClient -.->|"list_resources"| ResourceManager
+    MCPClient -.->|"read_resource"| ResourceManager
+    ServerRuntime -.->|"tool_result"| MCPClient
+    ServerRuntime -.->|"resource_data"| MCPClient
+
+    %% Apply Styles
+    class InsuranceIntent,AgentOrchestrator,ContextManager agentClass
+    class MCPClient,MessageRouter,StreamManager,ProtocolValidator,ServerRuntime,ToolRegistry,ResourceManager,SessionHandler mcpClass
+    class ClaimAnalyzer,PolicyMatcher,DocumentGenerator,RiskAssessment,FraudDetection,ComplianceChecker toolClass
+    class SSEHandler,ResponseBuffer,StreamFormatter,ClientNotifier streamClass
+    class PolicyDB,ClaimsDB,RegulatoryDB,RiskModels,ExternalAPIs dataClass
+            </div>
+        </div>
+        
+        <div class="controls">
+            <a href="#" class="btn" onclick="downloadSVG()">📥 Download SVG</a>
+            <a href="#" class="btn" onclick="downloadPNG()">📸 Download PNG</a>
+            <a href="https://mermaid.live/" target="_blank" class="btn btn-secondary">🔗 Edit Online</a>
+        </div>
+        
+        <div class="info-panel">
+            <h2>🔌 MCP Protocol Integration Details</h2>
+            <div class="protocol-grid">
+                <div class="protocol-card">
+                    <h3><span class="protocol-icon">🔌</span>MCP Protocol</h3>
+                    <p>Model Context Protocol enables seamless communication between the LangGraph agent and insurance tools.</p>
+                    <div class="message-flow">
+                        <strong>Protocol Messages:</strong><br/>
+                        → initialize<br/>
+                        → list_tools<br/>
+                        → call_tool<br/>
+                        → list_resources<br/>
+                        ← tool_result<br/>
+                        ← resource_data
+                    </div>
+                </div>
+                
+                <div class="protocol-card">
+                    <h3><span class="protocol-icon">🛠️</span>Insurance Tools</h3>
+                    <p>Comprehensive suite of insurance-specific tools for automated processing and analysis.</p>
+                    <div class="message-flow">
+                        <strong>Available Tools:</strong><br/>
+                        • Claim Analyzer<br/>
+                        • Policy Matcher<br/>
+                        • Document Generator<br/>
+                        • Risk Assessment<br/>
+                        • Fraud Detection<br/>
+                        • Compliance Checker
+                    </div>
+                </div>
+                
+                <div class="protocol-card">
+                    <h3><span class="protocol-icon">📡</span>Streaming Architecture</h3>
+                    <p>Real-time streaming responses using Server-Sent Events for immediate user feedback.</p>
+                    <div class="message-flow">
+                        <strong>Streaming Flow:</strong><br/>
+                        <span class="streaming-indicator">Tool Execution</span><br/>
+                        <span class="streaming-indicator">SSE Handler</span><br/>
+                        <span class="streaming-indicator">Response Buffer</span><br/>
+                        <span class="streaming-indicator">Client Update</span>
+                    </div>
+                </div>
+                
+                <div class="protocol-card">
+                    <h3><span class="protocol-icon">📋</span>Claim Processing</h3>
+                    <p>Automated claim analysis with ML-powered assessment and fraud detection capabilities.</p>
+                    <div class="message-flow">
+                        <strong>Claim Workflow:</strong><br/>
+                        1. Document ingestion<br/>
+                        2. OCR & data extraction<br/>
+                        3. Policy validation<br/>
+                        4. Risk assessment<br/>
+                        5. Fraud analysis<br/>
+                        6. Approval/rejection
+                    </div>
+                </div>
+                
+                <div class="protocol-card">
+                    <h3><span class="protocol-icon">🔍</span>Policy Matching</h3>
+                    <p>Intelligent policy matching based on crop type, location, and coverage requirements.</p>
+                    <div class="message-flow">
+                        <strong>Matching Criteria:</strong><br/>
+                        • Crop type coverage<br/>
+                        • Geographic eligibility<br/>
+                        • Premium affordability<br/>
+                        • Risk profile alignment<br/>
+                        • Seasonal considerations
+                    </div>
+                </div>
+                
+                <div class="protocol-card">
+                    <h3><span class="protocol-icon">📄</span>Document Generation</h3>
+                    <p>Automated generation of insurance certificates, policies, and claim documents.</p>
+                    <div class="message-flow">
+                        <strong>Document Types:</strong><br/>
+                        • Insurance certificates<br/>
+                        • Policy documents<br/>
+                        • Claim forms<br/>
+                        • Premium receipts<br/>
+                        • Coverage summaries
+                    </div>
+                </div>
+            </div>
+            
+            <h3>🔄 MCP Integration Benefits</h3>
+            <ul>
+                <li><strong>🔌 Standardized Protocol:</strong> Consistent communication interface between agent and tools</li>
+                <li><strong>📡 Real-time Streaming:</strong> Immediate feedback during insurance processing operations</li>
+                <li><strong>🛠️ Tool Modularity:</strong> Easy addition and modification of insurance-specific tools</li>
+                <li><strong>📊 Resource Management:</strong> Efficient access to insurance databases and external APIs</li>
+                <li><strong>🔐 Session Handling:</strong> Secure state management across insurance workflows</li>
+                <li><strong>⚖️ Compliance:</strong> Built-in regulatory compliance checking and validation</li>
+            </ul>
+            
+            <h3>📊 Streaming Response Features</h3>
+            <ul>
+                <li><strong>📡 Server-Sent Events:</strong> Real-time progress updates during claim processing</li>
+                <li><strong>📦 Chunked Responses:</strong> Efficient handling of large document generation</li>
+                <li><strong>🎨 Formatted Streaming:</strong> JSON-structured streaming for rich client updates</li>
+                <li><strong>📢 Progress Notifications:</strong> Step-by-step processing status updates</li>
+                <li><strong>⚡ Low Latency:</strong> Immediate response initiation with progressive enhancement</li>
+            </ul>
+        </div>
+    </div>
+
+    <script>
+        mermaid.initialize({ 
+            startOnLoad: true,
+            theme: 'default',
+            flowchart: {
+                useMaxWidth: true,
+                htmlLabels: true
+            }
+        });
+
+        function downloadSVG() {
+            const svg = document.querySelector('.mermaid svg');
+            if (svg) {
+                const svgData = new XMLSerializer().serializeToString(svg);
+                const svgBlob = new Blob([svgData], {type: 'image/svg+xml;charset=utf-8'});
+                const svgUrl = URL.createObjectURL(svgBlob);
+                const downloadLink = document.createElement('a');
+                downloadLink.href = svgUrl;
+                downloadLink.download = 'sasya-arogya-mcp-integration.svg';
+                document.body.appendChild(downloadLink);
+                downloadLink.click();
+                document.body.removeChild(downloadLink);
+            }
+        }
+
+        function downloadPNG() {
+            const diagramContainer = document.querySelector('.mermaid');
+            if (!diagramContainer) {
+                alert('No diagram found to download');
+                return;
+            }
+
+            // Show loading message
+            const pngButton = Array.from(document.querySelectorAll('.btn')).find(btn => btn.textContent.includes('PNG'));
+            if (pngButton) {
+                pngButton.textContent = '⏳ Generating PNG...';
+                pngButton.style.pointerEvents = 'none';
+            }
+
+            html2canvas(diagramContainer, {
+                backgroundColor: '#ffffff',
+                scale: 2,
+                useCORS: true,
+                allowTaint: true,
+                foreignObjectRendering: true,
+                logging: false,
+                width: diagramContainer.scrollWidth,
+                height: diagramContainer.scrollHeight
+            }).then(canvas => {
+                // Create download link
+                canvas.toBlob(function(blob) {
+                    const url = URL.createObjectURL(blob);
+                    const downloadLink = document.createElement('a');
+                    downloadLink.href = url;
+                    downloadLink.download = 'sasya-arogya-mcp-integration.png';
+                    document.body.appendChild(downloadLink);
+                    downloadLink.click();
+                    document.body.removeChild(downloadLink);
+                    URL.revokeObjectURL(url);
+                    
+                    // Reset button
+                    if (pngButton) {
+                        pngButton.textContent = '📸 Download PNG';
+                        pngButton.style.pointerEvents = 'auto';
+                    }
+                }, 'image/png', 1.0);
+            }).catch(error => {
+                console.error('Error generating PNG:', error);
+                alert('Error generating PNG. The diagram might be too complex. Please try downloading as SVG instead.');
+                
+                // Reset button
+                if (pngButton) {
+                    pngButton.textContent = '📸 Download PNG';
+                    pngButton.style.pointerEvents = 'auto';
+                }
+            });
+        }
+    </script>
+</body>
+</html>

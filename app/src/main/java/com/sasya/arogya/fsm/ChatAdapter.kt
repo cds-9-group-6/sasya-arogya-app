@@ -954,12 +954,12 @@ class ChatAdapter(
         }
         
         /**
-         * Setup horizontal scrolling RecyclerView for quick actions
+         * Setup quick actions in a 2-column grid layout without horizontal scrolling
          */
         private fun setupQuickActionsRecyclerView(quickActions: List<String>) {
             try {
-                // Setup horizontal LinearLayoutManager
-                val layoutManager = LinearLayoutManager(itemView.context, LinearLayoutManager.HORIZONTAL, false)
+                // Setup GridLayoutManager with 2 columns
+                val layoutManager = androidx.recyclerview.widget.GridLayoutManager(itemView.context, 2)
                 quickActionsRecyclerView.layoutManager = layoutManager
                 
                 // Create adapter for quick actions
@@ -968,7 +968,11 @@ class ChatAdapter(
                 }
                 quickActionsRecyclerView.adapter = adapter
                 
-                Log.d("ChatAdapter", "✅ Quick actions RecyclerView setup complete with ${quickActions.size} actions")
+                // Disable horizontal scrolling and optimize performance
+                quickActionsRecyclerView.isNestedScrollingEnabled = false
+                quickActionsRecyclerView.setHasFixedSize(true)
+                
+                Log.d("ChatAdapter", "✅ Quick actions RecyclerView setup complete with ${quickActions.size} actions in 2-column grid")
             } catch (e: Exception) {
                 Log.e("ChatAdapter", "❌ Error setting up quick actions RecyclerView: ${e.message}", e)
             }
@@ -977,7 +981,7 @@ class ChatAdapter(
 }
 
 /**
- * Adapter for horizontal scrolling quick action buttons
+ * Adapter for 2-column grid quick action buttons
  */
 class QuickActionAdapter(
     private val actions: List<String>,

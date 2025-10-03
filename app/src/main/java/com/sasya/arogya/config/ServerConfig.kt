@@ -13,7 +13,7 @@ import com.sasya.arogya.BuildConfig
  * - Debug: Uses local development server (emulator/localhost)
  * 
  * Production URLs:
- * - GPU Cluster: http://engine-sasya-chikitsa.apps.cluster-mqklc.mqklc.sandbox601.opentlc.com/
+ * - GPU Cluster: http://engine-sasya-arogya.apps.cluster-8j4j8.8j4j8.sandbox447.opentlc.com/
  * - Non-GPU Cluster: http://engine-sasya-arogya.apps.cluster-dg9gp.dg9gp.sandbox1039.opentlc.com/
  */
 object ServerConfig {

@@ -348,7 +348,7 @@ graph TB
 #### ☁️ **Backend Infrastructure**
 
 ##### 🚀 **GPU Cluster (High Performance)**
-- **URL**: `http://engine-sasya-chikitsa.apps.cluster-mqklc.mqklc.sandbox601.opentlc.com/`
+- **URL**: `http://engine-sasya-arogya.apps.cluster-8j4j8.8j4j8.sandbox447.opentlc.com/`
 - **Purpose**: Complex disease analysis requiring high computational power
 - **ML Pipeline**:
   - **Image Preprocessing**: Advanced image enhancement, normalization, and augmentation

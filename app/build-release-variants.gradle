@@ -3,7 +3,7 @@
 
 task buildGpuRelease(dependsOn: 'assembleGpuRelease') {
     group 'build'
-    description 'Build release APK for GPU cluster (http://engine-sasya-chikitsa.apps.cluster-mqklc.mqklc.sandbox601.opentlc.com/)'
+    description 'Build release APK for GPU cluster (http://engine-sasya-arogya.apps.cluster-8j4j8.8j4j8.sandbox447.opentlc.com/)'
     
     doLast {
         def apkPath = "${project.buildDir}/outputs/apk/gpu/release"
@@ -55,7 +55,7 @@ task buildAllReleaseVariants {
         println "   2. Verify server connectivity for each variant"
         println "   3. Deploy to respective environments"
         println "\n🔗 Server URLs:"
-        println "   GPU:     http://engine-sasya-chikitsa.apps.cluster-mqklc.mqklc.sandbox601.opentlc.com/"
+        println "   GPU:     http://engine-sasya-arogya.apps.cluster-8j4j8.8j4j8.sandbox447.opentlc.com/"
         println "   Non-GPU: http://engine-sasya-arogya.apps.cluster-dg9gp.dg9gp.sandbox1039.opentlc.com/"
     }
 }

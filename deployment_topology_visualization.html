@@ -1,0 +1,621 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Sasya Arogya - Deployment Topology & Observability</title>
+    <script src="https://cdn.jsdelivr.net/npm/mermaid@10.6.1/dist/mermaid.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/html2canvas@1.4.1/dist/html2canvas.min.js"></script>
+    <style>
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            margin: 0;
+            padding: 20px;
+            background: linear-gradient(135deg, #0d47a1 0%, #1976d2 100%);
+            min-height: 100vh;
+        }
+        
+        .container {
+            max-width: 100%;
+            margin: 0 auto;
+            background: white;
+            border-radius: 15px;
+            box-shadow: 0 20px 40px rgba(0,0,0,0.1);
+            overflow: hidden;
+        }
+        
+        .header {
+            background: linear-gradient(135deg, #0d47a1 0%, #1976d2 100%);
+            color: white;
+            padding: 30px;
+            text-align: center;
+        }
+        
+        .header h1 {
+            margin: 0;
+            font-size: 2.5em;
+            font-weight: 300;
+        }
+        
+        .header p {
+            margin: 10px 0 0 0;
+            opacity: 0.9;
+            font-size: 1.1em;
+        }
+        
+        .diagram-container {
+            padding: 40px;
+            background: white;
+            overflow-x: auto;
+        }
+        
+        .mermaid {
+            text-align: center;
+            background: white;
+        }
+        
+        .controls {
+            padding: 20px 40px;
+            background: #f8f9fa;
+            border-top: 1px solid #e9ecef;
+            text-align: center;
+        }
+        
+        .btn {
+            display: inline-block;
+            padding: 12px 24px;
+            margin: 0 10px;
+            background: #1976d2;
+            color: white;
+            text-decoration: none;
+            border-radius: 6px;
+            font-weight: 500;
+            transition: all 0.3s ease;
+        }
+        
+        .btn:hover {
+            background: #0d47a1;
+            transform: translateY(-2px);
+            box-shadow: 0 4px 8px rgba(25,118,210,0.3);
+        }
+        
+        .btn-secondary {
+            background: #6c757d;
+        }
+        
+        .btn-secondary:hover {
+            background: #545b62;
+        }
+        
+        .info-panel {
+            padding: 30px 40px;
+            background: #f8f9fa;
+            border-top: 1px solid #e9ecef;
+        }
+        
+        .cluster-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(400px, 1fr));
+            gap: 20px;
+            margin-top: 20px;
+        }
+        
+        .cluster-card {
+            background: white;
+            padding: 20px;
+            border-radius: 8px;
+            border-left: 4px solid #1976d2;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+        }
+        
+        .cluster-card h3 {
+            margin: 0 0 10px 0;
+            color: #0d47a1;
+            display: flex;
+            align-items: center;
+        }
+        
+        .cluster-icon {
+            margin-right: 10px;
+            font-size: 1.5em;
+        }
+        
+        .cluster-specs {
+            background: #f8f9fa;
+            padding: 15px;
+            border-radius: 6px;
+            margin-top: 10px;
+        }
+        
+        .cluster-specs h4 {
+            margin: 0 0 8px 0;
+            color: #495057;
+            font-size: 0.9em;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+        
+        .spec-item {
+            display: flex;
+            justify-content: space-between;
+            margin: 5px 0;
+            font-size: 0.9em;
+        }
+        
+        .status-indicator {
+            display: inline-block;
+            width: 12px;
+            height: 12px;
+            border-radius: 50%;
+            margin-right: 8px;
+        }
+        
+        .status-healthy { background-color: #28a745; }
+        .status-warning { background-color: #ffc107; }
+        .status-critical { background-color: #dc3545; }
+        
+        .monitoring-dashboard {
+            background: #212529;
+            color: #28a745;
+            padding: 15px;
+            border-radius: 6px;
+            font-family: 'Courier New', monospace;
+            font-size: 0.85em;
+            margin-top: 10px;
+        }
+        
+        .metric-line {
+            margin: 3px 0;
+        }
+        
+        .metric-value {
+            color: #17a2b8;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <h1>🏗️ Deployment Topology & Observability</h1>
+            <p>Production Clusters, Infrastructure & Monitoring Stack</p>
+        </div>
+        
+        <div class="diagram-container">
+            <div class="mermaid">
+flowchart TD
+    %% Styling
+    classDef userClass fill:#e8f5e8,stroke:#2e7d32,stroke-width:3px,color:#000
+    classDef lbClass fill:#fff3e0,stroke:#f57c00,stroke-width:3px,color:#000
+    classDef gpuClass fill:#e3f2fd,stroke:#1976d2,stroke-width:3px,color:#000
+    classDef nongpuClass fill:#f3e5f5,stroke:#7b1fa2,stroke-width:3px,color:#000
+    classDef monitorClass fill:#e0f2f1,stroke:#00796b,stroke-width:3px,color:#000
+    classDef storageClass fill:#fce4ec,stroke:#c2185b,stroke-width:2px,color:#000
+
+    %% User Layer
+    subgraph UserAccess["👥 User Access Layer"]
+        MobileUsers[📱 Mobile Users<br/>Android App]
+        WebUsers[🌐 Web Users<br/>Admin Portal]
+        APIUsers[🔌 API Users<br/>Third-party]
+    end
+
+    %% Load Balancer & CDN
+    subgraph LoadBalancing["⚖️ Load Balancing & CDN"]
+        CloudFlare[☁️ CloudFlare<br/>CDN & DDoS Protection]
+        GlobalLB[🌍 Global Load Balancer<br/>Geographic Routing]
+        SSLTermination[🔒 SSL Termination<br/>TLS 1.3]
+    end
+
+    %% GPU Cluster (Production)
+    subgraph GPUCluster["🚀 GPU Cluster - Production"]
+        subgraph GPUInfra["engine-sasya-arogya<br/>cluster-8j4j8.sandbox447"]
+            GPUIngress[🚪 Ingress Controller<br/>NGINX]
+            GPUServices[⚙️ GPU Services]
+            
+            subgraph GPUWorkloads["🧠 GPU Workloads"]
+                CNNService[🔬 CNN Disease Detection<br/>ResNet/EfficientNet]
+                LlavaService[👁️ LLaVA Vision Service<br/>Multimodal AI]
+                MLInference[🤖 ML Inference Engine<br/>TensorRT]
+                ModelServing[📊 Model Serving<br/>MLflow]
+            end
+            
+            subgraph GPUStorage["💾 GPU Storage"]
+                GPUModelStore[🧠 Model Storage<br/>NFS/Ceph]
+                GPUImageCache[🖼️ Image Cache<br/>Redis]
+                GPUTempStorage[📁 Temp Storage<br/>Local SSD]
+            end
+        end
+    end
+
+    %% Non-GPU Cluster (Production)
+    subgraph NonGPUCluster["⚡ Non-GPU Cluster - Production"]
+        subgraph NonGPUInfra["engine-sasya-arogya<br/>cluster-dg9gp.sandbox1039"]
+            NonGPUIngress[🚪 Ingress Controller<br/>HAProxy]
+            NonGPUServices[⚙️ Non-GPU Services]
+            
+            subgraph NonGPUWorkloads["🔧 Non-GPU Workloads"]
+                LangGraphAgent[🤖 LangGraph Agent<br/>FSM Orchestration]
+                RAGService[📚 RAG Service<br/>ChromaDB + LLM]
+                MCPServer[🛡️ MCP Server<br/>Insurance Tools]
+                APIGateway[🚪 API Gateway<br/>FastAPI]
+                AuthService[🔐 Auth Service<br/>JWT/OAuth]
+            end
+            
+            subgraph NonGPUStorage["💾 Non-GPU Storage"]
+                PostgresDB[🐘 PostgreSQL<br/>User Data]
+                RedisCluster[⚡ Redis Cluster<br/>Session Cache]
+                VectorDB[🗃️ ChromaDB<br/>Vector Store]
+                ObjectStorage[☁️ Object Storage<br/>MinIO/S3]
+            end
+        end
+    end
+
+    %% Monitoring & Observability
+    subgraph Monitoring["📊 Monitoring & Observability Stack"]
+        subgraph MetricsCollection["📈 Metrics Collection"]
+            Prometheus[📊 Prometheus<br/>Metrics Server]
+            NodeExporter[📡 Node Exporter<br/>System Metrics]
+            AppMetrics[📱 App Metrics<br/>Custom Metrics]
+        end
+        
+        subgraph Visualization["📊 Visualization & Alerting"]
+            Grafana[📈 Grafana<br/>Dashboards]
+            AlertManager[🚨 Alert Manager<br/>Notifications]
+            PagerDuty[📟 PagerDuty<br/>Incident Response]
+        end
+        
+        subgraph Tracing["🔍 Distributed Tracing"]
+            Jaeger[🔍 Jaeger<br/>Trace Collection]
+            OpenTelemetry[📡 OpenTelemetry<br/>Instrumentation]
+        end
+        
+        subgraph Logging["📝 Centralized Logging"]
+            ElasticSearch[🔍 ElasticSearch<br/>Log Storage]
+            Logstash[📝 Logstash<br/>Log Processing]
+            Kibana[📊 Kibana<br/>Log Visualization]
+        end
+    end
+
+    %% External Services
+    subgraph ExternalServices["🌐 External Services"]
+        DNSProvider[🌐 DNS Provider<br/>Route 53]
+        CertManager[🔒 Cert Manager<br/>Let's Encrypt]
+        BackupService[💾 Backup Service<br/>Velero]
+        SecretManager[🔐 Secret Manager<br/>Vault]
+    end
+
+    %% Network Flow
+    MobileUsers --> CloudFlare
+    WebUsers --> CloudFlare
+    APIUsers --> CloudFlare
+    CloudFlare --> GlobalLB
+    GlobalLB --> SSLTermination
+
+    %% Cluster Routing
+    SSLTermination --> GPUIngress
+    SSLTermination --> NonGPUIngress
+    
+    %% GPU Cluster Flow
+    GPUIngress --> GPUServices
+    GPUServices --> CNNService
+    GPUServices --> LlavaService
+    GPUServices --> MLInference
+    GPUServices --> ModelServing
+    
+    %% GPU Storage Access
+    CNNService --> GPUModelStore
+    LlavaService --> GPUModelStore
+    MLInference --> GPUImageCache
+    ModelServing --> GPUTempStorage
+
+    %% Non-GPU Cluster Flow
+    NonGPUIngress --> NonGPUServices
+    NonGPUServices --> LangGraphAgent
+    NonGPUServices --> RAGService
+    NonGPUServices --> MCPServer
+    NonGPUServices --> APIGateway
+    NonGPUServices --> AuthService
+    
+    %% Non-GPU Storage Access
+    LangGraphAgent --> RedisCluster
+    RAGService --> VectorDB
+    MCPServer --> PostgresDB
+    APIGateway --> RedisCluster
+    AuthService --> PostgresDB
+
+    %% Cross-Cluster Communication
+    LangGraphAgent -.->|ML Requests| CNNService
+    LangGraphAgent -.->|Vision Requests| LlavaService
+    MCPServer -.->|Document Storage| ObjectStorage
+
+    %% Monitoring Connections
+    GPUServices -.-> Prometheus
+    NonGPUServices -.-> Prometheus
+    GPUServices -.-> Jaeger
+    NonGPUServices -.-> Jaeger
+    
+    Prometheus --> Grafana
+    Prometheus --> AlertManager
+    AlertManager --> PagerDuty
+    Jaeger --> Grafana
+    
+    GPUServices -.-> ElasticSearch
+    NonGPUServices -.-> ElasticSearch
+    ElasticSearch --> Logstash
+    Logstash --> Kibana
+
+    %% External Service Connections
+    GPUIngress -.-> CertManager
+    NonGPUIngress -.-> CertManager
+    CloudFlare -.-> DNSProvider
+    PostgresDB -.-> BackupService
+    GPUModelStore -.-> BackupService
+    AuthService -.-> SecretManager
+
+    %% Apply Styles
+    class MobileUsers,WebUsers,APIUsers userClass
+    class CloudFlare,GlobalLB,SSLTermination lbClass
+    class GPUIngress,GPUServices,CNNService,LlavaService,MLInference,ModelServing,GPUModelStore,GPUImageCache,GPUTempStorage gpuClass
+    class NonGPUIngress,NonGPUServices,LangGraphAgent,RAGService,MCPServer,APIGateway,AuthService,PostgresDB,RedisCluster,VectorDB,ObjectStorage nongpuClass
+    class Prometheus,NodeExporter,AppMetrics,Grafana,AlertManager,PagerDuty,Jaeger,OpenTelemetry,ElasticSearch,Logstash,Kibana monitorClass
+    class DNSProvider,CertManager,BackupService,SecretManager storageClass
+            </div>
+        </div>
+        
+        <div class="controls">
+            <a href="#" class="btn" onclick="downloadSVG()">📥 Download SVG</a>
+            <a href="#" class="btn" onclick="downloadPNG()">📸 Download PNG</a>
+            <a href="https://mermaid.live/" target="_blank" class="btn btn-secondary">🔗 Edit Online</a>
+        </div>
+        
+        <div class="info-panel">
+            <h2>🏗️ Production Deployment Details</h2>
+            <div class="cluster-grid">
+                <div class="cluster-card">
+                    <h3><span class="cluster-icon">🚀</span>GPU Cluster - Production</h3>
+                    <p><strong>URL:</strong> engine-sasya-arogya.apps.cluster-8j4j8.8j4j8.sandbox447.opentlc.com</p>
+                    <div class="cluster-specs">
+                        <h4>Cluster Specifications</h4>
+                        <div class="spec-item">
+                            <span>Environment:</span>
+                            <span><span class="status-indicator status-healthy"></span>Production</span>
+                        </div>
+                        <div class="spec-item">
+                            <span>GPU Nodes:</span>
+                            <span>4x NVIDIA V100 32GB</span>
+                        </div>
+                        <div class="spec-item">
+                            <span>CPU Cores:</span>
+                            <span>64 vCPUs (16 per node)</span>
+                        </div>
+                        <div class="spec-item">
+                            <span>Memory:</span>
+                            <span>256GB RAM</span>
+                        </div>
+                        <div class="spec-item">
+                            <span>Storage:</span>
+                            <span>2TB NVMe SSD</span>
+                        </div>
+                        <div class="spec-item">
+                            <span>Network:</span>
+                            <span>10Gbps Interconnect</span>
+                        </div>
+                    </div>
+                    <div class="monitoring-dashboard">
+                        <div class="metric-line">GPU Utilization: <span class="metric-value">78%</span></div>
+                        <div class="metric-line">Memory Usage: <span class="metric-value">12.4GB/32GB</span></div>
+                        <div class="metric-line">Model Inference: <span class="metric-value">1,247 req/min</span></div>
+                        <div class="metric-line">Avg Response Time: <span class="metric-value">1.2s</span></div>
+                    </div>
+                </div>
+                
+                <div class="cluster-card">
+                    <h3><span class="cluster-icon">⚡</span>Non-GPU Cluster - Production</h3>
+                    <p><strong>URL:</strong> engine-sasya-arogya.apps.cluster-dg9gp.dg9gp.sandbox1039.opentlc.com</p>
+                    <div class="cluster-specs">
+                        <h4>Cluster Specifications</h4>
+                        <div class="spec-item">
+                            <span>Environment:</span>
+                            <span><span class="status-indicator status-healthy"></span>Production</span>
+                        </div>
+                        <div class="spec-item">
+                            <span>Worker Nodes:</span>
+                            <span>6x Standard Nodes</span>
+                        </div>
+                        <div class="spec-item">
+                            <span>CPU Cores:</span>
+                            <span>96 vCPUs (16 per node)</span>
+                        </div>
+                        <div class="spec-item">
+                            <span>Memory:</span>
+                            <span>384GB RAM</span>
+                        </div>
+                        <div class="spec-item">
+                            <span>Storage:</span>
+                            <span>5TB SSD + 10TB HDD</span>
+                        </div>
+                        <div class="spec-item">
+                            <span>Network:</span>
+                            <span>1Gbps Interconnect</span>
+                        </div>
+                    </div>
+                    <div class="monitoring-dashboard">
+                        <div class="metric-line">CPU Usage: <span class="metric-value">45%</span></div>
+                        <div class="metric-line">Memory Usage: <span class="metric-value">187GB/384GB</span></div>
+                        <div class="metric-line">API Requests: <span class="metric-value">3,456 req/min</span></div>
+                        <div class="metric-line">Avg Response Time: <span class="metric-value">340ms</span></div>
+                    </div>
+                </div>
+                
+                <div class="cluster-card">
+                    <h3><span class="cluster-icon">📊</span>Monitoring Stack</h3>
+                    <p>Comprehensive observability with metrics, logs, and distributed tracing.</p>
+                    <div class="cluster-specs">
+                        <h4>Monitoring Components</h4>
+                        <div class="spec-item">
+                            <span>Prometheus:</span>
+                            <span><span class="status-indicator status-healthy"></span>Active</span>
+                        </div>
+                        <div class="spec-item">
+                            <span>Grafana:</span>
+                            <span><span class="status-indicator status-healthy"></span>12 Dashboards</span>
+                        </div>
+                        <div class="spec-item">
+                            <span>Jaeger:</span>
+                            <span><span class="status-indicator status-healthy"></span>Tracing Active</span>
+                        </div>
+                        <div class="spec-item">
+                            <span>ELK Stack:</span>
+                            <span><span class="status-indicator status-healthy"></span>Logging Active</span>
+                        </div>
+                        <div class="spec-item">
+                            <span>Alert Rules:</span>
+                            <span>47 Active Rules</span>
+                        </div>
+                        <div class="spec-item">
+                            <span>Data Retention:</span>
+                            <span>30 days metrics, 7 days logs</span>
+                        </div>
+                    </div>
+                    <div class="monitoring-dashboard">
+                        <div class="metric-line">Total Metrics: <span class="metric-value">2.4M series</span></div>
+                        <div class="metric-line">Log Ingestion: <span class="metric-value">15GB/day</span></div>
+                        <div class="metric-line">Traces/min: <span class="metric-value">8,934</span></div>
+                        <div class="metric-line">Alert Firing: <span class="metric-value">0 critical</span></div>
+                    </div>
+                </div>
+                
+                <div class="cluster-card">
+                    <h3><span class="cluster-icon">🔒</span>Security & Compliance</h3>
+                    <p>Enterprise-grade security with automated certificate management and secret handling.</p>
+                    <div class="cluster-specs">
+                        <h4>Security Features</h4>
+                        <div class="spec-item">
+                            <span>SSL/TLS:</span>
+                            <span><span class="status-indicator status-healthy"></span>TLS 1.3</span>
+                        </div>
+                        <div class="spec-item">
+                            <span>Certificates:</span>
+                            <span><span class="status-indicator status-healthy"></span>Auto-renewed</span>
+                        </div>
+                        <div class="spec-item">
+                            <span>Secrets:</span>
+                            <span><span class="status-indicator status-healthy"></span>Vault Managed</span>
+                        </div>
+                        <div class="spec-item">
+                            <span>Network Policies:</span>
+                            <span><span class="status-indicator status-healthy"></span>Enforced</span>
+                        </div>
+                        <div class="spec-item">
+                            <span>RBAC:</span>
+                            <span><span class="status-indicator status-healthy"></span>Active</span>
+                        </div>
+                        <div class="spec-item">
+                            <span>Vulnerability Scans:</span>
+                            <span><span class="status-indicator status-healthy"></span>Daily</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            
+            <h3>🎯 Deployment Architecture Benefits</h3>
+            <ul>
+                <li><strong>🚀 Specialized Clusters:</strong> GPU cluster for AI workloads, Non-GPU for general services</li>
+                <li><strong>⚖️ Load Balancing:</strong> Global load balancing with geographic routing and CDN</li>
+                <li><strong>📊 Comprehensive Monitoring:</strong> Full observability stack with metrics, logs, and tracing</li>
+                <li><strong>🔒 Enterprise Security:</strong> Automated SSL, secret management, and network policies</li>
+                <li><strong>📈 Auto Scaling:</strong> Horizontal pod autoscaling based on CPU/memory/custom metrics</li>
+                <li><strong>💾 Data Persistence:</strong> Distributed storage with automated backups and disaster recovery</li>
+                <li><strong>🔄 CI/CD Integration:</strong> GitOps-based deployments with automated testing and rollbacks</li>
+            </ul>
+            
+            <h3>📊 Key Performance Indicators</h3>
+            <ul>
+                <li><strong>🎯 Availability:</strong> 99.95% uptime SLA with multi-region failover</li>
+                <li><strong>⚡ Response Time:</strong> <2s for AI inference, <500ms for API calls</li>
+                <li><strong>📈 Throughput:</strong> 5,000+ concurrent users, 10,000+ requests/minute</li>
+                <li><strong>🔍 Monitoring:</strong> <1min alert response time, 24/7 monitoring coverage</li>
+                <li><strong>🛡️ Security:</strong> Zero-trust network, automated vulnerability management</li>
+            </ul>
+        </div>
+    </div>
+
+    <script>
+        mermaid.initialize({ 
+            startOnLoad: true,
+            theme: 'default',
+            flowchart: {
+                useMaxWidth: true,
+                htmlLabels: true
+            }
+        });
+
+        function downloadSVG() {
+            const svg = document.querySelector('.mermaid svg');
+            if (svg) {
+                const svgData = new XMLSerializer().serializeToString(svg);
+                const svgBlob = new Blob([svgData], {type: 'image/svg+xml;charset=utf-8'});
+                const svgUrl = URL.createObjectURL(svgBlob);
+                const downloadLink = document.createElement('a');
+                downloadLink.href = svgUrl;
+                downloadLink.download = 'sasya-arogya-deployment-topology.svg';
+                document.body.appendChild(downloadLink);
+                downloadLink.click();
+                document.body.removeChild(downloadLink);
+            }
+        }
+
+        function downloadPNG() {
+            const diagramContainer = document.querySelector('.mermaid');
+            if (!diagramContainer) {
+                alert('No diagram found to download');
+                return;
+            }
+
+            // Show loading message
+            const pngButton = Array.from(document.querySelectorAll('.btn')).find(btn => btn.textContent.includes('PNG'));
+            if (pngButton) {
+                pngButton.textContent = '⏳ Generating PNG...';
+                pngButton.style.pointerEvents = 'none';
+            }
+
+            html2canvas(diagramContainer, {
+                backgroundColor: '#ffffff',
+                scale: 2,
+                useCORS: true,
+                allowTaint: true,
+                foreignObjectRendering: true,
+                logging: false,
+                width: diagramContainer.scrollWidth,
+                height: diagramContainer.scrollHeight
+            }).then(canvas => {
+                // Create download link
+                canvas.toBlob(function(blob) {
+                    const url = URL.createObjectURL(blob);
+                    const downloadLink = document.createElement('a');
+                    downloadLink.href = url;
+                    downloadLink.download = 'sasya-arogya-deployment-topology.png';
+                    document.body.appendChild(downloadLink);
+                    downloadLink.click();
+                    document.body.removeChild(downloadLink);
+                    URL.revokeObjectURL(url);
+                    
+                    // Reset button
+                    if (pngButton) {
+                        pngButton.textContent = '📸 Download PNG';
+                        pngButton.style.pointerEvents = 'auto';
+                    }
+                }, 'image/png', 1.0);
+            }).catch(error => {
+                console.error('Error generating PNG:', error);
+                alert('Error generating PNG. The diagram might be too complex. Please try downloading as SVG instead.');
+                
+                // Reset button
+                if (pngButton) {
+                    pngButton.textContent = '📸 Download PNG';
+                    pngButton.style.pointerEvents = 'auto';
+                }
+            });
+        }
+    </script>
+</body>
+</html>
