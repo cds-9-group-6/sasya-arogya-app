@@ -84,4 +84,7 @@
     <!-- Error and Retry Colors -->
     <color name="error_text">#D32F2F</color>            <!-- Dark red for error messages -->
     <color name="retry_button_text">#FFFFFF</color>     <!-- White text for retry button -->
+    
+    <!-- Processing Subtitle Colors -->
+    <color name="processing_subtitle_text">#757575</color> <!-- Medium gray for processing subtitle -->
 </resources>

@@ -14,6 +14,7 @@ import android.view.MotionEvent
 import android.view.ScaleGestureDetector
 import android.view.View
 import android.view.ViewGroup
+import android.widget.Button
 import android.widget.ImageButton
 import android.widget.ImageView
 import android.widget.LinearLayout
@@ -202,6 +203,7 @@ class ChatAdapter(
         private val messageText: TextView = itemView.findViewById(R.id.messageText)
         private val messageTime: TextView = itemView.findViewById(R.id.messageTime)
         private val stateIndicator: TextView = itemView.findViewById(R.id.stateIndicator)
+        private val processingSubtitle: TextView = itemView.findViewById(R.id.processingSubtitle)
         private val followUpContainer: LinearLayout = itemView.findViewById(R.id.followUpContainer)
         private val quickActionsRecyclerView: RecyclerView = itemView.findViewById(R.id.quickActionsRecyclerView)
         private val thumbsUpButton: ImageButton = itemView.findViewById(R.id.thumbsUpButton)
@@ -387,12 +389,24 @@ class ChatAdapter(
             
             // Show state indicator if present
             if (message.state != null) {
-                stateIndicator.visibility = View.VISIBLE
-                stateIndicator.text = message.state
+                // Parse state to separate main state from processing details
+                val (mainState, processingDetails) = parseStateMessage(message.state)
                 
-                // Color based on state
-                val backgroundColor = when (message.state.lowercase()) {
+                stateIndicator.visibility = View.VISIBLE
+                stateIndicator.text = mainState
+                
+                // Show processing subtitle if present
+                if (processingDetails != null) {
+                    processingSubtitle.visibility = View.VISIBLE
+                    processingSubtitle.text = processingDetails
+                } else {
+                    processingSubtitle.visibility = View.GONE
+                }
+                
+                // Color based on main state
+                val backgroundColor = when (mainState.lowercase()) {
                     "ready" -> ContextCompat.getColor(itemView.context, R.color.state_ready)
+                    "thinking..." -> ContextCompat.getColor(itemView.context, R.color.state_processing)
                     "analyzing plant..." -> ContextCompat.getColor(itemView.context, R.color.state_processing)
                     "diagnosis complete" -> ContextCompat.getColor(itemView.context, R.color.state_complete)
                     else -> ContextCompat.getColor(itemView.context, R.color.state_default)
@@ -402,6 +416,7 @@ class ChatAdapter(
                 drawable?.setColor(backgroundColor)
             } else {
                 stateIndicator.visibility = View.GONE
+                processingSubtitle.visibility = View.GONE
             }
             
             // Add follow-up buttons
@@ -1047,6 +1062,22 @@ class ChatAdapter(
                 Log.d("ChatAdapter", "✅ Quick actions RecyclerView setup complete with ${quickActions.size} actions in 2-column grid")
             } catch (e: Exception) {
                 Log.e("ChatAdapter", "❌ Error setting up quick actions RecyclerView: ${e.message}", e)
+            }
+        }
+        
+        /**
+         * Parse state message to separate main state from processing details
+         * Returns Pair(mainState, processingDetails)
+         */
+        private fun parseStateMessage(state: String): Pair<String, String?> {
+            return when {
+                state.startsWith("Processing on Non-GPU cluster") -> 
+                    Pair("THINKING...", state)
+                state.startsWith("Processing on GPU cluster") -> 
+                    Pair("THINKING...", state)
+                state.startsWith("Processing your request") -> 
+                    Pair("THINKING...", state)
+                else -> Pair(state, null)
             }
         }
     }
