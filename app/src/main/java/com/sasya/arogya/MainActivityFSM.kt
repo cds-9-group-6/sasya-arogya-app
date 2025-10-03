@@ -820,9 +820,9 @@ class MainActivityFSM : ComponentActivity(), FSMStreamHandler.StreamCallback {
                     "${currentMessage.text}\n\n$message"
                 }
                 
-                // Update the existing message card with accumulated content
-                chatAdapter.updateLastMessage(updatedText)
-                val updatedMessage = currentMessage.copy(text = updatedText)
+                // Update the existing message card with accumulated content and clear state (WhatsApp-style)
+                chatAdapter.updateLastMessage(updatedText, null) // Clear state to remove THINKING indicator
+                val updatedMessage = currentMessage.copy(text = updatedText, state = null)
                 currentSessionState.messages[currentSessionState.messages.size - 1] = updatedMessage
                 
                 // CRITICAL FIX: Update the last message in session manager (don't add duplicate)
@@ -905,6 +905,22 @@ class MainActivityFSM : ComponentActivity(), FSMStreamHandler.StreamCallback {
         Log.d(TAG, "Stream completed")
         runOnUiThread {
             stopThinkingIndicator()
+            
+            // Clear state from the last message to remove THINKING indicator (WhatsApp-style cleanup)
+            if (currentSessionState.messages.isNotEmpty()) {
+                val lastMessage = currentSessionState.messages.last()
+                if (!lastMessage.isUser && lastMessage.state != null) {
+                    Log.d(TAG, "🧹 Clearing state from completed message")
+                    val clearedMessage = lastMessage.copy(state = null)
+                    currentSessionState.messages[currentSessionState.messages.size - 1] = clearedMessage
+                    chatAdapter.updateLastMessage(clearedMessage.text, null)
+                    
+                    // Update in session manager
+                    currentSessionState.sessionId?.let { sessionId ->
+                        sessionManager.updateLastMessageInSession(sessionId, clearedMessage)
+                    }
+                }
+            }
             
             // Save session state after stream completion
             saveCurrentSessionState()
