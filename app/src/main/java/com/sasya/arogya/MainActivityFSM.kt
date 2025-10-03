@@ -896,7 +896,10 @@ class MainActivityFSM : ComponentActivity(), FSMStreamHandler.StreamCallback {
             val originalMessage = lastUserMessage?.text
             val originalImageB64 = if (lastUserMessage?.imageUri != null) selectedImageBase64 else null
             
-            chatAdapter.updateLastMessageAsError(error, originalMessage, originalImageB64)
+            // Convert technical errors to user-friendly messages
+            val userFriendlyError = getUserFriendlyErrorMessage(error)
+            
+            chatAdapter.updateLastMessageAsError(userFriendlyError, originalMessage, originalImageB64)
             // Error state handled by user interaction, not status indicator
         }
     }
@@ -1501,7 +1504,7 @@ class MainActivityFSM : ComponentActivity(), FSMStreamHandler.StreamCallback {
         
         // Create thinking message
         thinkingMessage = ChatMessage(
-            text = "🤖 Sasya Arogya Thinking",
+            text = "",
             isUser = false,
             state = "Thinking"
         )
@@ -1613,6 +1616,46 @@ class MainActivityFSM : ComponentActivity(), FSMStreamHandler.StreamCallback {
         
         runOnUiThread {
             Toast.makeText(this, "👎 Thanks for your feedback! We'll improve.", Toast.LENGTH_SHORT).show()
+        }
+    }
+    
+    /**
+     * Convert technical error messages to user-friendly messages
+     */
+    private fun getUserFriendlyErrorMessage(error: String): String {
+        return when {
+            // MCP server unavailability errors
+            error.contains("MCP server not available", ignoreCase = true) ||
+            error.contains("Sasya Arogya MCP server not available", ignoreCase = true) -> {
+                "🏥 Insurance services are temporarily unavailable. Our insurance partner system is currently down for maintenance. Please try again later or contact support if this issue persists."
+            }
+            
+            // Insurance operation failures
+            error.contains("Insurance operation failed", ignoreCase = true) -> {
+                "🏥 We're having trouble processing your insurance request right now. This could be due to:\n\n" +
+                "• Temporary service maintenance\n" +
+                "• Network connectivity issues\n" +
+                "• High server load\n\n" +
+                "Please try again in a few minutes. If the problem continues, our support team can help you with your insurance needs."
+            }
+            
+            // Network/connectivity errors
+            error.contains("connection", ignoreCase = true) ||
+            error.contains("network", ignoreCase = true) ||
+            error.contains("timeout", ignoreCase = true) -> {
+                "🌐 Connection issue detected. Please check your internet connection and try again. If you're on a slow network, the request might take a bit longer to process."
+            }
+            
+            // Server errors
+            error.contains("server error", ignoreCase = true) ||
+            error.contains("internal error", ignoreCase = true) -> {
+                "⚠️ We're experiencing technical difficulties on our end. Our team has been notified and is working to resolve this. Please try again in a few minutes."
+            }
+            
+            // Generic fallback for other errors
+            else -> {
+                "❌ Something went wrong while processing your request. Please try again, and if the issue persists, contact our support team for assistance.\n\nTechnical details: ${error.take(100)}${if (error.length > 100) "..." else ""}"
+            }
         }
     }
     
