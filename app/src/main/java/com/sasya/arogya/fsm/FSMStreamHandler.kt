@@ -3,12 +3,13 @@ package com.sasya.arogya.fsm
 import android.util.Log
 import com.google.gson.Gson
 import com.google.gson.JsonSyntaxException
-import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.withContext
+import kotlinx.coroutines.*
 import okhttp3.ResponseBody
 import java.io.BufferedReader
 import java.io.IOException
 import java.io.InputStreamReader
+import java.net.SocketTimeoutException
+import java.util.concurrent.TimeoutException
 
 /**
  * Handler for FSM agent streaming responses (Server-Sent Events)
@@ -30,54 +31,122 @@ class FSMStreamHandler {
     }
     
     /**
-     * Process streaming response from FSM agent
+     * Process streaming response from FSM agent with timeout handling
      */
     suspend fun processStream(responseBody: ResponseBody, callback: StreamCallback) {
-        withContext(Dispatchers.IO) {
-            try {
-                val reader = BufferedReader(InputStreamReader(responseBody.byteStream()))
-                var line: String?
-                var currentEvent = ""
-                var currentData = ""
-                
-                while (reader.readLine().also { line = it } != null) {
-                    line?.let { currentLine ->
-                        Log.d(TAG, "Received line: $currentLine")
+        // Set up a timeout for the entire streaming operation
+        val streamTimeoutMillis = 300_000L // 5 minutes
+        
+        try {
+            withTimeout(streamTimeoutMillis) {
+                withContext(Dispatchers.IO) {
+                    try {
+                        val reader = BufferedReader(InputStreamReader(responseBody.byteStream()))
+                        var line: String?
+                        var currentEvent = ""
+                        var currentData = ""
+                        var lastActivityTime = System.currentTimeMillis()
+                        val activityTimeoutMillis = 120_000L // 2 minutes of inactivity
                         
-                        when {
-                            currentLine.startsWith("event: ") -> {
-                                currentEvent = currentLine.substringAfter("event: ").trim()
+                        while (isActive) { // Check if coroutine is still active
+                            // Check for inactivity timeout
+                            val currentTime = System.currentTimeMillis()
+                            if (currentTime - lastActivityTime > activityTimeoutMillis) {
+                                Log.w(TAG, "Stream inactive for ${activityTimeoutMillis / 1000} seconds, timing out")
+                                throw TimeoutException("Server response timeout - no data received for ${activityTimeoutMillis / 1000} seconds")
                             }
                             
-                            currentLine.startsWith("data: ") -> {
-                                currentData = currentLine.substringAfter("data: ").trim()
-                            }
-                            
-                            currentLine.isEmpty() -> {
-                                // End of event, process it
-                                if (currentEvent.isNotEmpty() && currentData.isNotEmpty()) {
-                                    processEvent(currentEvent, currentData, callback)
+                            try {
+                                line = reader.readLine()
+                                if (line == null) {
+                                    break // End of stream
                                 }
-                                // Reset for next event
-                                currentEvent = ""
-                                currentData = ""
+                                
+                                lastActivityTime = currentTime // Reset activity timer
+                                
+                                line?.let { currentLine ->
+                                    Log.d(TAG, "Received line: $currentLine")
+                                    
+                                    when {
+                                        currentLine.startsWith("event: ") -> {
+                                            currentEvent = currentLine.substringAfter("event: ").trim()
+                                        }
+                                        
+                                        currentLine.startsWith("data: ") -> {
+                                            currentData = currentLine.substringAfter("data: ").trim()
+                                        }
+                                        
+                                        currentLine.isEmpty() -> {
+                                            // End of event, process it
+                                            if (currentEvent.isNotEmpty() && currentData.isNotEmpty()) {
+                                                processEvent(currentEvent, currentData, callback)
+                                            }
+                                            // Reset for next event
+                                            currentEvent = ""
+                                            currentData = ""
+                                        }
+                                    }
+                                }
+                            } catch (e: IOException) {
+                                if (isActive) { // Only log if we're still supposed to be reading
+                                    Log.e(TAG, "IO error while reading stream", e)
+                                    throw e
+                                }
+                                break
                             }
+                        }
+                        
+                        withContext(Dispatchers.Main) {
+                            callback.onStreamComplete()
+                        }
+                        
+                    } catch (e: SocketTimeoutException) {
+                        Log.e(TAG, "Socket timeout while processing stream", e)
+                        withContext(Dispatchers.Main) {
+                            callback.onError("Server response timeout. Please check your connection and try again.")
+                        }
+                    } catch (e: IOException) {
+                        Log.e(TAG, "IO error processing stream", e)
+                        withContext(Dispatchers.Main) {
+                            callback.onError("Connection error: ${getErrorMessage(e)}")
                         }
                     }
                 }
-                
-                withContext(Dispatchers.Main) {
-                    callback.onStreamComplete()
-                }
-                
-            } catch (e: IOException) {
-                Log.e(TAG, "Error processing stream", e)
-                withContext(Dispatchers.Main) {
-                    callback.onError("Stream processing error: ${e.message}")
-                }
-            } finally {
-                responseBody.close()
             }
+        } catch (e: TimeoutCancellationException) {
+            Log.e(TAG, "Stream processing timeout", e)
+            withContext(Dispatchers.Main) {
+                callback.onError("Request timeout. The server is taking too long to respond. Please try again.")
+            }
+        } catch (e: TimeoutException) {
+            Log.e(TAG, "Stream activity timeout", e)
+            withContext(Dispatchers.Main) {
+                callback.onError(e.message ?: "Server response timeout")
+            }
+        } catch (e: Exception) {
+            Log.e(TAG, "Unexpected error processing stream", e)
+            withContext(Dispatchers.Main) {
+                callback.onError("Unexpected error: ${getErrorMessage(e)}")
+            }
+        } finally {
+            try {
+                responseBody.close()
+            } catch (e: Exception) {
+                Log.w(TAG, "Error closing response body", e)
+            }
+        }
+    }
+    
+    /**
+     * Get user-friendly error message from exception
+     */
+    private fun getErrorMessage(e: Exception): String {
+        return when (e) {
+            is SocketTimeoutException -> "Connection timeout. Please check your internet connection."
+            is java.net.ConnectException -> "Cannot connect to server. Please check server availability."
+            is java.net.UnknownHostException -> "Cannot resolve server address. Please check your internet connection."
+            is IOException -> "Network error occurred. Please try again."
+            else -> e.message ?: "Unknown error occurred"
         }
     }
     
@@ -93,6 +162,22 @@ class FSMStreamHandler {
                     "state_update" -> {
                         val stateUpdate = gson.fromJson(data, FSMStateUpdate::class.java)
                         callback.onStateUpdate(stateUpdate)
+                        
+                        // Handle errors in state updates (e.g., MCP server unavailable)
+                        if (stateUpdate.nextAction == "error" && stateUpdate.errorMessage != null) {
+                            Log.e(TAG, "State update contains error: ${stateUpdate.errorMessage}")
+                            callback.onError(stateUpdate.errorMessage)
+                            return@withContext // Don't process other parts if there's an error
+                        }
+                        
+                        // Handle legacy error field as well
+                        stateUpdate.error?.let { errorMsg ->
+                            if (errorMsg.isNotBlank()) {
+                                Log.e(TAG, "State update contains legacy error: $errorMsg")
+                                callback.onError(errorMsg)
+                                return@withContext // Don't process other parts if there's an error
+                            }
+                        }
                         
                         // Handle specific parts of state update
                         stateUpdate.assistantResponse?.let { message ->

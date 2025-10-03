@@ -54,6 +54,7 @@ import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
+import kotlinx.coroutines.withTimeout
 import java.io.ByteArrayOutputStream
 import java.io.InputStream
 import java.util.Calendar
@@ -114,6 +115,9 @@ class MainActivityFSM : ComponentActivity(), FSMStreamHandler.StreamCallback {
     private var isThinking = false
     private var thinkingAnimation: Runnable? = null
     private var thinkingMessage: ChatMessage? = null
+    
+    // Request management
+    private var currentRequestJob: kotlinx.coroutines.Job? = null
     
     // Primary image picker using legacy intent method to avoid Photo Picker issues
     private val imagePickerLauncher = registerForActivityResult(
@@ -176,6 +180,9 @@ class MainActivityFSM : ComponentActivity(), FSMStreamHandler.StreamCallback {
             },
             onThumbsDownClick = { chatMessage ->
                 handleThumbsDownFeedback(chatMessage)
+            },
+            onRetryClick = { chatMessage ->
+                handleRetryClick(chatMessage)
             }
         )
         
@@ -526,6 +533,12 @@ class MainActivityFSM : ComponentActivity(), FSMStreamHandler.StreamCallback {
             return
         }
         
+        // Check if this is a retry request
+        if (isRetryRequest(messageText) && selectedImageBase64 == null) {
+            handleRetryRequest(messageText)
+            return
+        }
+        
         // Create user message
         val userMessage = ChatMessage(
             text = if (messageText.isEmpty()) "📷 [Image uploaded]" else messageText,
@@ -548,8 +561,15 @@ class MainActivityFSM : ComponentActivity(), FSMStreamHandler.StreamCallback {
         val imageB64 = selectedImageBase64
         clearSelectedImage()
         
+        val actualMessage = messageText.ifEmpty { "Please analyze this plant image" }
+        
+        // Track this operation for potential retry
+        currentSessionState.sessionId?.let { sessionId ->
+            sessionManager.updateLastOperation(sessionId, actualMessage, imageB64)
+        }
+        
         // Send to FSM agent
-        sendToFSMAgent(messageText.ifEmpty { "Please analyze this plant image" }, imageB64)
+        sendToFSMAgent(actualMessage, imageB64)
         
         // Show thinking indicator
         showThinkingIndicator()
@@ -558,8 +578,22 @@ class MainActivityFSM : ComponentActivity(), FSMStreamHandler.StreamCallback {
     }
     
     private fun sendToFSMAgent(message: String, imageBase64: String?) {
-        CoroutineScope(Dispatchers.IO).launch {
+        // Cancel any existing request
+        currentRequestJob?.cancel()
+        
+        currentRequestJob = CoroutineScope(Dispatchers.IO).launch {
             try {
+                withContext(Dispatchers.Main) {
+                    // Show appropriate loading state based on server type
+                    val serverType = ServerConfig.getServerType(this@MainActivityFSM)
+                    val loadingMessage = when (serverType) {
+                        ServerConfig.SERVER_TYPE_NON_GPU -> "Processing on Non-GPU cluster (this may take 2-3 minutes)..."
+                        ServerConfig.SERVER_TYPE_GPU -> "Processing on GPU cluster..."
+                        else -> "Processing your request..."
+                    }
+                    updateStateIndicator(loadingMessage)
+                }
+                
                 // Get agricultural profile for personalized responses
                 val userProfile = getUserAgriculturalProfile()
                 
@@ -580,23 +614,72 @@ class MainActivityFSM : ComponentActivity(), FSMStreamHandler.StreamCallback {
                 
                 Log.d(TAG, "Sending request to FSM agent: $message")
                 
+                // Set different timeouts based on server type
+                val timeoutMillis = when (ServerConfig.getServerType(this@MainActivityFSM)) {
+                    ServerConfig.SERVER_TYPE_NON_GPU -> 300_000L // 5 minutes for non-GPU
+                    ServerConfig.SERVER_TYPE_GPU -> 120_000L // 2 minutes for GPU
+                    else -> 180_000L // 3 minutes for others
+                }
+                
                 val call = FSMRetrofitClient.apiService.chatStream(request)
-                val response = call.execute()
+                
+                // Execute with timeout
+                val response = withTimeout(timeoutMillis) {
+                    call.execute()
+                }
                 
                 if (response.isSuccessful && response.body() != null) {
                     streamHandler.processStream(response.body()!!, this@MainActivityFSM)
                 } else {
                     withContext(Dispatchers.Main) {
-                        showError("Failed to connect to FSM agent: ${response.message()}")
-                        // Error state handled by user interaction, not status indicator
+                        val errorMsg = when (response.code()) {
+                            408 -> "Request timeout. The server is taking too long to respond."
+                            500 -> "Server error. Please try again in a few moments."
+                            503 -> "Server temporarily unavailable. Please try again."
+                            else -> "Failed to connect to server: ${response.message()}"
+                        }
+                        showError(errorMsg)
+                        clearStateIndicator()
                     }
                 }
                 
+            } catch (e: kotlinx.coroutines.TimeoutCancellationException) {
+                Log.e(TAG, "Request timeout", e)
+                withContext(Dispatchers.Main) {
+                    val serverType = ServerConfig.getServerType(this@MainActivityFSM)
+                    val timeoutMessage = when (serverType) {
+                        ServerConfig.SERVER_TYPE_NON_GPU -> 
+                            "Non-GPU cluster is taking longer than expected (>5 min). Please try the GPU cluster for faster processing or try again later."
+                        ServerConfig.SERVER_TYPE_GPU -> 
+                            "GPU cluster timeout. Please check your connection and try again."
+                        else -> 
+                            "Request timeout. Please try again or switch to a different server."
+                    }
+                    chatAdapter.updateLastMessageAsError(timeoutMessage, message, imageBase64)
+                    clearStateIndicator()
+                }
+            } catch (e: java.net.SocketTimeoutException) {
+                Log.e(TAG, "Socket timeout", e)
+                withContext(Dispatchers.Main) {
+                    chatAdapter.updateLastMessageAsError("Connection timeout. Please check your internet connection and try again.", message, imageBase64)
+                    clearStateIndicator()
+                }
+            } catch (e: java.net.ConnectException) {
+                Log.e(TAG, "Connection failed", e)
+                withContext(Dispatchers.Main) {
+                    chatAdapter.updateLastMessageAsError("Cannot connect to server. Please check server availability and your internet connection.", message, imageBase64)
+                    clearStateIndicator()
+                }
             } catch (e: Exception) {
                 Log.e(TAG, "Error sending message to FSM agent", e)
                 withContext(Dispatchers.Main) {
-                    showError("Connection error: ${e.message}")
-                    // Error state handled by user interaction, not status indicator
+                    val errorMsg = when (e) {
+                        is java.net.UnknownHostException -> "Cannot reach server. Please check your internet connection."
+                        is javax.net.ssl.SSLException -> "Secure connection failed. Please check server configuration."
+                        else -> "Connection error: ${e.message}"
+                    }
+                    chatAdapter.updateLastMessageAsError(errorMsg, message, imageBase64)
+                    clearStateIndicator()
                 }
             }
         }
@@ -750,9 +833,9 @@ class MainActivityFSM : ComponentActivity(), FSMStreamHandler.StreamCallback {
                     "${currentMessage.text}\n\n$message"
                 }
                 
-                // Update the existing message card with accumulated content
-                chatAdapter.updateLastMessage(updatedText)
-                val updatedMessage = currentMessage.copy(text = updatedText)
+                // Update the existing message card with accumulated content and clear state (WhatsApp-style)
+                chatAdapter.updateLastMessage(updatedText, null) // Clear state to remove THINKING indicator
+                val updatedMessage = currentMessage.copy(text = updatedText, state = null)
                 currentSessionState.messages[currentSessionState.messages.size - 1] = updatedMessage
                 
                 // CRITICAL FIX: Update the last message in session manager (don't add duplicate)
@@ -820,7 +903,16 @@ class MainActivityFSM : ComponentActivity(), FSMStreamHandler.StreamCallback {
         Log.e(TAG, "Stream error: $error")
         runOnUiThread {
             stopThinkingIndicator()
-            showError(error)
+            
+            // Get the last user message for retry functionality
+            val lastUserMessage = currentSessionState.messages.findLast { it.isUser }
+            val originalMessage = lastUserMessage?.text
+            val originalImageB64 = if (lastUserMessage?.imageUri != null) selectedImageBase64 else null
+            
+            // Convert technical errors to user-friendly messages
+            val userFriendlyError = getUserFriendlyErrorMessage(error)
+            
+            chatAdapter.updateLastMessageAsError(userFriendlyError, originalMessage, originalImageB64)
             // Error state handled by user interaction, not status indicator
         }
     }
@@ -829,6 +921,22 @@ class MainActivityFSM : ComponentActivity(), FSMStreamHandler.StreamCallback {
         Log.d(TAG, "Stream completed")
         runOnUiThread {
             stopThinkingIndicator()
+            
+            // Clear state from the last message to remove THINKING indicator (WhatsApp-style cleanup)
+            if (currentSessionState.messages.isNotEmpty()) {
+                val lastMessage = currentSessionState.messages.last()
+                if (!lastMessage.isUser && lastMessage.state != null) {
+                    Log.d(TAG, "🧹 Clearing state from completed message")
+                    val clearedMessage = lastMessage.copy(state = null)
+                    currentSessionState.messages[currentSessionState.messages.size - 1] = clearedMessage
+                    chatAdapter.updateLastMessage(clearedMessage.text, null)
+                    
+                    // Update in session manager
+                    currentSessionState.sessionId?.let { sessionId ->
+                        sessionManager.updateLastMessageInSession(sessionId, clearedMessage)
+                    }
+                }
+            }
             
             // Save session state after stream completion
             saveCurrentSessionState()
@@ -983,6 +1091,10 @@ class MainActivityFSM : ComponentActivity(), FSMStreamHandler.StreamCallback {
     
     private fun showError(message: String) {
         Toast.makeText(this, message, Toast.LENGTH_LONG).show()
+    }
+    
+    private fun showSuccess(message: String) {
+        Toast.makeText(this, message, Toast.LENGTH_SHORT).show()
     }
     
     /**
@@ -1327,6 +1439,76 @@ class MainActivityFSM : ComponentActivity(), FSMStreamHandler.StreamCallback {
         return Base64.encodeToString(byteArray, Base64.DEFAULT)
     }
     
+    /**
+     * Update state indicator with message
+     */
+    private fun updateStateIndicator(message: String) {
+        // Update the last assistant message with state info if it exists
+        if (currentSessionState.messages.isNotEmpty()) {
+            val lastMessage = currentSessionState.messages.last()
+            if (!lastMessage.isUser) {
+                val updatedMessage = lastMessage.copy(state = message)
+                currentSessionState.messages[currentSessionState.messages.size - 1] = updatedMessage
+                chatAdapter.updateLastMessage(updatedMessage.text, message)
+            }
+        }
+    }
+    
+    /**
+     * Clear state indicator
+     */
+    private fun clearStateIndicator() {
+        // Remove thinking indicator if present
+        hideThinkingIndicator()
+        
+        // Clear state from last message if it exists
+        if (currentSessionState.messages.isNotEmpty()) {
+            val lastMessage = currentSessionState.messages.last()
+            if (!lastMessage.isUser && lastMessage.state != null) {
+                val updatedMessage = lastMessage.copy(state = null)
+                currentSessionState.messages[currentSessionState.messages.size - 1] = updatedMessage
+                chatAdapter.updateLastMessage(updatedMessage.text, null)
+            }
+        }
+    }
+    
+    /**
+     * Show timeout error with server-specific suggestions
+     */
+    private fun showTimeoutError(message: String, serverType: String) {
+        val alertDialog = AlertDialog.Builder(this)
+            .setTitle("⏰ Request Timeout")
+            .setMessage(message)
+            .setPositiveButton("Try Again") { _, _ ->
+                // Retry with the same server
+                val lastUserMessage = currentSessionState.messages.findLast { it.isUser }
+                lastUserMessage?.let { msg ->
+                    val imageB64 = if (msg.imageUri != null) selectedImageBase64 else null
+                    sendToFSMAgent(msg.text, imageB64)
+                }
+            }
+        
+        // Add server switching option for non-GPU timeouts
+        if (serverType == ServerConfig.SERVER_TYPE_NON_GPU) {
+            alertDialog.setNeutralButton("Switch to GPU") { _, _ ->
+                // Switch to GPU server and retry
+                ServerConfig.setServerType(this, ServerConfig.SERVER_TYPE_GPU)
+                showSuccess("Switched to GPU cluster for faster processing")
+                val lastUserMessage = currentSessionState.messages.findLast { it.isUser }
+                lastUserMessage?.let { msg ->
+                    val imageB64 = if (msg.imageUri != null) selectedImageBase64 else null
+                    sendToFSMAgent(msg.text, imageB64)
+                }
+            }
+        }
+        
+        alertDialog.setNegativeButton("Cancel") { dialog, _ ->
+            dialog.dismiss()
+        }
+        
+        alertDialog.create().show()
+    }
+    
     // Thinking Indicator Methods
     private fun showThinkingIndicator() {
         Log.d(TAG, "🤔 Showing thinking indicator")
@@ -1335,7 +1517,7 @@ class MainActivityFSM : ComponentActivity(), FSMStreamHandler.StreamCallback {
         
         // Create thinking message
         thinkingMessage = ChatMessage(
-            text = "🤖 Sasya Arogya Thinking",
+            text = "",
             isUser = false,
             state = "Thinking"
         )
@@ -1411,6 +1593,10 @@ class MainActivityFSM : ComponentActivity(), FSMStreamHandler.StreamCallback {
         }
     }
     
+    private fun hideThinkingIndicator() {
+        stopThinkingIndicator()
+    }
+    
     // Feedback handling methods
     private fun handleThumbsUpFeedback(chatMessage: ChatMessage) {
         Log.d(TAG, "👍 Thumbs up feedback for message: ${chatMessage.text.take(50)}...")
@@ -1443,6 +1629,145 @@ class MainActivityFSM : ComponentActivity(), FSMStreamHandler.StreamCallback {
         
         runOnUiThread {
             Toast.makeText(this, "👎 Thanks for your feedback! We'll improve.", Toast.LENGTH_SHORT).show()
+        }
+    }
+    
+    /**
+     * Convert technical error messages to user-friendly messages
+     */
+    private fun getUserFriendlyErrorMessage(error: String): String {
+        return when {
+            // MCP server unavailability errors
+            error.contains("MCP server not available", ignoreCase = true) ||
+            error.contains("Sasya Arogya MCP server not available", ignoreCase = true) -> {
+                "🏥 Insurance services are temporarily unavailable. Our insurance partner system is currently down for maintenance. Please try again later or contact support if this issue persists."
+            }
+            
+            // Insurance operation failures
+            error.contains("Insurance operation failed", ignoreCase = true) -> {
+                "🏥 We're having trouble processing your insurance request right now. This could be due to:\n\n" +
+                "• Temporary service maintenance\n" +
+                "• Network connectivity issues\n" +
+                "• High server load\n\n" +
+                "Please try again in a few minutes. If the problem continues, our support team can help you with your insurance needs."
+            }
+            
+            // Network/connectivity errors
+            error.contains("connection", ignoreCase = true) ||
+            error.contains("network", ignoreCase = true) ||
+            error.contains("timeout", ignoreCase = true) -> {
+                "🌐 Connection issue detected. Please check your internet connection and try again. If you're on a slow network, the request might take a bit longer to process."
+            }
+            
+            // Server errors
+            error.contains("server error", ignoreCase = true) ||
+            error.contains("internal error", ignoreCase = true) -> {
+                "⚠️ We're experiencing technical difficulties on our end. Our team has been notified and is working to resolve this. Please try again in a few minutes."
+            }
+            
+            // Generic fallback for other errors
+            else -> {
+                "❌ Something went wrong while processing your request. Please try again, and if the issue persists, contact our support team for assistance.\n\nTechnical details: ${error.take(100)}${if (error.length > 100) "..." else ""}"
+            }
+        }
+    }
+    
+    private fun handleRetryClick(chatMessage: ChatMessage) {
+        Log.d(TAG, "🔄 Retry request for failed message")
+        
+        // Extract original request details
+        val originalMessage = chatMessage.originalUserMessage ?: "Please try again"
+        val originalImageB64 = chatMessage.originalImageB64
+        
+        // Clear the error state and show thinking indicator
+        clearStateIndicator()
+        showThinkingIndicator()
+        
+        // Retry the request
+        sendToFSMAgent(originalMessage, originalImageB64)
+    }
+    
+    /**
+     * Check if the user message is a retry request
+     */
+    private fun isRetryRequest(message: String): Boolean {
+        val lowerMessage = message.lowercase().trim()
+        val retryPatterns = listOf(
+            "try again",
+            "retry",
+            "again",
+            "do it again",
+            "repeat",
+            "once more",
+            "one more time",
+            "redo",
+            "run again",
+            "analyze again",
+            "check again",
+            "diagnose again"
+        )
+        
+        return retryPatterns.any { pattern ->
+            lowerMessage == pattern || 
+            lowerMessage.startsWith("$pattern ") || 
+            lowerMessage.endsWith(" $pattern") ||
+            lowerMessage.contains(" $pattern ")
+        }
+    }
+    
+    /**
+     * Handle retry requests by replaying the last operation
+     */
+    private fun handleRetryRequest(retryMessage: String) {
+        Log.d(TAG, "🔄 Detected retry request: $retryMessage")
+        
+        currentSessionState.sessionId?.let { sessionId ->
+            val lastOperation = sessionManager.getLastOperation(sessionId)
+            
+            if (lastOperation != null) {
+                val (lastMessage, lastImageB64) = lastOperation
+                
+                Log.d(TAG, "🔄 Replaying last operation: $lastMessage")
+                
+                // Add the user's retry message to chat
+                val userMessage = ChatMessage(
+                    text = retryMessage,
+                    isUser = true
+                )
+                
+                chatAdapter.addMessage(userMessage)
+                currentSessionState.messages.add(userMessage)
+                sessionManager.addMessageToSession(sessionId, userMessage)
+                scrollToBottom()
+                
+                // Clear input
+                messageInput.text.clear()
+                
+                // Show thinking indicator
+                showThinkingIndicator()
+                
+                // Replay the last operation instead of sending the retry message
+                sendToFSMAgent(lastMessage ?: "Please analyze this plant image", lastImageB64)
+                
+            } else {
+                Log.w(TAG, "No last operation found to retry")
+                
+                // Add the user message normally
+                val userMessage = ChatMessage(
+                    text = retryMessage,
+                    isUser = true
+                )
+                
+                chatAdapter.addMessage(userMessage)
+                currentSessionState.messages.add(userMessage)
+                sessionManager.addMessageToSession(sessionId, userMessage)
+                scrollToBottom()
+                
+                // Clear input and send as normal message
+                messageInput.text.clear()
+                showThinkingIndicator()
+                sendToFSMAgent(retryMessage, null)
+            }
         }
     }
 }

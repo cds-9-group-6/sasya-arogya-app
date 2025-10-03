@@ -27,11 +27,15 @@ data class FSMChatResponse(
 data class FSMStateUpdate(
     @SerializedName("current_node") val currentNode: String? = null,
     @SerializedName("previous_node") val previousNode: String? = null,
+    @SerializedName("next_action") val nextAction: String? = null,
+    @SerializedName("retry_count") val retryCount: Int? = null,
+    @SerializedName("stream_immediately") val streamImmediately: Boolean? = null,
     @SerializedName("messages") val messages: List<FSMMessage>? = null,
     @SerializedName("assistant_response") val assistantResponse: String? = null,
     @SerializedName("follow_up_items") val followUpItems: List<String>? = null,
     @SerializedName("is_complete") val isComplete: Boolean? = null,
     @SerializedName("error") val error: String? = null,
+    @SerializedName("error_message") val errorMessage: String? = null,
     @SerializedName("classification_result") val classificationResult: Map<String, Any>? = null,
     @SerializedName("prescription_details") val prescriptionDetails: Map<String, Any>? = null,
     @SerializedName("vendor_details") val vendorDetails: Map<String, Any>? = null,
@@ -59,7 +63,12 @@ data class ChatMessage(
     val diseaseName: String? = null,
     val confidence: Double? = null,
     val insuranceDetails: InsuranceDetails? = null,
-    val insuranceCertificate: InsuranceCertificateDetails? = null
+    val insuranceCertificate: InsuranceCertificateDetails? = null,
+    val isError: Boolean = false,
+    val errorMessage: String? = null,
+    val canRetry: Boolean = false,
+    val originalUserMessage: String? = null,
+    val originalImageB64: String? = null
 )
 
 // Follow-up item for UI
