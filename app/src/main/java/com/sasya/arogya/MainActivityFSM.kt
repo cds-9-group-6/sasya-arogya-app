@@ -533,6 +533,12 @@ class MainActivityFSM : ComponentActivity(), FSMStreamHandler.StreamCallback {
             return
         }
         
+        // Check if this is a retry request
+        if (isRetryRequest(messageText) && selectedImageBase64 == null) {
+            handleRetryRequest(messageText)
+            return
+        }
+        
         // Create user message
         val userMessage = ChatMessage(
             text = if (messageText.isEmpty()) "📷 [Image uploaded]" else messageText,
@@ -555,8 +561,15 @@ class MainActivityFSM : ComponentActivity(), FSMStreamHandler.StreamCallback {
         val imageB64 = selectedImageBase64
         clearSelectedImage()
         
+        val actualMessage = messageText.ifEmpty { "Please analyze this plant image" }
+        
+        // Track this operation for potential retry
+        currentSessionState.sessionId?.let { sessionId ->
+            sessionManager.updateLastOperation(sessionId, actualMessage, imageB64)
+        }
+        
         // Send to FSM agent
-        sendToFSMAgent(messageText.ifEmpty { "Please analyze this plant image" }, imageB64)
+        sendToFSMAgent(actualMessage, imageB64)
         
         // Show thinking indicator
         showThinkingIndicator()
@@ -1672,5 +1685,89 @@ class MainActivityFSM : ComponentActivity(), FSMStreamHandler.StreamCallback {
         
         // Retry the request
         sendToFSMAgent(originalMessage, originalImageB64)
+    }
+    
+    /**
+     * Check if the user message is a retry request
+     */
+    private fun isRetryRequest(message: String): Boolean {
+        val lowerMessage = message.lowercase().trim()
+        val retryPatterns = listOf(
+            "try again",
+            "retry",
+            "again",
+            "do it again",
+            "repeat",
+            "once more",
+            "one more time",
+            "redo",
+            "run again",
+            "analyze again",
+            "check again",
+            "diagnose again"
+        )
+        
+        return retryPatterns.any { pattern ->
+            lowerMessage == pattern || 
+            lowerMessage.startsWith("$pattern ") || 
+            lowerMessage.endsWith(" $pattern") ||
+            lowerMessage.contains(" $pattern ")
+        }
+    }
+    
+    /**
+     * Handle retry requests by replaying the last operation
+     */
+    private fun handleRetryRequest(retryMessage: String) {
+        Log.d(TAG, "🔄 Detected retry request: $retryMessage")
+        
+        currentSessionState.sessionId?.let { sessionId ->
+            val lastOperation = sessionManager.getLastOperation(sessionId)
+            
+            if (lastOperation != null) {
+                val (lastMessage, lastImageB64) = lastOperation
+                
+                Log.d(TAG, "🔄 Replaying last operation: $lastMessage")
+                
+                // Add the user's retry message to chat
+                val userMessage = ChatMessage(
+                    text = retryMessage,
+                    isUser = true
+                )
+                
+                chatAdapter.addMessage(userMessage)
+                currentSessionState.messages.add(userMessage)
+                sessionManager.addMessageToSession(sessionId, userMessage)
+                scrollToBottom()
+                
+                // Clear input
+                messageInput.text.clear()
+                
+                // Show thinking indicator
+                showThinkingIndicator()
+                
+                // Replay the last operation instead of sending the retry message
+                sendToFSMAgent(lastMessage ?: "Please analyze this plant image", lastImageB64)
+                
+            } else {
+                Log.w(TAG, "No last operation found to retry")
+                
+                // Add the user message normally
+                val userMessage = ChatMessage(
+                    text = retryMessage,
+                    isUser = true
+                )
+                
+                chatAdapter.addMessage(userMessage)
+                currentSessionState.messages.add(userMessage)
+                sessionManager.addMessageToSession(sessionId, userMessage)
+                scrollToBottom()
+                
+                // Clear input and send as normal message
+                messageInput.text.clear()
+                showThinkingIndicator()
+                sendToFSMAgent(retryMessage, null)
+            }
+        }
     }
 }

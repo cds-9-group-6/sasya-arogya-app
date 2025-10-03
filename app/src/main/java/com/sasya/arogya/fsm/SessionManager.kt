@@ -169,6 +169,29 @@ class SessionManager private constructor(private val context: Context) {
     }
     
     /**
+     * Track the last successful operation for retry functionality
+     */
+    fun updateLastOperation(sessionId: String, message: String, imageB64: String?) {
+        sessions[sessionId]?.let { session ->
+            session.lastOperationMessage = message
+            session.lastOperationImageB64 = imageB64
+            session.lastOperationTimestamp = System.currentTimeMillis()
+            Log.d(TAG, "Updated last operation for session $sessionId: $message")
+        }
+    }
+    
+    /**
+     * Get the last operation for retry functionality
+     */
+    fun getLastOperation(sessionId: String): Pair<String?, String?>? {
+        return sessions[sessionId]?.let { session ->
+            if (session.lastOperationMessage != null) {
+                Pair(session.lastOperationMessage, session.lastOperationImageB64)
+            } else null
+        }
+    }
+    
+    /**
      * Check if we should create a new session for a new image
      * Returns true if current session already has a diagnosis
      */

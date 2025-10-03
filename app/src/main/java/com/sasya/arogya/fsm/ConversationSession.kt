@@ -21,7 +21,11 @@ data class ConversationSession(
     @SerializedName("has_diagnosis") var hasDiagnosis: Boolean = false,
     @SerializedName("plant_type") var plantType: String? = null,
     @SerializedName("disease_name") var diseaseName: String? = null,
-    @SerializedName("is_active") var isActive: Boolean = true
+    @SerializedName("is_active") var isActive: Boolean = true,
+    // Track last successful operation for retry functionality
+    @SerializedName("last_operation_message") var lastOperationMessage: String? = null,
+    @SerializedName("last_operation_image_b64") var lastOperationImageB64: String? = null,
+    @SerializedName("last_operation_timestamp") var lastOperationTimestamp: Long = 0L
 ) {
     /**
      * Generate user-friendly display title
