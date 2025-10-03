@@ -180,6 +180,9 @@ class MainActivityFSM : ComponentActivity(), FSMStreamHandler.StreamCallback {
             },
             onThumbsDownClick = { chatMessage ->
                 handleThumbsDownFeedback(chatMessage)
+            },
+            onRetryClick = { chatMessage ->
+                handleRetryClick(chatMessage)
             }
         )
         
@@ -639,19 +642,19 @@ class MainActivityFSM : ComponentActivity(), FSMStreamHandler.StreamCallback {
                         else -> 
                             "Request timeout. Please try again or switch to a different server."
                     }
-                    showTimeoutError(timeoutMessage, serverType)
+                    chatAdapter.updateLastMessageAsError(timeoutMessage, message, imageBase64)
                     clearStateIndicator()
                 }
             } catch (e: java.net.SocketTimeoutException) {
                 Log.e(TAG, "Socket timeout", e)
                 withContext(Dispatchers.Main) {
-                    showError("Connection timeout. Please check your internet connection and try again.")
+                    chatAdapter.updateLastMessageAsError("Connection timeout. Please check your internet connection and try again.", message, imageBase64)
                     clearStateIndicator()
                 }
             } catch (e: java.net.ConnectException) {
                 Log.e(TAG, "Connection failed", e)
                 withContext(Dispatchers.Main) {
-                    showError("Cannot connect to server. Please check server availability and your internet connection.")
+                    chatAdapter.updateLastMessageAsError("Cannot connect to server. Please check server availability and your internet connection.", message, imageBase64)
                     clearStateIndicator()
                 }
             } catch (e: Exception) {
@@ -662,7 +665,7 @@ class MainActivityFSM : ComponentActivity(), FSMStreamHandler.StreamCallback {
                         is javax.net.ssl.SSLException -> "Secure connection failed. Please check server configuration."
                         else -> "Connection error: ${e.message}"
                     }
-                    showError(errorMsg)
+                    chatAdapter.updateLastMessageAsError(errorMsg, message, imageBase64)
                     clearStateIndicator()
                 }
             }
@@ -887,7 +890,13 @@ class MainActivityFSM : ComponentActivity(), FSMStreamHandler.StreamCallback {
         Log.e(TAG, "Stream error: $error")
         runOnUiThread {
             stopThinkingIndicator()
-            showError(error)
+            
+            // Get the last user message for retry functionality
+            val lastUserMessage = currentSessionState.messages.findLast { it.isUser }
+            val originalMessage = lastUserMessage?.text
+            val originalImageB64 = if (lastUserMessage?.imageUri != null) selectedImageBase64 else null
+            
+            chatAdapter.updateLastMessageAsError(error, originalMessage, originalImageB64)
             // Error state handled by user interaction, not status indicator
         }
     }
@@ -1589,5 +1598,20 @@ class MainActivityFSM : ComponentActivity(), FSMStreamHandler.StreamCallback {
         runOnUiThread {
             Toast.makeText(this, "👎 Thanks for your feedback! We'll improve.", Toast.LENGTH_SHORT).show()
         }
+    }
+    
+    private fun handleRetryClick(chatMessage: ChatMessage) {
+        Log.d(TAG, "🔄 Retry request for failed message")
+        
+        // Extract original request details
+        val originalMessage = chatMessage.originalUserMessage ?: "Please try again"
+        val originalImageB64 = chatMessage.originalImageB64
+        
+        // Clear the error state and show thinking indicator
+        clearStateIndicator()
+        showThinkingIndicator()
+        
+        // Retry the request
+        sendToFSMAgent(originalMessage, originalImageB64)
     }
 }

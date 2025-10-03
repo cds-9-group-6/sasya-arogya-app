@@ -59,7 +59,12 @@ data class ChatMessage(
     val diseaseName: String? = null,
     val confidence: Double? = null,
     val insuranceDetails: InsuranceDetails? = null,
-    val insuranceCertificate: InsuranceCertificateDetails? = null
+    val insuranceCertificate: InsuranceCertificateDetails? = null,
+    val isError: Boolean = false,
+    val errorMessage: String? = null,
+    val canRetry: Boolean = false,
+    val originalUserMessage: String? = null,
+    val originalImageB64: String? = null
 )
 
 // Follow-up item for UI

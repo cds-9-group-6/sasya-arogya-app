@@ -407,6 +407,45 @@
 
                 </LinearLayout>
 
+                <!-- Error Container for failed requests -->
+                <LinearLayout
+                    android:id="@+id/errorContainer"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="vertical"
+                    android:layout_marginTop="12dp"
+                    android:background="@drawable/error_container_background"
+                    android:padding="12dp"
+                    android:visibility="gone">
+
+                    <TextView
+                        android:id="@+id/errorMessageText"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:text="Request failed"
+                        android:textSize="14sp"
+                        android:textColor="@color/error_text"
+                        android:drawableStart="@drawable/ic_error"
+                        android:drawablePadding="8dp"
+                        android:gravity="center_vertical"
+                        android:layout_marginBottom="8dp" />
+
+                    <Button
+                        android:id="@+id/retryButton"
+                        android:layout_width="wrap_content"
+                        android:layout_height="36dp"
+                        android:text="🔄 Try Again"
+                        android:textSize="12sp"
+                        android:textStyle="bold"
+                        android:textColor="@color/retry_button_text"
+                        android:background="@drawable/retry_button_background"
+                        android:paddingStart="16dp"
+                        android:paddingEnd="16dp"
+                        android:layout_gravity="start"
+                        android:minWidth="100dp" />
+
+                </LinearLayout>
+
                 <!-- Follow-up Container (Inside the message card for WhatsApp style) -->
                 <LinearLayout
                     android:id="@+id/followUpContainer"

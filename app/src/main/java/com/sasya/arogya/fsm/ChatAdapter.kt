@@ -37,7 +37,8 @@ import java.util.*
 class ChatAdapter(
     private val onFollowUpClick: (String) -> Unit,
     private val onThumbsUpClick: (ChatMessage) -> Unit = {},
-    private val onThumbsDownClick: (ChatMessage) -> Unit = {}
+    private val onThumbsDownClick: (ChatMessage) -> Unit = {},
+    private val onRetryClick: (ChatMessage) -> Unit = {}
 ) : RecyclerView.Adapter<RecyclerView.ViewHolder>() {
     
     private val messages = mutableListOf<ChatMessage>()
@@ -61,7 +62,7 @@ class ChatAdapter(
             }
             VIEW_TYPE_ASSISTANT -> {
                 val view = inflater.inflate(R.layout.item_chat_assistant, parent, false)
-                AssistantMessageViewHolder(view, onFollowUpClick, onThumbsUpClick, onThumbsDownClick)
+                AssistantMessageViewHolder(view, onFollowUpClick, onThumbsUpClick, onThumbsDownClick, onRetryClick)
             }
             else -> throw IllegalArgumentException("Invalid view type")
         }
@@ -125,6 +126,45 @@ class ChatAdapter(
     }
     
     /**
+     * Add an error message to the chat
+     */
+    fun addErrorMessage(errorMessage: String, originalUserMessage: String? = null, originalImageB64: String? = null) {
+        val message = ChatMessage(
+            text = "❌ Error",
+            isUser = false,
+            isError = true,
+            errorMessage = errorMessage,
+            canRetry = true,
+            originalUserMessage = originalUserMessage,
+            originalImageB64 = originalImageB64
+        )
+        messages.add(message)
+        notifyItemInserted(messages.size - 1)
+    }
+    
+    /**
+     * Update the last message to show an error state
+     */
+    fun updateLastMessageAsError(errorMessage: String, originalUserMessage: String? = null, originalImageB64: String? = null) {
+        if (messages.isNotEmpty()) {
+            val lastMessage = messages[messages.size - 1]
+            if (!lastMessage.isUser) {
+                val errorMessage = lastMessage.copy(
+                    text = "❌ Error",
+                    isError = true,
+                    errorMessage = errorMessage,
+                    canRetry = true,
+                    originalUserMessage = originalUserMessage,
+                    originalImageB64 = originalImageB64,
+                    state = null // Clear any processing state
+                )
+                messages[messages.size - 1] = errorMessage
+                notifyItemChanged(messages.size - 1)
+            }
+        }
+    }
+    
+    /**
      * ViewHolder for user messages
      */
     inner class UserMessageViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
@@ -155,7 +195,8 @@ class ChatAdapter(
         itemView: View,
         private val onFollowUpClick: (String) -> Unit,
         private val onThumbsUpClick: (ChatMessage) -> Unit,
-        private val onThumbsDownClick: (ChatMessage) -> Unit
+        private val onThumbsDownClick: (ChatMessage) -> Unit,
+        private val onRetryClick: (ChatMessage) -> Unit
     ) : RecyclerView.ViewHolder(itemView) {
         
         private val messageText: TextView = itemView.findViewById(R.id.messageText)
@@ -167,6 +208,9 @@ class ChatAdapter(
         private val thumbsDownButton: ImageButton = itemView.findViewById(R.id.thumbsDownButton)
         private val attentionOverlayContainer: LinearLayout = itemView.findViewById(R.id.attentionOverlayContainer)
         private val attentionOverlayImage: ImageView = itemView.findViewById(R.id.attentionOverlayImage)
+        private val errorContainer: LinearLayout = itemView.findViewById(R.id.errorContainer)
+        private val errorMessageText: TextView = itemView.findViewById(R.id.errorMessageText)
+        private val retryButton: Button = itemView.findViewById(R.id.retryButton)
         private val overlayDescription: TextView = itemView.findViewById(R.id.overlayDescription)
         
         // Disease card elements
@@ -446,6 +490,24 @@ class ChatAdapter(
                 }
             } else {
                 attentionOverlayContainer.visibility = View.GONE
+            }
+            
+            // Handle error state
+            if (message.isError) {
+                errorContainer.visibility = View.VISIBLE
+                errorMessageText.text = message.errorMessage ?: "Request failed"
+                
+                // Setup retry button if retry is possible
+                if (message.canRetry) {
+                    retryButton.visibility = View.VISIBLE
+                    retryButton.setOnClickListener {
+                        onRetryClick(message)
+                    }
+                } else {
+                    retryButton.visibility = View.GONE
+                }
+            } else {
+                errorContainer.visibility = View.GONE
             }
         }
         

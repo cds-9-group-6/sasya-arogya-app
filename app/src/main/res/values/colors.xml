@@ -80,4 +80,8 @@
     <color name="thumbs_default">#CCCCCC</color>        <!-- Default gray for inactive buttons -->
     <color name="thumbs_up_selected">#4CAF50</color>    <!-- Green for thumbs up selected -->
     <color name="thumbs_down_selected">#F44336</color>  <!-- Red for thumbs down selected -->
+    
+    <!-- Error and Retry Colors -->
+    <color name="error_text">#D32F2F</color>            <!-- Dark red for error messages -->
+    <color name="retry_button_text">#FFFFFF</color>     <!-- White text for retry button -->
 </resources>
