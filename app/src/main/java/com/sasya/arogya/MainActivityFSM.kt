@@ -409,26 +409,13 @@ class MainActivityFSM : ComponentActivity(), FSMStreamHandler.StreamCallback {
     }
     
     private fun addWelcomeMessage() {
-        // Get user profile to create personalized quick actions
-        val userProfile = getUserAgriculturalProfile()
-        val farmSize = userProfile["farm_size"]?.takeIf { it.isNotBlank() } ?: "Small (< 1 acre)"
-        val state = userProfile["state"]?.takeIf { it.isNotBlank() } ?: "your state"
-        val farmSizeHectares = convertFarmSizeToHectares(farmSize)
-        
-        // Create smart insurance quick action with profile data
-        val insuranceAction = if (userProfile["state"]?.isNotBlank() == true) {
-            "🛡️ Get Insurance Quote (${String.format("%.1f", farmSizeHectares)} ha farm in $state)"
-        } else {
-            "🛡️ Get Insurance Quote"
-        }
-        
         val welcomeMessage = ChatMessage(
             text = "🌿 **Welcome to Sasya Arogya!**\n\nI'm your intelligent plant health assistant, designed specifically for Indian farmers. I can help you with comprehensive agricultural support.\n\n**🌱 What I can do for you:**\n• **🔬 Diagnose plant diseases** from photos with AI precision\n• **💊 Recommend treatments** and organic medicines\n• **🛡️ Help with crop insurance** and premium calculations\n• **📅 Provide seasonal care** advice for your crops\n",
             isUser = false,
             state = "Ready",
             followUpItems = listOf(
                 "📸 Analyze Plant Photo",
-                insuranceAction,
+                "🛡️ Get Insurance Quote",
                 "🌱 Seasonal Care Tips",
                 "🧪 Soil Testing Guide"
             )
