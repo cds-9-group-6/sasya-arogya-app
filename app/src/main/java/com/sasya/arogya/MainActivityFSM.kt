@@ -694,13 +694,20 @@ class MainActivityFSM : ComponentActivity(), FSMStreamHandler.StreamCallback {
             return userProfile[key]?.let { if (it.isBlank()) default else it } ?: default
         }
         
+        val farmerName = userProfile["farmer_name"] ?: ""
         val userState = getValueOrDefault("state", "Tamil Nadu")
         val userFarmSize = getValueOrDefault("farm_size", "Small (< 1 acre)")
         val currentSeason = getCurrentSeason()
         
-        Log.d(TAG, "🏛️ Using state: $userState, farm size: $userFarmSize, season: $currentSeason")
+        // Convert farm size to hectares for insurance integration
+        val farmSizeHectares = convertFarmSizeToHectares(userFarmSize)
         
-        return mapOf(
+        Log.d(TAG, "🏛️ Using state: $userState, farm size: $userFarmSize ($farmSizeHectares ha), season: $currentSeason")
+        if (farmerName.isNotEmpty()) {
+            Log.d(TAG, "👨‍🌾 Farmer name: $farmerName")
+        }
+        
+        val context = mutableMapOf(
             // Platform information
             "platform" to "android",
             "app_version" to "1.0.0",
@@ -710,6 +717,7 @@ class MainActivityFSM : ComponentActivity(), FSMStreamHandler.StreamCallback {
             "location" to userState,
             "state" to userState,  
             "farm_size" to userFarmSize,
+            "farm_size_hectares" to farmSizeHectares, // For insurance calculations
             "farming_experience" to "intermediate", // Default value
             "crop_type" to "general", // Default to general plant diagnosis
             "season" to currentSeason,
@@ -722,6 +730,26 @@ class MainActivityFSM : ComponentActivity(), FSMStreamHandler.StreamCallback {
             "image_source" to "android_camera",
             "fsm_version" to "2.0" // FSM agent version
         )
+        
+        // Add farmer name if provided (for insurance integration)
+        if (farmerName.isNotEmpty()) {
+            context["farmer_name"] = farmerName
+        }
+        
+        return context
+    }
+    
+    /**
+     * Convert farm size text to hectares for insurance calculations
+     */
+    private fun convertFarmSizeToHectares(farmSize: String): Double {
+        return when {
+            farmSize.contains("Small", ignoreCase = true) -> 0.4 // ~1 acre = 0.4 hectares
+            farmSize.contains("Medium", ignoreCase = true) -> 2.0 // 1-5 acres, use midpoint ~2 ha
+            farmSize.contains("Large", ignoreCase = true) && !farmSize.contains("Very", ignoreCase = true) -> 3.0 // 5-10 acres, use midpoint ~3 ha
+            farmSize.contains("Very Large", ignoreCase = true) -> 6.0 // >10 acres, use 15 acres ~6 ha
+            else -> 0.4 // Default to small farm
+        }
     }
     
     /**
@@ -1232,8 +1260,12 @@ class MainActivityFSM : ComponentActivity(), FSMStreamHandler.StreamCallback {
         val dialogView = layoutInflater.inflate(R.layout.dialog_agricultural_profile, null)
         
         // Get dialog elements
+        val farmerNameInput = dialogView.findViewById<EditText>(R.id.farmerNameInput)
         val stateSpinner = dialogView.findViewById<Spinner>(R.id.stateSpinner)
         val farmSizeSpinner = dialogView.findViewById<Spinner>(R.id.farmSizeSpinner)
+        
+        // Set current farmer name if exists
+        farmerNameInput.setText(currentProfile["farmer_name"] ?: "")
         
         // Set up spinners
         setupProfileSpinner(stateSpinner, getStateOptions(), currentProfile["state"])
@@ -1244,10 +1276,17 @@ class MainActivityFSM : ComponentActivity(), FSMStreamHandler.StreamCallback {
             .setMessage("Help us provide personalized plant advice:")
             .setView(dialogView)
             .setPositiveButton("Save") { _, _ ->
-                val newProfile = mapOf(
+                val farmerName = farmerNameInput.text.toString().trim()
+                val newProfile = mutableMapOf(
                     "state" to stateSpinner.selectedItem.toString(),
                     "farm_size" to farmSizeSpinner.selectedItem.toString()
                 )
+                
+                // Only save farmer name if provided
+                if (farmerName.isNotEmpty()) {
+                    newProfile["farmer_name"] = farmerName
+                }
+                
                 saveAgriculturalProfile(newProfile)
                 Toast.makeText(this, "✅ Profile saved successfully!", Toast.LENGTH_SHORT).show()
             }
@@ -1258,6 +1297,7 @@ class MainActivityFSM : ComponentActivity(), FSMStreamHandler.StreamCallback {
     private fun getUserAgriculturalProfile(): Map<String, String> {
         val prefs = getSharedPreferences("agricultural_profile", MODE_PRIVATE)
         return mapOf(
+            "farmer_name" to (prefs.getString("farmer_name", null) ?: ""),
             "state" to (prefs.getString("state", null) ?: ""),
             "farm_size" to (prefs.getString("farm_size", null) ?: "")
         )
