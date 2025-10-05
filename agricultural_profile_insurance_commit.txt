@@ -1,0 +1,63 @@
+feat: Integrate agricultural profile with insurance - Add farmer name and farm size
+
+🌾 Agricultural Profile Enhancements for Insurance Integration
+
+Problem Statement:
+Insurance operations needed farmer name and farm size data, but these were not being
+captured or passed from the agricultural profile. This led to:
+- Insurance certificates without proper farmer names (showing 'Farmer' or 'N/A')
+- Farm size not being used as fallback when not specified in insurance prompts
+- Lack of personalization in insurance documents
+
+Requirements Implemented:
+
+1. Optional Farmer Name Field
+   - Added farmer name as optional input in agricultural profile dialog
+   - Stored securely in SharedPreferences
+   - Only saved if user provides it (optional field)
+
+2. Insurance Integration with Farmer Name
+   - Farmer name from profile automatically used in insurance context
+   - Appears on insurance certificates and premium cards
+   - Fallback to default if not provided
+
+3. Farm Size as Insurance Fallback
+   - Profile farm size converted to hectares for insurance calculations
+   - Used as fallback when not specified in user prompt
+   - Intelligent conversion: Small (<1 acre) → 0.4ha, Medium (1-5) → 2.0ha, etc.
+
+Technical Implementation:
+
+dialog_agricultural_profile.xml:
+- Added EditText for farmer name with proper styling
+- Positioned before state/farm size for logical flow
+- Hint text: 'Enter your name for insurance documents'
+- Updated helper text to explain insurance benefit
+
+MainActivityFSM.kt:
+- Enhanced profile dialog to capture and save farmer name
+- Updated getUserAgriculturalProfile() to include farmer_name field
+- Modified createEnrichedContext() to send farmer_name and farm_size_hectares
+- Added convertFarmSizeToHectares() for automatic hectare conversion
+
+Data Flow:
+1. Profile Setup: User → Dialog → SharedPreferences
+2. Message Send: Profile → Context → FSM Agent
+3. Insurance: FSM uses farmer_name + farm_size_hectares for personalized docs
+
+Benefits:
+- Personalized insurance documents with proper farmer names
+- Smart farm size fallback for consistent calculations
+- Single profile setup serves multiple purposes
+- Privacy-conscious (farmer name is optional)
+- Professional insurance certificates
+
+Example Context Sent:
+{
+  "state": "Tamil Nadu",
+  "farm_size": "Medium (1-5 acres)",
+  "farm_size_hectares": 2.0,
+  "farmer_name": "Rajesh Kumar",
+  "season": "summer"
+}
+

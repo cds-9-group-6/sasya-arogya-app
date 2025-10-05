@@ -36,6 +36,28 @@
                 android:textColor="#FFFFFF" />
         </LinearLayout>
 
+        <!-- Farmer Name (Optional) -->
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="👨‍🌾 Farmer Name (Optional)"
+            android:textSize="16sp"
+            android:textStyle="bold"
+            android:layout_marginBottom="8dp"
+            android:textColor="#2E7D32" />
+
+        <EditText
+            android:id="@+id/farmerNameInput"
+            android:layout_width="match_parent"
+            android:layout_height="48dp"
+            android:layout_marginBottom="20dp"
+            android:background="@drawable/spinner_background"
+            android:padding="12dp"
+            android:hint="Enter your name for insurance documents"
+            android:inputType="textPersonName|textCapWords"
+            android:maxLines="1"
+            android:textSize="14sp" />
+
         <!-- State Name -->
         <TextView
             android:layout_width="match_parent"
@@ -99,7 +121,7 @@
                     android:layout_width="0dp"
                     android:layout_weight="1"
                     android:layout_height="wrap_content"
-                    android:text="This basic information helps us provide region-specific plant disease detection and farming advice tailored to your area."
+                    android:text="This information helps us provide region-specific plant disease detection and personalized farming advice. Your name will be used for insurance documents if you choose to purchase crop insurance."
                     android:textSize="14sp"
                     android:textColor="#2E7D32"
                     android:lineSpacingExtra="2dp" />

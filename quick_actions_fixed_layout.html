@@ -1,0 +1,454 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Sasya Arogya - Fixed Quick Actions Layout</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, sans-serif;
+            background: linear-gradient(135deg, #f5f7fa 0%, #c3cfe2 100%);
+            padding: 20px;
+            min-height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+        }
+
+        .container {
+            max-width: 600px;
+            width: 100%;
+        }
+
+        .comparison {
+            display: grid;
+            grid-template-columns: 1fr;
+            gap: 30px;
+            margin-bottom: 40px;
+        }
+
+        .section {
+            background: white;
+            border-radius: 20px;
+            padding: 30px;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
+        }
+
+        .section-title {
+            font-size: 24px;
+            font-weight: bold;
+            margin-bottom: 20px;
+            text-align: center;
+        }
+
+        .status-badge {
+            display: inline-block;
+            padding: 6px 16px;
+            border-radius: 20px;
+            font-size: 14px;
+            font-weight: bold;
+            margin-left: 10px;
+        }
+
+        .status-error {
+            background: #ffebee;
+            color: #c62828;
+        }
+
+        .status-success {
+            background: #e8f5e9;
+            color: #2e7d32;
+        }
+
+        .header {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            padding: 20px;
+            border-radius: 15px;
+            margin-bottom: 15px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .header-icon {
+            font-size: 32px;
+        }
+
+        .header-text h2 {
+            font-size: 20px;
+            font-weight: bold;
+            margin-bottom: 5px;
+        }
+
+        .header-text p {
+            font-size: 14px;
+            opacity: 0.9;
+        }
+
+        .quick-actions-grid {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 12px;
+            margin-top: 15px;
+        }
+
+        .quick-action-btn {
+            background: linear-gradient(135deg, #e8f5e9 0%, #c8e6c9 100%);
+            border: 2px solid #66bb6a;
+            border-radius: 20px;
+            padding: 16px 12px;
+            text-align: center;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            font-size: 13px;
+            font-weight: bold;
+            color: #2e7d32;
+            min-height: 80px;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            gap: 5px;
+            box-shadow: 0 2px 8px rgba(102, 187, 106, 0.2);
+        }
+
+        .quick-action-btn:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 6px 16px rgba(102, 187, 106, 0.3);
+            background: linear-gradient(135deg, #c8e6c9 0%, #a5d6a7 100%);
+        }
+
+        .quick-action-btn:active {
+            transform: translateY(0);
+        }
+
+        .btn-icon {
+            font-size: 28px;
+            line-height: 1;
+        }
+
+        .btn-text {
+            line-height: 1.3;
+            word-wrap: break-word;
+        }
+
+        /* Before style - overlapping */
+        .quick-actions-list-before {
+            display: flex;
+            flex-direction: column;
+            gap: 12px;
+            margin-top: 15px;
+        }
+
+        .quick-action-btn-before {
+            background: linear-gradient(135deg, #e8f5e9 0%, #c8e6c9 100%);
+            border: 2px solid #66bb6a;
+            border-radius: 20px;
+            padding: 16px 12px;
+            text-align: center;
+            font-size: 13px;
+            font-weight: bold;
+            color: #2e7d32;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 8px;
+            position: relative;
+            overflow: hidden;
+            box-shadow: 0 2px 8px rgba(102, 187, 106, 0.2);
+        }
+
+        .quick-action-btn-before.overlapping {
+            background: linear-gradient(135deg, #ffebee 0%, #ffcdd2 100%);
+            border-color: #ef5350;
+            color: #c62828;
+        }
+
+        .overflow-indicator {
+            position: absolute;
+            right: 10px;
+            top: 50%;
+            transform: translateY(-50%);
+            background: #c62828;
+            color: white;
+            padding: 4px 8px;
+            border-radius: 12px;
+            font-size: 11px;
+            font-weight: bold;
+            animation: pulse 1s infinite;
+        }
+
+        @keyframes pulse {
+            0%, 100% { opacity: 1; }
+            50% { opacity: 0.5; }
+        }
+
+        .explanation {
+            background: #f5f5f5;
+            border-left: 4px solid #2e7d32;
+            padding: 15px;
+            border-radius: 8px;
+            margin-top: 20px;
+            font-size: 14px;
+            line-height: 1.6;
+        }
+
+        .explanation h4 {
+            margin-bottom: 10px;
+            color: #2e7d32;
+            font-size: 16px;
+        }
+
+        .explanation ul {
+            margin-left: 20px;
+            margin-top: 10px;
+        }
+
+        .explanation li {
+            margin-bottom: 5px;
+        }
+
+        .code-block {
+            background: #263238;
+            color: #aed581;
+            padding: 15px;
+            border-radius: 8px;
+            margin-top: 15px;
+            font-family: 'Courier New', monospace;
+            font-size: 13px;
+            overflow-x: auto;
+            line-height: 1.5;
+        }
+
+        .highlight {
+            color: #ffeb3b;
+            font-weight: bold;
+        }
+
+        .demo-interaction {
+            background: #e3f2fd;
+            border: 2px solid #2196f3;
+            border-radius: 12px;
+            padding: 15px;
+            margin-top: 15px;
+        }
+
+        .demo-interaction h4 {
+            color: #1976d2;
+            margin-bottom: 10px;
+            font-size: 16px;
+        }
+
+        .demo-message {
+            background: white;
+            border-radius: 12px;
+            padding: 12px;
+            margin-top: 10px;
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+        }
+
+        .user-message {
+            background: #dcf8c6;
+            margin-left: 40px;
+        }
+
+        .assistant-message {
+            background: white;
+            margin-right: 40px;
+        }
+
+        .message-header {
+            font-weight: bold;
+            margin-bottom: 5px;
+            font-size: 14px;
+        }
+
+        .message-content {
+            font-size: 13px;
+            color: #333;
+            line-height: 1.5;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <!-- Before Section -->
+        <div class="section">
+            <div class="section-title">
+                ❌ Before: Overlapping Buttons
+                <span class="status-badge status-error">BROKEN</span>
+            </div>
+            
+            <div class="header">
+                <div class="header-icon">🚀</div>
+                <div class="header-text">
+                    <h2>Quick Actions</h2>
+                    <p>Buttons overlapping due to long text</p>
+                </div>
+            </div>
+
+            <div class="quick-actions-list-before">
+                <div class="quick-action-btn-before">
+                    📸 Analyze Plant Photo
+                </div>
+                <div class="quick-action-btn-before overlapping">
+                    🛡️ Get Insurance Quote (0.4 ha farm in Karnataka)
+                    <span class="overflow-indicator">TOO LONG!</span>
+                </div>
+                <div class="quick-action-btn-before">
+                    🌱 Seasonal Care Tips
+                </div>
+                <div class="quick-action-btn-before">
+                    🧪 Soil Testing Guide
+                </div>
+            </div>
+
+            <div class="explanation">
+                <h4>❌ Problem:</h4>
+                <ul>
+                    <li>Insurance button text too long: "(0.4 ha farm in Karnataka)"</li>
+                    <li>Buttons can't fit in 2-column grid</li>
+                    <li>Layout breaks on mobile screens</li>
+                    <li>Text wrapping looks messy</li>
+                </ul>
+            </div>
+        </div>
+
+        <!-- After Section -->
+        <div class="section">
+            <div class="section-title">
+                ✅ After: Clean 2x2 Grid
+                <span class="status-badge status-success">FIXED</span>
+            </div>
+            
+            <div class="header">
+                <div class="header-icon">🚀</div>
+                <div class="header-text">
+                    <h2>Quick Actions</h2>
+                    <p>Perfect 2x2 grid layout</p>
+                </div>
+            </div>
+
+            <div class="quick-actions-grid">
+                <div class="quick-action-btn">
+                    <div class="btn-icon">📸</div>
+                    <div class="btn-text">Analyze<br>Plant Photo</div>
+                </div>
+                <div class="quick-action-btn">
+                    <div class="btn-icon">🛡️</div>
+                    <div class="btn-text">Get Insurance<br>Quote</div>
+                </div>
+                <div class="quick-action-btn">
+                    <div class="btn-icon">🌱</div>
+                    <div class="btn-text">Seasonal Care<br>Tips</div>
+                </div>
+                <div class="quick-action-btn">
+                    <div class="btn-icon">🧪</div>
+                    <div class="btn-text">Soil Testing<br>Guide</div>
+                </div>
+            </div>
+
+            <div class="explanation">
+                <h4>✅ Solution:</h4>
+                <ul>
+                    <li>Simplified button text: "🛡️ Get Insurance Quote"</li>
+                    <li>Removed farm area and state from button</li>
+                    <li>Clean 2x2 grid layout works perfectly</li>
+                    <li>Profile details added when button clicked</li>
+                </ul>
+            </div>
+
+            <div class="demo-interaction">
+                <h4>💡 User Interaction Flow:</h4>
+                <div class="demo-message user-message">
+                    <div class="message-header">👨‍🌾 You: (after clicking button)</div>
+                    <div class="message-content">
+                        I would like to get crop insurance for my <strong>2.0 hectare farm in Karnataka</strong>. Please show me premium options.
+                    </div>
+                </div>
+                <div class="demo-message assistant-message">
+                    <div class="message-header">🤖 Sasya Arogya:</div>
+                    <div class="message-content">
+                        <strong>🛡️ Insurance Premium Quote</strong><br><br>
+                        <strong>Crop:</strong> General<br>
+                        <strong>State:</strong> Karnataka<br>
+                        <strong>Area:</strong> 2.0 hectares<br>
+                        <strong>Farmer:</strong> Aditya<br><br>
+                        <strong>Total Premium:</strong> ₹1,200<br>
+                        <strong>Government Subsidy:</strong> ₹900<br>
+                        <strong>Your Contribution:</strong> ₹300
+                    </div>
+                </div>
+            </div>
+
+            <div class="code-block">
+// Button Click Handler<br>
+when (buttonText == <span class="highlight">"🛡️ Get Insurance Quote"</span>) {<br>
+&nbsp;&nbsp;val profile = getUserProfile()<br>
+&nbsp;&nbsp;val prompt = <span class="highlight">"I would like to get crop insurance "</span> +<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="highlight">"for my ${profile.area} hectare farm "</span> +<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="highlight">"in ${profile.state}. Show me premium options."</span><br>
+&nbsp;&nbsp;sendToAgent(prompt, context = profile)<br>
+}
+            </div>
+        </div>
+
+        <!-- Key Benefits -->
+        <div class="section">
+            <div class="section-title">🎯 Key Benefits</div>
+            
+            <div style="display: grid; grid-template-columns: repeat(2, 1fr); gap: 15px; margin-top: 20px;">
+                <div style="background: #e8f5e9; padding: 15px; border-radius: 12px; text-align: center;">
+                    <div style="font-size: 32px; margin-bottom: 10px;">✅</div>
+                    <div style="font-weight: bold; color: #2e7d32; margin-bottom: 5px;">Clean UI</div>
+                    <div style="font-size: 13px; color: #555;">No overlapping buttons</div>
+                </div>
+                <div style="background: #e3f2fd; padding: 15px; border-radius: 12px; text-align: center;">
+                    <div style="font-size: 32px; margin-bottom: 10px;">📱</div>
+                    <div style="font-weight: bold; color: #1976d2; margin-bottom: 5px;">Responsive</div>
+                    <div style="font-size: 13px; color: #555;">Works on all screens</div>
+                </div>
+                <div style="background: #fff3e0; padding: 15px; border-radius: 12px; text-align: center;">
+                    <div style="font-size: 32px; margin-bottom: 10px;">🎯</div>
+                    <div style="font-weight: bold; color: #ef6c00; margin-bottom: 5px;">Smart</div>
+                    <div style="font-size: 13px; color: #555;">Profile data still used</div>
+                </div>
+                <div style="background: #f3e5f5; padding: 15px; border-radius: 12px; text-align: center;">
+                    <div style="font-size: 32px; margin-bottom: 10px;">⚡</div>
+                    <div style="font-weight: bold; color: #7b1fa2; margin-bottom: 5px;">Fast</div>
+                    <div style="font-size: 13px; color: #555;">One-click action</div>
+                </div>
+            </div>
+
+            <div style="margin-top: 25px; padding: 20px; background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); color: white; border-radius: 12px; text-align: center;">
+                <div style="font-size: 24px; font-weight: bold; margin-bottom: 10px;">🎉 Problem Solved!</div>
+                <div style="font-size: 14px; opacity: 0.9;">
+                    Clean button layout + Smart prompt generation + Profile integration = Perfect UX
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // Add interactive hover effects
+        document.querySelectorAll('.quick-action-btn').forEach(btn => {
+            btn.addEventListener('click', function() {
+                const text = this.querySelector('.btn-text').textContent.trim();
+                if (text.includes('Insurance')) {
+                    alert('🛡️ Generated Prompt:\n\n"I would like to get crop insurance for my 2.0 hectare farm in Karnataka. Please show me premium options."\n\n✅ Profile data (2.0 ha, Karnataka, Aditya) automatically included!');
+                } else {
+                    alert('✅ Button clicked: ' + text);
+                }
+            });
+        });
+    </script>
+</body>
+</html>
+

@@ -1,0 +1,614 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Sasya Arogya - Horizontal Architecture Diagram</title>
+    <style>
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            margin: 0;
+            padding: 20px;
+            background: linear-gradient(135deg, #f5f7fa 0%, #c3cfe2 100%);
+            min-height: 100vh;
+        }
+
+        .container {
+            max-width: 1800px;
+            margin: 0 auto;
+            background: white;
+            border-radius: 15px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.1);
+            padding: 30px;
+        }
+
+        .header {
+            text-align: center;
+            margin-bottom: 30px;
+            position: relative;
+        }
+
+        .header h1 {
+            color: #2c3e50;
+            font-size: 2em;
+            margin-bottom: 5px;
+            font-weight: 700;
+        }
+
+        .header p {
+            color: #7f8c8d;
+            font-size: 1em;
+            margin: 0;
+        }
+
+        .export-button {
+            position: absolute;
+            top: 0;
+            right: 0;
+            background: #27ae60;
+            color: white;
+            border: none;
+            padding: 10px 20px;
+            border-radius: 8px;
+            font-size: 0.9em;
+            font-weight: 600;
+            cursor: pointer;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.2);
+            transition: all 0.3s ease;
+        }
+
+        .export-button:hover {
+            background: #229954;
+            transform: translateY(-2px);
+            box-shadow: 0 4px 8px rgba(0,0,0,0.3);
+        }
+
+        .horizontal-flow {
+            display: flex;
+            align-items: stretch;
+            gap: 0;
+            position: relative;
+            min-height: 600px;
+            padding-bottom: 80px;
+        }
+
+        .arrow-container {
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            min-width: 80px;
+            position: relative;
+        }
+
+        .column {
+            display: flex;
+            flex-direction: column;
+            gap: 15px;
+            flex: 1;
+            position: relative;
+        }
+
+        .layer-box {
+            border: 2px solid #27ae60;
+            border-radius: 8px;
+            padding: 15px;
+            background: #f8f9fa;
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+        }
+
+        .layer-title {
+            color: #000;
+            font-size: 1.1em;
+            font-weight: 700;
+            text-align: center;
+            margin-bottom: 12px;
+            padding-bottom: 8px;
+            border-bottom: 2px solid #27ae60;
+        }
+
+        .component {
+            background: white;
+            border: 2px solid #27ae60;
+            border-radius: 6px;
+            padding: 12px;
+            margin-bottom: 10px;
+            flex: 1;
+        }
+
+        .component:last-child {
+            margin-bottom: 0;
+        }
+
+        .component-title {
+            color: #000;
+            font-size: 0.95em;
+            font-weight: 700;
+            margin-bottom: 8px;
+            padding-bottom: 6px;
+            border-bottom: 1px solid #d0d0d0;
+        }
+
+        .component-items {
+            list-style: none;
+            padding: 0;
+            margin: 0;
+        }
+
+        .component-items li {
+            color: #000;
+            font-size: 0.8em;
+            padding: 2px 0;
+            line-height: 1.4;
+        }
+
+        .component-items li::before {
+            content: '• ';
+            color: #27ae60;
+            font-weight: bold;
+            margin-right: 3px;
+        }
+
+        .arrow-right {
+            position: relative;
+            width: 50px;
+            height: 8px;
+            align-self: center;
+            z-index: 5;
+            flex-shrink: 0;
+        }
+
+        .arrow-line {
+            width: 100%;
+            height: 100%;
+            position: relative;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.2);
+        }
+
+        .arrow-line::after {
+            content: '';
+            position: absolute;
+            right: -12px;
+            top: 50%;
+            transform: translateY(-50%);
+            width: 0;
+            height: 0;
+            border-top: 10px solid transparent;
+            border-bottom: 10px solid transparent;
+            filter: drop-shadow(2px 0 2px rgba(0,0,0,0.2));
+        }
+
+        .arrow-http .arrow-line {
+            background: #3498db;
+        }
+
+        .arrow-http .arrow-line::after {
+            border-left: 15px solid #3498db;
+        }
+
+        .arrow-fsm .arrow-line {
+            background: #e74c3c;
+        }
+
+        .arrow-fsm .arrow-line::after {
+            border-left: 15px solid #e74c3c;
+        }
+
+        .arrow-mcp .arrow-line {
+            background: #9b59b6;
+            height: 10px;
+        }
+
+        .arrow-mcp .arrow-line::after {
+            border-left: 16px solid #9b59b6;
+            border-top-width: 12px;
+            border-bottom-width: 12px;
+        }
+
+        .arrow-response {
+            position: absolute;
+            bottom: -60px;
+            left: 0;
+            right: 0;
+            height: 40px;
+            display: flex;
+            align-items: center;
+            z-index: 5;
+        }
+
+        .arrow-response-line {
+            width: 100%;
+            height: 8px;
+            background-image: url("data:image/svg+xml,%3Csvg width='20' height='8' xmlns='http://www.w3.org/2000/svg'%3E%3Crect x='0' y='0' width='10' height='8' fill='%233498db'/%3E%3C/svg%3E");
+            background-repeat: repeat-x;
+            background-size: 20px 8px;
+            position: relative;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.2);
+        }
+
+        .arrow-response-line::before {
+            content: '';
+            position: absolute;
+            left: -12px;
+            top: 50%;
+            transform: translateY(-50%);
+            width: 0;
+            height: 0;
+            border-top: 10px solid transparent;
+            border-bottom: 10px solid transparent;
+            border-right: 15px solid #3498db;
+            filter: drop-shadow(-2px 0 2px rgba(0,0,0,0.2));
+        }
+
+        .arrow-response-label {
+            position: absolute;
+            bottom: 10px;
+            left: 50%;
+            transform: translateX(-50%);
+            background: #ebf5fb;
+            border: 2px solid #3498db;
+            border-radius: 15px;
+            padding: 4px 12px;
+            font-size: 0.75em;
+            font-weight: 700;
+            color: #2980b9;
+            white-space: nowrap;
+            box-shadow: 0 3px 6px rgba(0,0,0,0.15);
+        }
+
+        .arrow-label {
+            background: white;
+            border: 2px solid #27ae60;
+            border-radius: 15px;
+            padding: 4px 12px;
+            font-size: 0.85em;
+            font-weight: 700;
+            white-space: nowrap;
+            box-shadow: 0 3px 6px rgba(0,0,0,0.15);
+            margin-bottom: 10px;
+        }
+
+        .arrow-label.http {
+            border-color: #3498db;
+            background: #ebf5fb;
+            color: #2980b9;
+        }
+
+        .arrow-label.fsm {
+            border-color: #e74c3c;
+            background: #fadbd8;
+            color: #c0392b;
+        }
+
+        .arrow-label.mcp {
+            border-color: #9b59b6;
+            background: #f4ecf7;
+            color: #7d3c98;
+        }
+
+        .workflow-section {
+            background: white;
+            border: 2px solid #e74c3c;
+            border-radius: 8px;
+            padding: 12px;
+            margin-bottom: 10px;
+        }
+
+        .workflow-title {
+            color: #c0392b;
+            font-size: 0.9em;
+            font-weight: 700;
+            text-align: center;
+            margin-bottom: 10px;
+            padding-bottom: 6px;
+            border-bottom: 2px solid #e74c3c;
+        }
+
+        .workflow-nodes {
+            display: flex;
+            justify-content: space-around;
+            flex-wrap: wrap;
+            gap: 8px;
+        }
+
+        .workflow-node {
+            background: #fadbd8;
+            border: 2px solid #e74c3c;
+            border-radius: 6px;
+            padding: 6px 10px;
+            font-size: 0.75em;
+            font-weight: 600;
+            color: #c0392b;
+            text-align: center;
+            min-width: 60px;
+        }
+
+        .service-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 10px;
+        }
+
+        @media (max-width: 1400px) {
+            .horizontal-flow {
+                flex-direction: column;
+            }
+            
+            .arrow-right {
+                width: 8px;
+                height: 50px;
+                top: auto;
+                bottom: -35px;
+                left: 50%;
+                transform: translateX(-50%) rotate(90deg);
+            }
+            
+            .arrow-label {
+                top: auto;
+                bottom: -25px;
+                left: 60%;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <h1>🌾 Sasya Arogya - Horizontal Architecture Flow</h1>
+            <p>Agricultural Advisory System with Intelligent Agent-Based Processing</p>
+            <button class="export-button" onclick="exportToPNG()">📥 Export to PNG</button>
+        </div>
+
+        <div class="horizontal-flow">
+            <!-- Column 1: User Input -->
+            <div class="column">
+                <div class="layer-box">
+                    <div class="layer-title">📱 User Input</div>
+                    <div class="component">
+                        <div class="component-title">Mobile Interface</div>
+                        <ul class="component-items">
+                            <li>Natural language query</li>
+                            <li>Optional plant image</li>
+                            <li>Session context</li>
+                            <li>Location data</li>
+                            <li>User preferences</li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Arrow 1 -->
+            <div class="arrow-container">
+                <div class="arrow-label http">HTTP/WebSocket</div>
+                <div class="arrow-right arrow-http">
+                    <div class="arrow-line"></div>
+                </div>
+            </div>
+
+            <!-- Column 2: Intent Analysis -->
+            <div class="column">
+                <div class="layer-box">
+                    <div class="layer-title">🎯 Intent Analysis</div>
+                    <div class="component">
+                        <div class="component-title">Intent Analyzer</div>
+                        <ul class="component-items">
+                            <li>Disease detection</li>
+                            <li>Treatment query</li>
+                            <li>Insurance inquiry</li>
+                            <li>General advisory</li>
+                        </ul>
+                    </div>
+                    <div class="component">
+                        <div class="component-title">Rule Engine</div>
+                        <ul class="component-items">
+                            <li>Eligibility rules</li>
+                            <li>Treatment protocols</li>
+                            <li>Priority scoring</li>
+                        </ul>
+                    </div>
+                    <div class="component">
+                        <div class="component-title">Context Extractor</div>
+                        <ul class="component-items">
+                            <li>Plant type</li>
+                            <li>Disease context</li>
+                            <li>Weather data</li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Arrow 2 -->
+            <div class="arrow-container">
+                <div class="arrow-label fsm">FSM State Machine</div>
+                <div class="arrow-right arrow-fsm">
+                    <div class="arrow-line"></div>
+                </div>
+            </div>
+
+            <!-- Column 3: Workflow Router -->
+            <div class="column">
+                <div class="layer-box">
+                    <div class="layer-title">🔄 LangGraph Router</div>
+                    <div class="workflow-section">
+                        <div class="workflow-title">State Nodes</div>
+                        <div class="workflow-nodes">
+                            <div class="workflow-node">Initial</div>
+                            <div class="workflow-node">Followup</div>
+                            <div class="workflow-node">Completed</div>
+                            <div class="workflow-node">Error</div>
+                        </div>
+                    </div>
+                    <div class="component">
+                        <div class="component-title">Service Execution</div>
+                        <ul class="component-items">
+                            <li>Classifying Node (CNN)</li>
+                            <li>Prescribing Node (RAG)</li>
+                            <li>Insurance Node (MCP)</li>
+                            <li>Advisory Node (KB)</li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Arrow 3 -->
+            <div class="arrow-container">
+                <div class="arrow-label mcp">MCP | HTTP | Vector</div>
+                <div class="arrow-right arrow-mcp">
+                    <div class="arrow-line"></div>
+                </div>
+            </div>
+
+            <!-- Column 4: Processing Layer -->
+            <div class="column">
+                <div class="layer-box">
+                    <div class="layer-title">⚙️ Processing Layer</div>
+                    <div class="service-grid">
+                        <div class="component">
+                            <div class="component-title">CNN Model</div>
+                            <ul class="component-items">
+                                <li>Attention mechanism</li>
+                                <li>Disease ID</li>
+                                <li>Confidence score</li>
+                            </ul>
+                        </div>
+                        <div class="component">
+                            <div class="component-title">RAG System</div>
+                            <ul class="component-items">
+                                <li>Vector search</li>
+                                <li>Treatment plan</li>
+                                <li>Dosage info</li>
+                            </ul>
+                        </div>
+                        <div class="component">
+                            <div class="component-title">MCP Insurance</div>
+                            <ul class="component-items">
+                                <li>Premium calc</li>
+                                <li>Certificate gen</li>
+                                <li>Companies list</li>
+                            </ul>
+                        </div>
+                        <div class="component">
+                            <div class="component-title">Advisory KB</div>
+                            <ul class="component-items">
+                                <li>Best practices</li>
+                                <li>Seasonal tips</li>
+                                <li>Weather advisory</li>
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Arrow 4 -->
+            <div class="arrow-container">
+                <div class="arrow-label mcp">Service APIs</div>
+                <div class="arrow-right arrow-mcp">
+                    <div class="arrow-line"></div>
+                </div>
+            </div>
+
+            <!-- Column 5: External Services -->
+            <div class="column">
+                <div class="layer-box">
+                    <div class="layer-title">🌐 External Services</div>
+                    <div class="component">
+                        <div class="component-title">Prescription RAG</div>
+                        <ul class="component-items">
+                            <li>ChromaDB (Vector)</li>
+                            <li>Ollama LLM</li>
+                            <li>Treatment DB</li>
+                        </ul>
+                    </div>
+                    <div class="component">
+                        <div class="component-title">MCP Server</div>
+                        <ul class="component-items">
+                            <li>Insurance API</li>
+                            <li>PDF generation</li>
+                            <li>In-memory repo</li>
+                        </ul>
+                    </div>
+                    <div class="component">
+                        <div class="component-title">LLM Services</div>
+                        <ul class="component-items">
+                            <li>LLaMA 3.1 (Intent)</li>
+                            <li>LLaVA (Vision)</li>
+                            <li>Response gen</li>
+                        </ul>
+                    </div>
+                    <div class="component">
+                        <div class="component-title">Infrastructure</div>
+                        <ul class="component-items">
+                            <li>GPU cluster</li>
+                            <li>Session mgmt</li>
+                            <li>File storage</li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Response Arrow - Below all boxes -->
+            <div class="arrow-response">
+                <div class="arrow-response-line"></div>
+                <div class="arrow-response-label">Streaming HTTP Response Flow</div>
+            </div>
+        </div>
+    </div>
+
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
+    <script>
+        async function exportToPNG() {
+            const button = document.querySelector('.export-button');
+            const originalText = button.innerHTML;
+            button.innerHTML = '⏳ Exporting...';
+            button.disabled = true;
+            
+            try {
+                // Hide the export button before capturing
+                button.style.display = 'none';
+                
+                const container = document.querySelector('.container');
+                
+                const canvas = await html2canvas(container, {
+                    scale: 3,
+                    useCORS: true,
+                    allowTaint: true,
+                    backgroundColor: '#ffffff',
+                    logging: false,
+                    width: container.scrollWidth,
+                    height: container.scrollHeight
+                });
+                
+                // Show the button again
+                button.style.display = 'block';
+                
+                canvas.toBlob(function(blob) {
+                    const url = URL.createObjectURL(blob);
+                    const link = document.createElement('a');
+                    const timestamp = new Date().toISOString().slice(0, 10);
+                    link.download = `sasya-arogya-horizontal-architecture-${timestamp}.png`;
+                    link.href = url;
+                    link.click();
+                    URL.revokeObjectURL(url);
+                    
+                    button.innerHTML = '✅ Exported!';
+                    setTimeout(() => {
+                        button.innerHTML = originalText;
+                        button.disabled = false;
+                    }, 2000);
+                }, 'image/png', 1.0);
+                
+            } catch (error) {
+                console.error('Export failed:', error);
+                button.style.display = 'block';
+                button.innerHTML = '❌ Export Failed';
+                setTimeout(() => {
+                    button.innerHTML = originalText;
+                    button.disabled = false;
+                }, 2000);
+            }
+        }
+    </script>
+</body>
+</html>

@@ -1055,9 +1055,9 @@ class ChatAdapter(
                 }
                 quickActionsRecyclerView.adapter = adapter
                 
-                // Disable horizontal scrolling and optimize performance
+                // Disable horizontal scrolling for better nested scrolling behavior
                 quickActionsRecyclerView.isNestedScrollingEnabled = false
-                quickActionsRecyclerView.setHasFixedSize(true)
+                // Note: setHasFixedSize(true) is not compatible with wrap_content height
                 
                 Log.d("ChatAdapter", "✅ Quick actions RecyclerView setup complete with ${quickActions.size} actions in 2-column grid")
             } catch (e: Exception) {

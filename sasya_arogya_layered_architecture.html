@@ -1,0 +1,586 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Sasya Arogya - Layered Architecture Diagram</title>
+    <style>
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            margin: 0;
+            padding: 20px;
+            background: linear-gradient(135deg, #f5f7fa 0%, #c3cfe2 100%);
+            min-height: 100vh;
+        }
+
+        .container {
+            max-width: 1400px;
+            margin: 0 auto;
+            background: white;
+            border-radius: 15px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.1);
+            padding: 30px;
+        }
+
+        .header {
+            text-align: center;
+            margin-bottom: 30px;
+            position: relative;
+        }
+
+        .header h1 {
+            color: #2c3e50;
+            font-size: 2em;
+            margin-bottom: 5px;
+            font-weight: 700;
+        }
+
+        .header p {
+            color: #7f8c8d;
+            font-size: 1em;
+            margin: 0;
+        }
+
+        .export-button {
+            position: absolute;
+            top: 0;
+            right: 0;
+            background: #27ae60;
+            color: white;
+            border: none;
+            padding: 10px 20px;
+            border-radius: 8px;
+            font-size: 0.9em;
+            font-weight: 600;
+            cursor: pointer;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.2);
+            transition: all 0.3s ease;
+        }
+
+        .export-button:hover {
+            background: #229954;
+            transform: translateY(-2px);
+            box-shadow: 0 4px 8px rgba(0,0,0,0.3);
+        }
+
+        .export-button:active {
+            transform: translateY(0);
+        }
+
+        .architecture-diagram {
+            display: flex;
+            flex-direction: column;
+            gap: 15px;
+            position: relative;
+        }
+
+        .layer-box {
+            border: 2px solid #27ae60;
+            border-radius: 8px;
+            padding: 20px;
+            background: #f8f9fa;
+            position: relative;
+        }
+
+        .layer-title {
+            color: #000;
+            font-size: 1.1em;
+            font-weight: 700;
+            text-align: center;
+            margin-bottom: 15px;
+            padding-bottom: 10px;
+            border-bottom: 2px solid #27ae60;
+        }
+
+        .layer-content {
+            display: grid;
+            gap: 15px;
+        }
+
+        .input-box {
+            background: white;
+            border: 2px dashed #27ae60;
+            border-radius: 8px;
+            padding: 20px;
+            text-align: center;
+            margin: 0 auto 20px auto;
+            max-width: 600px;
+        }
+
+        .input-title {
+            color: #000;
+            font-size: 1.2em;
+            font-weight: 700;
+            margin-bottom: 10px;
+        }
+
+        .input-items {
+            list-style: none;
+            padding: 0;
+            margin: 0;
+            text-align: left;
+            display: inline-block;
+        }
+
+        .input-items li {
+            color: #000;
+            font-size: 0.9em;
+            padding: 3px 0;
+        }
+
+        .input-items li::before {
+            content: '• ';
+            color: #27ae60;
+            font-weight: bold;
+            margin-right: 5px;
+        }
+
+        .component-grid-3 {
+            grid-template-columns: repeat(3, 1fr);
+        }
+
+        .component-grid-4 {
+            grid-template-columns: repeat(4, 1fr);
+        }
+
+        .component {
+            background: white;
+            border: 2px solid #27ae60;
+            border-radius: 6px;
+            padding: 15px;
+            min-height: 100px;
+            display: flex;
+            flex-direction: column;
+        }
+
+        .component-title {
+            color: #000;
+            font-size: 0.95em;
+            font-weight: 700;
+            margin-bottom: 10px;
+            padding-bottom: 8px;
+            border-bottom: 1px solid #d0d0d0;
+        }
+
+        .component-items {
+            list-style: none;
+            padding: 0;
+            margin: 0;
+            flex-grow: 1;
+        }
+
+        .component-items li {
+            color: #000;
+            font-size: 0.75em;
+            padding: 3px 0;
+            line-height: 1.3;
+        }
+
+        .component-items li::before {
+            content: '• ';
+            color: #27ae60;
+            font-weight: bold;
+            margin-right: 3px;
+        }
+
+        .arrow-container {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            position: relative;
+            margin: 10px 0;
+            min-height: 80px;
+            justify-content: center;
+        }
+
+        .arrow-down {
+            width: 8px;
+            height: 50px;
+            background: #27ae60;
+            position: relative;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.2);
+        }
+
+        .arrow-down::after {
+            content: '';
+            position: absolute;
+            bottom: -12px;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 0;
+            height: 0;
+            border-left: 12px solid transparent;
+            border-right: 12px solid transparent;
+            border-top: 18px solid #27ae60;
+            filter: drop-shadow(0 2px 2px rgba(0,0,0,0.2));
+        }
+
+        /* Arrow styles for different protocols */
+        .arrow-http {
+            background: #3498db;
+        }
+
+        .arrow-http::after {
+            border-top-color: #3498db;
+        }
+
+        .arrow-fsm {
+            background: #e74c3c;
+        }
+
+        .arrow-fsm::after {
+            border-top-color: #e74c3c;
+        }
+
+        .arrow-mcp {
+            background: #9b59b6;
+            width: 10px;
+        }
+
+        .arrow-mcp::after {
+            border-top-color: #9b59b6;
+            border-left-width: 14px;
+            border-right-width: 14px;
+            border-top-width: 20px;
+        }
+
+        .arrow-grpc {
+            background: #f39c12;
+            background-image: repeating-linear-gradient(
+                45deg,
+                transparent,
+                transparent 5px,
+                rgba(255,255,255,.3) 5px,
+                rgba(255,255,255,.3) 10px
+            );
+        }
+
+        .arrow-grpc::after {
+            border-top-color: #f39c12;
+        }
+
+        .arrow-label {
+            background: white;
+            border: 2px solid #27ae60;
+            border-radius: 15px;
+            padding: 6px 16px;
+            font-size: 0.85em;
+            font-weight: 700;
+            color: #000;
+            white-space: nowrap;
+            position: absolute;
+            top: 15px;
+            left: 50%;
+            transform: translateX(-50%);
+            z-index: 10;
+            box-shadow: 0 3px 6px rgba(0,0,0,0.15);
+        }
+
+        .arrow-label.http {
+            border-color: #3498db;
+            background: #ebf5fb;
+            color: #2980b9;
+        }
+
+        .arrow-label.fsm {
+            border-color: #e74c3c;
+            background: #fadbd8;
+            color: #c0392b;
+        }
+
+        .arrow-label.mcp {
+            border-color: #9b59b6;
+            background: #f4ecf7;
+            color: #7d3c98;
+        }
+
+        .arrow-label.grpc {
+            border-color: #f39c12;
+            background: #fef5e7;
+            color: #d68910;
+        }
+
+        .workflow-nodes {
+            display: flex;
+            justify-content: space-around;
+            align-items: center;
+            margin-bottom: 15px;
+        }
+
+        .workflow-node {
+            background: white;
+            border: 2px solid #27ae60;
+            border-radius: 6px;
+            padding: 12px 20px;
+            text-align: center;
+            color: #000;
+            font-size: 0.85em;
+            font-weight: 600;
+            min-width: 100px;
+        }
+
+        .workflow-arrows {
+            display: flex;
+            justify-content: space-around;
+            align-items: center;
+            margin: 0 20px;
+        }
+
+        .workflow-arrow {
+            color: #27ae60;
+            font-size: 1.5em;
+            font-weight: bold;
+        }
+
+        @media (max-width: 1200px) {
+            .component-grid-4 {
+                grid-template-columns: repeat(2, 1fr);
+            }
+        }
+
+        @media (max-width: 768px) {
+            .component-grid-3,
+            .component-grid-4 {
+                grid-template-columns: 1fr;
+            }
+            
+            .workflow-nodes {
+                flex-direction: column;
+                gap: 10px;
+            }
+            
+            .workflow-arrows {
+                display: none;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <h1>🌾 Sasya Arogya - Layered Architecture</h1>
+            <p>Agricultural Advisory System with Intelligent Agent-Based Processing</p>
+            <button class="export-button" onclick="exportToPNG()">📥 Export to PNG</button>
+        </div>
+
+        <div class="architecture-diagram">
+            <!-- User Input -->
+            <div class="input-box">
+                <div class="input-title">📱 User Input</div>
+                <ul class="input-items">
+                    <li>Natural language query</li>
+                    <li>Optional plant image</li>
+                    <li>Session context</li>
+                </ul>
+            </div>
+
+            <div class="arrow-container">
+                <div class="arrow-down arrow-http"></div>
+                <div class="arrow-label http">HTTP/WebSocket Streaming</div>
+            </div>
+
+            <!-- Intent Analysis Layer -->
+            <div class="layer-box">
+                <div class="layer-title">🎯 Intent Analysis Layer</div>
+                <div class="layer-content component-grid-3">
+                    <div class="component">
+                        <div class="component-title">Agricultural Intent Analyzer</div>
+                        <ul class="component-items">
+                            <li>Disease detection</li>
+                            <li>Treatment query</li>
+                            <li>Insurance inquiry</li>
+                            <li>General advisory</li>
+                        </ul>
+                    </div>
+                    <div class="component">
+                        <div class="component-title">Rule Engine</div>
+                        <ul class="component-items">
+                            <li>Insurance eligibility</li>
+                            <li>Treatment protocols</li>
+                            <li>Advisory rules</li>
+                            <li>Priority scoring</li>
+                        </ul>
+                    </div>
+                    <div class="component">
+                        <div class="component-title">Context Extractor</div>
+                        <ul class="component-items">
+                            <li>Plant type</li>
+                            <li>Location data</li>
+                            <li>Disease context</li>
+                            <li>Weather conditions</li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+
+            <div class="arrow-container">
+                <div class="arrow-down arrow-fsm"></div>
+                <div class="arrow-label fsm">LangGraph FSM State Transitions</div>
+            </div>
+
+            <!-- Workflow Router -->
+            <div class="layer-box">
+                <div class="layer-title">🔄 LangGraph Workflow Router</div>
+                <div class="workflow-nodes">
+                    <div class="workflow-node">Initial<br>Node</div>
+                    <span class="workflow-arrow">→</span>
+                    <div class="workflow-node">Followup<br>Node</div>
+                    <span class="workflow-arrow">⇄</span>
+                    <div class="workflow-node">Completed<br>Node</div>
+                    <span class="workflow-arrow">→</span>
+                    <div class="workflow-node">Error<br>Node</div>
+                </div>
+                <div class="arrow-container">
+                    <div class="arrow-down arrow-fsm"></div>
+                    <div class="arrow-label fsm">Tool Selection & Routing</div>
+                </div>
+                
+                <!-- Service Execution Layer -->
+                <div style="margin-top: 15px;">
+                    <div style="color: #000; font-size: 1em; font-weight: 700; text-align: center; margin-bottom: 15px; padding-bottom: 10px; border-bottom: 2px solid #27ae60;">
+                        ⚙️ Service Execution Layer
+                    </div>
+                    <div class="layer-content component-grid-4">
+                        <div class="component">
+                            <div class="component-title">Classifying Node</div>
+                            <ul class="component-items">
+                                <li>CNN Model</li>
+                                <li>Attention mechanism</li>
+                                <li>Disease ID</li>
+                                <li>Confidence score</li>
+                            </ul>
+                        </div>
+                        <div class="component">
+                            <div class="component-title">Prescribing Node</div>
+                            <ul class="component-items">
+                                <li>RAG Query</li>
+                                <li>Treatment plan</li>
+                                <li>Dosage info</li>
+                                <li>Application method</li>
+                            </ul>
+                        </div>
+                        <div class="component">
+                            <div class="component-title">Insurance Node</div>
+                            <ul class="component-items">
+                                <li>MCP Call</li>
+                                <li>Premium calc</li>
+                                <li>Companies list</li>
+                                <li>Certificate gen</li>
+                            </ul>
+                        </div>
+                        <div class="component">
+                            <div class="component-title">Advisory Node</div>
+                            <ul class="component-items">
+                                <li>Knowledge base</li>
+                                <li>Seasonal tips</li>
+                                <li>Best practices</li>
+                                <li>Weather advisory</li>
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="arrow-container">
+                <div class="arrow-down arrow-mcp"></div>
+                <div class="arrow-label mcp">MCP Protocol | HTTP APIs | Vector Search</div>
+            </div>
+
+            <!-- External Services Layer -->
+            <div class="layer-box">
+                <div class="layer-title">🌐 External Services Layer</div>
+                <div class="layer-content component-grid-4">
+                    <div class="component">
+                        <div class="component-title">Prescription RAG Server</div>
+                        <ul class="component-items">
+                            <li>Treatment database</li>
+                            <li>Vector search (ChromaDB)</li>
+                            <li>RAG pipeline</li>
+                            <li>Ollama LLM</li>
+                        </ul>
+                    </div>
+                    <div class="component">
+                        <div class="component-title">Sasya Arogya MCP Server</div>
+                        <ul class="component-items">
+                            <li>Insurance API</li>
+                            <li>Premium calculator</li>
+                            <li>PDF generation</li>
+                            <li>In-memory repository</li>
+                        </ul>
+                    </div>
+                    <div class="component">
+                        <div class="component-title">Ollama LLM Server</div>
+                        <ul class="component-items">
+                            <li>Intent LLM (LLaMA 3.1)</li>
+                            <li>Response generation</li>
+                            <li>Image analysis (LLaVA)</li>
+                            <li>Multimodal processing</li>
+                        </ul>
+                    </div>
+                    <div class="component">
+                        <div class="component-title">Infrastructure Services</div>
+                        <ul class="component-items">
+                            <li>GPU cluster (OpenShift)</li>
+                            <li>Session management</li>
+                            <li>File storage</li>
+                            <li>Redis cache</li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
+    <script>
+        async function exportToPNG() {
+            const button = document.querySelector('.export-button');
+            const originalText = button.innerHTML;
+            button.innerHTML = '⏳ Exporting...';
+            button.disabled = true;
+            
+            try {
+                const container = document.querySelector('.container');
+                
+                // Use html2canvas with high quality settings
+                const canvas = await html2canvas(container, {
+                    scale: 3, // 3x resolution for high quality
+                    useCORS: true,
+                    allowTaint: true,
+                    backgroundColor: '#ffffff',
+                    logging: false,
+                    width: container.scrollWidth,
+                    height: container.scrollHeight,
+                    windowWidth: container.scrollWidth,
+                    windowHeight: container.scrollHeight
+                });
+                
+                // Convert to blob and download
+                canvas.toBlob(function(blob) {
+                    const url = URL.createObjectURL(blob);
+                    const link = document.createElement('a');
+                    const timestamp = new Date().toISOString().slice(0, 10);
+                    link.download = `sasya-arogya-architecture-${timestamp}.png`;
+                    link.href = url;
+                    link.click();
+                    URL.revokeObjectURL(url);
+                    
+                    button.innerHTML = '✅ Exported!';
+                    setTimeout(() => {
+                        button.innerHTML = originalText;
+                        button.disabled = false;
+                    }, 2000);
+                }, 'image/png', 1.0);
+                
+            } catch (error) {
+                console.error('Export failed:', error);
+                button.innerHTML = '❌ Export Failed';
+                setTimeout(() => {
+                    button.innerHTML = originalText;
+                    button.disabled = false;
+                }, 2000);
+            }
+        }
+    </script>
+</body>
+</html>

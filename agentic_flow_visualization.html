@@ -1,0 +1,451 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Sasya Arogya - Agentic Flow & State Machines</title>
+    <script src="https://cdn.jsdelivr.net/npm/mermaid@10.6.1/dist/mermaid.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/html2canvas@1.4.1/dist/html2canvas.min.js"></script>
+    <style>
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            margin: 0;
+            padding: 20px;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+        }
+        
+        .container {
+            max-width: 100%;
+            margin: 0 auto;
+            background: white;
+            border-radius: 15px;
+            box-shadow: 0 20px 40px rgba(0,0,0,0.1);
+            overflow: hidden;
+        }
+        
+        .header {
+            background: linear-gradient(135deg, #4a148c 0%, #7b1fa2 100%);
+            color: white;
+            padding: 30px;
+            text-align: center;
+        }
+        
+        .header h1 {
+            margin: 0;
+            font-size: 2.5em;
+            font-weight: 300;
+        }
+        
+        .header p {
+            margin: 10px 0 0 0;
+            opacity: 0.9;
+            font-size: 1.1em;
+        }
+        
+        .diagram-container {
+            padding: 40px;
+            background: white;
+            overflow-x: auto;
+        }
+        
+        .mermaid {
+            text-align: center;
+            background: white;
+        }
+        
+        .controls {
+            padding: 20px 40px;
+            background: #f8f9fa;
+            border-top: 1px solid #e9ecef;
+            text-align: center;
+        }
+        
+        .btn {
+            display: inline-block;
+            padding: 12px 24px;
+            margin: 0 10px;
+            background: #7b1fa2;
+            color: white;
+            text-decoration: none;
+            border-radius: 6px;
+            font-weight: 500;
+            transition: all 0.3s ease;
+        }
+        
+        .btn:hover {
+            background: #4a148c;
+            transform: translateY(-2px);
+            box-shadow: 0 4px 8px rgba(123,31,162,0.3);
+        }
+        
+        .btn-secondary {
+            background: #6c757d;
+        }
+        
+        .btn-secondary:hover {
+            background: #545b62;
+        }
+        
+        .info-panel {
+            padding: 30px 40px;
+            background: #f8f9fa;
+            border-top: 1px solid #e9ecef;
+        }
+        
+        .state-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 20px;
+            margin-top: 20px;
+        }
+        
+        .state-card {
+            background: white;
+            padding: 20px;
+            border-radius: 8px;
+            border-left: 4px solid #7b1fa2;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+        }
+        
+        .state-card h3 {
+            margin: 0 0 10px 0;
+            color: #4a148c;
+            display: flex;
+            align-items: center;
+        }
+        
+        .state-icon {
+            margin-right: 10px;
+            font-size: 1.5em;
+        }
+        
+        .tool-list {
+            background: #f8f9fa;
+            padding: 15px;
+            border-radius: 6px;
+            margin-top: 10px;
+        }
+        
+        .tool-list h4 {
+            margin: 0 0 8px 0;
+            color: #495057;
+            font-size: 0.9em;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+        
+        .tool-list ul {
+            margin: 0;
+            padding-left: 15px;
+            font-size: 0.9em;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <h1>🤖 Agentic Flow & State Machines</h1>
+            <p>LangGraph Agent Orchestration & Tool Integration</p>
+        </div>
+        
+        <div class="diagram-container">
+            <div class="mermaid">
+graph TD
+    %% Styling
+    classDef entryClass fill:#e8f5e8,stroke:#2e7d32,stroke-width:3px,color:#000
+    classDef analysisClass fill:#e3f2fd,stroke:#1976d2,stroke-width:3px,color:#000
+    classDef processingClass fill:#fff3e0,stroke:#f57c00,stroke-width:3px,color:#000
+    classDef toolClass fill:#f3e5f5,stroke:#7b1fa2,stroke-width:2px,color:#000
+    classDef outputClass fill:#e0f2f1,stroke:#00796b,stroke-width:3px,color:#000
+    classDef decisionClass fill:#fce4ec,stroke:#c2185b,stroke-width:3px,color:#000
+
+    %% Entry Point
+    Start([🏁 Session Start]) --> Welcome[🎉 Welcome State<br/>Initialize Context]
+    
+    %% Context Setup
+    Welcome --> LoadProfile[👤 Load User Profile<br/>Agricultural Context]
+    LoadProfile --> IntentAnalysis[🎯 Intent Analysis<br/>NLP Classification]
+    
+    %% Intent Classification with Tools
+    IntentAnalysis --> |"Disease Query"| DiseaseFlow[🦠 Disease Detection Flow]
+    IntentAnalysis --> |"Prescription Query"| PrescriptionFlow[💊 Prescription Flow]
+    IntentAnalysis --> |"Insurance Query"| InsuranceFlow[🛡️ Insurance Flow]
+    IntentAnalysis --> |"General Query"| CropCareFlow[🌱 Crop Care Flow]
+    IntentAnalysis --> |"Unclear Intent"| Clarification[❓ Clarification State]
+    
+    %% Disease Detection Flow with Tools
+    subgraph DiseaseTools["🔬 Disease Detection Tools"]
+        ImagePreprocess[🖼️ Image Preprocessing<br/>Tool]
+        CNNClassifier[🧬 CNN Classification<br/>Tool]
+        ConfidenceCheck[📊 Confidence Validation<br/>Tool]
+        LlavaAnalysis[👁️ LLaVA Vision<br/>Tool]
+    end
+    
+    DiseaseFlow --> ImagePreprocess
+    ImagePreprocess --> CNNClassifier
+    CNNClassifier --> ConfidenceCheck
+    ConfidenceCheck --> |"High Confidence"| LlavaAnalysis
+    ConfidenceCheck --> |"Low Confidence"| Clarification
+    LlavaAnalysis --> DiseaseResult[🔍 Disease Diagnosis<br/>Result State]
+    
+    %% Prescription Flow with RAG Tools
+    subgraph PrescriptionTools["💊 Prescription RAG Tools"]
+        VectorSearch[🔍 Vector Search<br/>Tool]
+        KnowledgeRetrieval[📚 Knowledge Retrieval<br/>Tool]
+        ContextGeneration[✍️ Context Generation<br/>Tool]
+        PrescriptionLLM[🦙 Prescription LLM<br/>Tool]
+    end
+    
+    PrescriptionFlow --> VectorSearch
+    VectorSearch --> KnowledgeRetrieval
+    KnowledgeRetrieval --> ContextGeneration
+    ContextGeneration --> PrescriptionLLM
+    PrescriptionLLM --> PrescriptionResult[💊 Treatment Plan<br/>Result State]
+    
+    %% Insurance Flow (will be detailed in MCP visualization)
+    InsuranceFlow --> InsuranceProcessor[🛡️ Insurance Processor<br/>MCP Integration]
+    InsuranceProcessor --> InsuranceResult[📋 Insurance Response<br/>Result State]
+    
+    %% Crop Care Flow with Knowledge Tools
+    subgraph CropCareTools["🌱 Crop Care Tools"]
+        SeasonalAnalysis[🗓️ Seasonal Analysis<br/>Tool]
+        CropKnowledge[🌾 Crop Knowledge<br/>Tool]
+        WeatherIntegration[🌤️ Weather Integration<br/>Tool]
+        BestPractices[📋 Best Practices<br/>Tool]
+    end
+    
+    CropCareFlow --> SeasonalAnalysis
+    SeasonalAnalysis --> CropKnowledge
+    CropKnowledge --> WeatherIntegration
+    WeatherIntegration --> BestPractices
+    BestPractices --> CropCareResult[🌱 Crop Advice<br/>Result State]
+    
+    %% Clarification Flow
+    Clarification --> FollowUp[🔄 Follow-up Questions<br/>State]
+    FollowUp --> IntentAnalysis
+    
+    %% Result Synthesis
+    DiseaseResult --> Synthesis[🎼 Response Synthesis<br/>LLM Orchestration]
+    PrescriptionResult --> Synthesis
+    InsuranceResult --> Synthesis
+    CropCareResult --> Synthesis
+    
+    %% Final Output with Streaming
+    Synthesis --> StreamingOutput[📡 Streaming Output<br/>SSE Response]
+    StreamingOutput --> SessionUpdate[💾 Session Update<br/>Context Persistence]
+    SessionUpdate --> End([✅ Session Complete])
+    
+    %% Feedback Loop
+    End --> |"New Query"| IntentAnalysis
+    
+    %% Context Management (Persistent throughout)
+    subgraph ContextLayer["📋 Context Management Layer"]
+        SessionState[🗂️ Session State<br/>Manager]
+        UserContext[👤 User Context<br/>Tracker]
+        ConversationHistory[💬 Conversation<br/>History]
+        AgentMemory[🧠 Agent Memory<br/>Store]
+    end
+    
+    %% Context connections (dotted lines)
+    Welcome -.-> SessionState
+    IntentAnalysis -.-> UserContext
+    Synthesis -.-> ConversationHistory
+    SessionUpdate -.-> AgentMemory
+    
+    %% Apply Styles
+    class Start,Welcome,LoadProfile entryClass
+    class IntentAnalysis,Clarification,FollowUp analysisClass
+    class DiseaseFlow,PrescriptionFlow,InsuranceFlow,CropCareFlow processingClass
+    class ImagePreprocess,CNNClassifier,ConfidenceCheck,LlavaAnalysis,VectorSearch,KnowledgeRetrieval,ContextGeneration,PrescriptionLLM,InsuranceProcessor,SeasonalAnalysis,CropKnowledge,WeatherIntegration,BestPractices toolClass
+    class DiseaseResult,PrescriptionResult,InsuranceResult,CropCareResult,Synthesis,StreamingOutput,SessionUpdate,End outputClass
+    class SessionState,UserContext,ConversationHistory,AgentMemory decisionClass
+            </div>
+        </div>
+        
+        <div class="controls">
+            <a href="#" class="btn" onclick="downloadSVG()">📥 Download SVG</a>
+            <a href="#" class="btn" onclick="downloadPNG()">📸 Download PNG</a>
+            <a href="https://mermaid.live/" target="_blank" class="btn btn-secondary">🔗 Edit Online</a>
+        </div>
+        
+        <div class="info-panel">
+            <h2>🔄 Agent State Machine Details</h2>
+            <div class="state-grid">
+                <div class="state-card">
+                    <h3><span class="state-icon">🏁</span>Entry States</h3>
+                    <p>Session initialization and user context loading with agricultural profile setup.</p>
+                    <div class="tool-list">
+                        <h4>Key Functions</h4>
+                        <ul>
+                            <li>Session initialization</li>
+                            <li>User authentication</li>
+                            <li>Profile context loading</li>
+                            <li>Agricultural data setup</li>
+                        </ul>
+                    </div>
+                </div>
+                
+                <div class="state-card">
+                    <h3><span class="state-icon">🎯</span>Intent Analysis</h3>
+                    <p>NLP-powered intent classification to route queries to appropriate specialized workflows.</p>
+                    <div class="tool-list">
+                        <h4>Classification Tools</h4>
+                        <ul>
+                            <li>Text embedding analysis</li>
+                            <li>Intent classification model</li>
+                            <li>Context-aware routing</li>
+                            <li>Confidence scoring</li>
+                        </ul>
+                    </div>
+                </div>
+                
+                <div class="state-card">
+                    <h3><span class="state-icon">🦠</span>Disease Detection</h3>
+                    <p>Multi-stage image analysis pipeline with CNN classification and LLaVA vision integration.</p>
+                    <div class="tool-list">
+                        <h4>Vision Tools</h4>
+                        <ul>
+                            <li>Image preprocessing pipeline</li>
+                            <li>CNN disease classification</li>
+                            <li>Confidence validation (85% threshold)</li>
+                            <li>LLaVA multimodal analysis</li>
+                        </ul>
+                    </div>
+                </div>
+                
+                <div class="state-card">
+                    <h3><span class="state-icon">💊</span>Prescription RAG</h3>
+                    <p>Retrieval-Augmented Generation for personalized treatment recommendations.</p>
+                    <div class="tool-list">
+                        <h4>RAG Tools</h4>
+                        <ul>
+                            <li>Vector similarity search</li>
+                            <li>Agricultural knowledge retrieval</li>
+                            <li>Context-aware generation</li>
+                            <li>LLM synthesis</li>
+                        </ul>
+                    </div>
+                </div>
+                
+                <div class="state-card">
+                    <h3><span class="state-icon">🌱</span>Crop Care</h3>
+                    <p>Comprehensive agricultural guidance with seasonal and weather-aware recommendations.</p>
+                    <div class="tool-list">
+                        <h4>Advisory Tools</h4>
+                        <ul>
+                            <li>Seasonal analysis engine</li>
+                            <li>Crop-specific knowledge base</li>
+                            <li>Weather data integration</li>
+                            <li>Best practices database</li>
+                        </ul>
+                    </div>
+                </div>
+                
+                <div class="state-card">
+                    <h3><span class="state-icon">📋</span>Context Management</h3>
+                    <p>Persistent state management across conversation turns with intelligent memory.</p>
+                    <div class="tool-list">
+                        <h4>Memory Tools</h4>
+                        <ul>
+                            <li>Session state persistence</li>
+                            <li>User context tracking</li>
+                            <li>Conversation history</li>
+                            <li>Agent memory store</li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+            
+            <h3>🎼 LangGraph Orchestration Features</h3>
+            <ul>
+                <li><strong>🔄 State Transitions:</strong> Intelligent routing based on user intent and context</li>
+                <li><strong>🛠️ Tool Integration:</strong> Seamless integration with specialized AI tools and services</li>
+                <li><strong>📊 Confidence Management:</strong> Threshold-based decision making for quality assurance</li>
+                <li><strong>🔄 Feedback Loops:</strong> Clarification and follow-up mechanisms for unclear queries</li>
+                <li><strong>💾 Persistent Context:</strong> Stateful conversations with agricultural profile awareness</li>
+                <li><strong>📡 Streaming Responses:</strong> Real-time response generation with Server-Sent Events</li>
+            </ul>
+        </div>
+    </div>
+
+    <script>
+        mermaid.initialize({ 
+            startOnLoad: true,
+            theme: 'default',
+            flowchart: {
+                useMaxWidth: true,
+                htmlLabels: true
+            }
+        });
+
+        function downloadSVG() {
+            const svg = document.querySelector('.mermaid svg');
+            if (svg) {
+                const svgData = new XMLSerializer().serializeToString(svg);
+                const svgBlob = new Blob([svgData], {type: 'image/svg+xml;charset=utf-8'});
+                const svgUrl = URL.createObjectURL(svgBlob);
+                const downloadLink = document.createElement('a');
+                downloadLink.href = svgUrl;
+                downloadLink.download = 'sasya-arogya-agentic-flow.svg';
+                document.body.appendChild(downloadLink);
+                downloadLink.click();
+                document.body.removeChild(downloadLink);
+            }
+        }
+
+        function downloadPNG() {
+            const diagramContainer = document.querySelector('.mermaid');
+            if (!diagramContainer) {
+                alert('No diagram found to download');
+                return;
+            }
+
+            // Show loading message
+            const pngButton = Array.from(document.querySelectorAll('.btn')).find(btn => btn.textContent.includes('PNG'));
+            if (pngButton) {
+                pngButton.textContent = '⏳ Generating PNG...';
+                pngButton.style.pointerEvents = 'none';
+            }
+
+            html2canvas(diagramContainer, {
+                backgroundColor: '#ffffff',
+                scale: 2,
+                useCORS: true,
+                allowTaint: true,
+                foreignObjectRendering: true,
+                logging: false,
+                width: diagramContainer.scrollWidth,
+                height: diagramContainer.scrollHeight
+            }).then(canvas => {
+                // Create download link
+                canvas.toBlob(function(blob) {
+                    const url = URL.createObjectURL(blob);
+                    const downloadLink = document.createElement('a');
+                    downloadLink.href = url;
+                    downloadLink.download = 'sasya-arogya-agentic-flow.png';
+                    document.body.appendChild(downloadLink);
+                    downloadLink.click();
+                    document.body.removeChild(downloadLink);
+                    URL.revokeObjectURL(url);
+                    
+                    // Reset button
+                    if (pngButton) {
+                        pngButton.textContent = '📸 Download PNG';
+                        pngButton.style.pointerEvents = 'auto';
+                    }
+                }, 'image/png', 1.0);
+            }).catch(error => {
+                console.error('Error generating PNG:', error);
+                alert('Error generating PNG. The diagram might be too complex. Please try downloading as SVG instead.');
+                
+                // Reset button
+                if (pngButton) {
+                    pngButton.textContent = '📸 Download PNG';
+                    pngButton.style.pointerEvents = 'auto';
+                }
+            });
+        }
+    </script>
+</body>
+</html>

@@ -415,8 +415,8 @@ class MainActivityFSM : ComponentActivity(), FSMStreamHandler.StreamCallback {
             state = "Ready",
             followUpItems = listOf(
                 "📸 Analyze Plant Photo",
+                "🛡️ Get Insurance Quote",
                 "🌱 Seasonal Care Tips",
-                "🌿 Plant Health Guide",
                 "🧪 Soil Testing Guide"
             )
         )
@@ -612,7 +612,15 @@ class MainActivityFSM : ComponentActivity(), FSMStreamHandler.StreamCallback {
                     context = context
                 )
                 
-                Log.d(TAG, "Sending request to FSM agent: $message")
+                // Debug: Log the complete request being sent
+                Log.d(TAG, "📨 Complete request to FSM agent:")
+                Log.d(TAG, "  └─ Message: $message")
+                Log.d(TAG, "  └─ Session ID: ${currentSessionState.sessionId}")
+                Log.d(TAG, "  └─ Has Image: ${imageBase64 != null}")
+                Log.d(TAG, "  └─ Context keys: ${context.keys}")
+                Log.d(TAG, "  └─ farmer_name in context: ${context["farmer_name"]}")
+                Log.d(TAG, "  └─ area_hectare in context: ${context["area_hectare"]}")
+                Log.d(TAG, "  └─ state in context: ${context["state"]}")
                 
                 // Set different timeouts based on server type
                 val timeoutMillis = when (ServerConfig.getServerType(this@MainActivityFSM)) {
@@ -694,13 +702,21 @@ class MainActivityFSM : ComponentActivity(), FSMStreamHandler.StreamCallback {
             return userProfile[key]?.let { if (it.isBlank()) default else it } ?: default
         }
         
+        val farmerName = userProfile["farmer_name"] ?: ""
         val userState = getValueOrDefault("state", "Tamil Nadu")
         val userFarmSize = getValueOrDefault("farm_size", "Small (< 1 acre)")
         val currentSeason = getCurrentSeason()
         
-        Log.d(TAG, "🏛️ Using state: $userState, farm size: $userFarmSize, season: $currentSeason")
+        // Convert farm size to hectares for insurance integration
+        val farmSizeHectares = convertFarmSizeToHectares(userFarmSize)
         
-        return mapOf(
+        Log.d(TAG, "🏛️ Using state: $userState, farm size: $userFarmSize ($farmSizeHectares ha), season: $currentSeason")
+        Log.d(TAG, "🚜 Sending area_hectare to FSM agent: $farmSizeHectares (for insurance fallback)")
+        if (farmerName.isNotEmpty()) {
+            Log.d(TAG, "👨‍🌾 Farmer name: $farmerName")
+        }
+        
+        val context = mutableMapOf(
             // Platform information
             "platform" to "android",
             "app_version" to "1.0.0",
@@ -710,6 +726,8 @@ class MainActivityFSM : ComponentActivity(), FSMStreamHandler.StreamCallback {
             "location" to userState,
             "state" to userState,  
             "farm_size" to userFarmSize,
+            "farm_size_hectares" to farmSizeHectares, // Deprecated, kept for backward compatibility
+            "area_hectare" to farmSizeHectares, // Standard field for insurance calculations (used by FSM agent)
             "farming_experience" to "intermediate", // Default value
             "crop_type" to "general", // Default to general plant diagnosis
             "season" to currentSeason,
@@ -722,6 +740,26 @@ class MainActivityFSM : ComponentActivity(), FSMStreamHandler.StreamCallback {
             "image_source" to "android_camera",
             "fsm_version" to "2.0" // FSM agent version
         )
+        
+        // Add farmer name if provided (for insurance integration)
+        if (farmerName.isNotEmpty()) {
+            context["farmer_name"] = farmerName
+        }
+        
+        return context
+    }
+    
+    /**
+     * Convert farm size text to hectares for insurance calculations
+     */
+    private fun convertFarmSizeToHectares(farmSize: String): Double {
+        return when {
+            farmSize.contains("Small", ignoreCase = true) -> 0.4 // ~1 acre = 0.4 hectares
+            farmSize.contains("Medium", ignoreCase = true) -> 2.0 // 1-5 acres, use midpoint ~2 ha
+            farmSize.contains("Large", ignoreCase = true) && !farmSize.contains("Very", ignoreCase = true) -> 3.0 // 5-10 acres, use midpoint ~3 ha
+            farmSize.contains("Very Large", ignoreCase = true) -> 6.0 // >10 acres, use 15 acres ~6 ha
+            else -> 0.4 // Default to small farm
+        }
     }
     
     /**
@@ -742,55 +780,109 @@ class MainActivityFSM : ComponentActivity(), FSMStreamHandler.StreamCallback {
     private fun handleFollowUpClick(followUpText: String) {
         Log.d(TAG, "Follow-up clicked: $followUpText")
         
-        // Add follow-up as user message
-        val followUpMessage = ChatMessage(
-            text = followUpText,
-            isUser = true
-        )
-        
-        chatAdapter.addMessage(followUpMessage)
-        currentSessionState.messages.add(followUpMessage)
-        
-        // Save to session manager
-        currentSessionState.sessionId?.let { sessionId ->
-            sessionManager.addMessageToSession(sessionId, followUpMessage)
-        }
-        scrollToBottom()
-        
-        // Special handling for certain actions
-        when (followUpText) {
-            "📸 Analyze Plant Photo" -> {
+        // Special handling for certain actions BEFORE adding to chat
+        when {
+            followUpText.startsWith("🛡️ Get Insurance Quote") -> {
+                // Extract profile data to create detailed insurance query
+                val userProfile = getUserAgriculturalProfile()
+                val state = userProfile["state"]?.takeIf { it.isNotBlank() } ?: "your state"
+                val farmSize = userProfile["farm_size"]?.takeIf { it.isNotBlank() } ?: "Small (< 1 acre)"
+                val farmSizeHectares = convertFarmSizeToHectares(farmSize)
+                
+                // Create a helpful insurance query prompt with default crop (tomato)
+                val insurancePrompt = "I would like to get crop insurance for my ${String.format("%.1f", farmSizeHectares)} hectare tomato farm in $state. Please show me premium options."
+                
+                // Add the generated prompt as user message
+                val followUpMessage = ChatMessage(
+                    text = insurancePrompt,
+                    isUser = true
+                )
+                
+                chatAdapter.addMessage(followUpMessage)
+                currentSessionState.messages.add(followUpMessage)
+                
+                // Save to session manager
+                currentSessionState.sessionId?.let { sessionId ->
+                    sessionManager.addMessageToSession(sessionId, followUpMessage)
+                }
+                scrollToBottom()
+                
+                // Send the detailed query to FSM agent
+                sendToFSMAgent(insurancePrompt, null)
+                showThinkingIndicator()
+                return
+            }
+            
+            followUpText == "📸 Analyze Plant Photo" -> {
+                // Add follow-up as user message first
+                val followUpMessage = ChatMessage(
+                    text = followUpText,
+                    isUser = true
+                )
+                chatAdapter.addMessage(followUpMessage)
+                currentSessionState.messages.add(followUpMessage)
+                currentSessionState.sessionId?.let { sessionId ->
+                    sessionManager.addMessageToSession(sessionId, followUpMessage)
+                }
+                scrollToBottom()
+                
                 // Immediately trigger image picker for photo analysis
                 openImagePicker()
                 stopThinkingIndicator() // Don't show thinking indicator for image picker
                 return
             }
 
-            "🌱 Seasonal Care Tips" -> {
+            followUpText == "🌱 Seasonal Care Tips" -> {
+                // Add follow-up as user message
+                val followUpMessage = ChatMessage(
+                    text = followUpText,
+                    isUser = true
+                )
+                chatAdapter.addMessage(followUpMessage)
+                currentSessionState.messages.add(followUpMessage)
+                currentSessionState.sessionId?.let { sessionId ->
+                    sessionManager.addMessageToSession(sessionId, followUpMessage)
+                }
+                scrollToBottom()
+                
                 // Send season-specific query
                 val season = getCurrentSeason()
                 sendToFSMAgent("Give me seasonal plant care tips and recommendations for $season season, including what to plant, water, and watch for.", null)
-            }
-            
-            "🌿 Plant Health Guide" -> {
-                // Send query for health guide
-                sendToFSMAgent("Provide me with a comprehensive plant health guide covering nutrition, light requirements, watering, and disease prevention.", null)
-            }
-            
-            "🧪 Soil Testing Guide" -> {
-                // Send query for soil testing
-                sendToFSMAgent("Show me how to test soil conditions, understand pH levels, nutrient deficiencies, and improve soil quality for better plant health.", null)
+                showThinkingIndicator()
+                return
             }
             
             else -> {
-                // Default: send original text to FSM agent
-                sendToFSMAgent(followUpText, null)
+                // For all other quick actions, add as user message and send
+                val followUpMessage = ChatMessage(
+                    text = followUpText,
+                    isUser = true
+                )
+                chatAdapter.addMessage(followUpMessage)
+                currentSessionState.messages.add(followUpMessage)
+                currentSessionState.sessionId?.let { sessionId ->
+                    sessionManager.addMessageToSession(sessionId, followUpMessage)
+                }
+                scrollToBottom()
+                
+                // Handle specific actions with custom queries
+                when (followUpText) {
+                    "🌿 Plant Health Guide" -> {
+                        sendToFSMAgent("Provide me with a comprehensive plant health guide covering nutrition, light requirements, watering, and disease prevention.", null)
+                    }
+                    "🧪 Soil Testing Guide" -> {
+                        sendToFSMAgent("Show me how to test soil conditions, understand pH levels, nutrient deficiencies, and improve soil quality for better plant health.", null)
+                    }
+                    else -> {
+                        // Default: send original text to FSM agent
+                        sendToFSMAgent(followUpText, null)
+                    }
+                }
+                
+                // Show thinking indicator for FSM queries
+                showThinkingIndicator()
             }
         }
-        
-        // Show thinking indicator for FSM queries
-        showThinkingIndicator()
-        // Processing state handled by thinking indicator, not status indicator
         
         // Hide follow-up container
         followUpContainer.visibility = View.GONE
@@ -1232,8 +1324,12 @@ class MainActivityFSM : ComponentActivity(), FSMStreamHandler.StreamCallback {
         val dialogView = layoutInflater.inflate(R.layout.dialog_agricultural_profile, null)
         
         // Get dialog elements
+        val farmerNameInput = dialogView.findViewById<EditText>(R.id.farmerNameInput)
         val stateSpinner = dialogView.findViewById<Spinner>(R.id.stateSpinner)
         val farmSizeSpinner = dialogView.findViewById<Spinner>(R.id.farmSizeSpinner)
+        
+        // Set current farmer name if exists
+        farmerNameInput.setText(currentProfile["farmer_name"] ?: "")
         
         // Set up spinners
         setupProfileSpinner(stateSpinner, getStateOptions(), currentProfile["state"])
@@ -1244,10 +1340,17 @@ class MainActivityFSM : ComponentActivity(), FSMStreamHandler.StreamCallback {
             .setMessage("Help us provide personalized plant advice:")
             .setView(dialogView)
             .setPositiveButton("Save") { _, _ ->
-                val newProfile = mapOf(
+                val farmerName = farmerNameInput.text.toString().trim()
+                val newProfile = mutableMapOf(
                     "state" to stateSpinner.selectedItem.toString(),
                     "farm_size" to farmSizeSpinner.selectedItem.toString()
                 )
+                
+                // Only save farmer name if provided
+                if (farmerName.isNotEmpty()) {
+                    newProfile["farmer_name"] = farmerName
+                }
+                
                 saveAgriculturalProfile(newProfile)
                 Toast.makeText(this, "✅ Profile saved successfully!", Toast.LENGTH_SHORT).show()
             }
@@ -1258,6 +1361,7 @@ class MainActivityFSM : ComponentActivity(), FSMStreamHandler.StreamCallback {
     private fun getUserAgriculturalProfile(): Map<String, String> {
         val prefs = getSharedPreferences("agricultural_profile", MODE_PRIVATE)
         return mapOf(
+            "farmer_name" to (prefs.getString("farmer_name", null) ?: ""),
             "state" to (prefs.getString("state", null) ?: ""),
             "farm_size" to (prefs.getString("farm_size", null) ?: "")
         )

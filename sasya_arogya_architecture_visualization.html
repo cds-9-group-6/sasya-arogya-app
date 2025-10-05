@@ -1,0 +1,618 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Sasya Arogya - Complete System Architecture</title>
+    <style>
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            margin: 0;
+            padding: 20px;
+            background: linear-gradient(135deg, #f5f7fa 0%, #c3cfe2 100%);
+            min-height: 100vh;
+        }
+
+        .container {
+            max-width: 1400px;
+            margin: 0 auto;
+            background: white;
+            border-radius: 15px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.1);
+            padding: 30px;
+        }
+
+        .header {
+            text-align: center;
+            margin-bottom: 40px;
+        }
+
+        .header h1 {
+            color: #2c3e50;
+            font-size: 2.5em;
+            margin-bottom: 10px;
+            font-weight: 700;
+        }
+
+        .header p {
+            color: #7f8c8d;
+            font-size: 1.2em;
+            margin: 0;
+        }
+
+        .architecture-grid {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 40px;
+            margin-bottom: 60px;
+            position: relative;
+            max-width: 1000px;
+            margin: 0 auto 60px auto;
+        }
+
+        .architecture-container {
+            position: relative;
+            margin-bottom: 40px;
+        }
+
+        .connection-line {
+            position: absolute;
+            background: #27ae60;
+            z-index: 1;
+            transition: all 0.3s ease;
+        }
+
+        .connection-arrow {
+            position: absolute;
+            width: 0;
+            height: 0;
+            z-index: 2;
+        }
+
+        .arrow-right {
+            border-left: 10px solid #27ae60;
+            border-top: 6px solid transparent;
+            border-bottom: 6px solid transparent;
+        }
+
+        .arrow-down {
+            border-top: 10px solid #27ae60;
+            border-left: 6px solid transparent;
+            border-right: 6px solid transparent;
+        }
+
+        .flow-label {
+            position: absolute;
+            background: #27ae60;
+            color: white;
+            padding: 4px 8px;
+            border-radius: 12px;
+            font-size: 0.8em;
+            font-weight: 600;
+            z-index: 3;
+            white-space: nowrap;
+        }
+
+        .component-box {
+            background: white;
+            border: 2px solid #27ae60;
+            border-radius: 8px;
+            padding: 15px;
+            box-shadow: 0 3px 10px rgba(0,0,0,0.1);
+            transition: all 0.3s ease;
+            position: relative;
+            overflow: hidden;
+            z-index: 10;
+            height: 140px;
+            display: flex;
+            flex-direction: column;
+        }
+
+        .component-box.mobile-app { grid-column: 1; grid-row: 1; }
+        .component-box.langgraph-agent { grid-column: 2; grid-row: 1; }
+        .component-box.cnn-classification { grid-column: 3; grid-row: 1; }
+        .component-box.prescription-rag { grid-column: 1; grid-row: 2; }
+        .component-box.mcp-insurance { grid-column: 2; grid-row: 2; }
+        .component-box.crop-advisory { grid-column: 3; grid-row: 2; }
+
+        .component-box:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 10px 25px rgba(0,0,0,0.15);
+            border-color: #2ecc71;
+        }
+
+        .component-box::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 4px;
+            background: linear-gradient(90deg, #27ae60, #2ecc71);
+        }
+
+        .component-title {
+            color: #000;
+            font-size: 1.1em;
+            font-weight: 700;
+            margin-bottom: 8px;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .component-title .icon {
+            font-size: 1.2em;
+        }
+
+        .component-description {
+            color: #000;
+            font-size: 0.8em;
+            line-height: 1.4;
+            margin-bottom: 8px;
+            flex-grow: 1;
+            overflow: hidden;
+        }
+
+        .tech-stack {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 4px;
+            margin-top: auto;
+        }
+
+        .tech-tag {
+            background: #ecf0f1;
+            color: #000;
+            padding: 2px 6px;
+            border-radius: 10px;
+            font-size: 0.7em;
+            font-weight: 500;
+            border: 1px solid #bdc3c7;
+        }
+
+        .key-features {
+            color: #000;
+            font-size: 0.75em;
+            line-height: 1.3;
+            margin: 5px 0;
+        }
+
+        .flow-diagram {
+            margin: 40px 0;
+            padding: 30px;
+            background: #f8f9fa;
+            border-radius: 12px;
+            border: 2px solid #27ae60;
+        }
+
+        .flow-title {
+            color: #000;
+            font-size: 1.6em;
+            font-weight: 700;
+            text-align: center;
+            margin-bottom: 25px;
+        }
+
+        .flow-steps {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            flex-wrap: wrap;
+            gap: 15px;
+        }
+
+        .flow-step {
+            background: white;
+            border: 2px solid #27ae60;
+            border-radius: 8px;
+            padding: 15px;
+            text-align: center;
+            flex: 1;
+            min-width: 150px;
+            color: #000;
+            font-weight: 600;
+        }
+
+        .flow-arrow {
+            color: #27ae60;
+            font-size: 1.5em;
+            font-weight: bold;
+        }
+
+        .repositories {
+            margin-top: 40px;
+            padding: 25px;
+            background: #f8f9fa;
+            border-radius: 12px;
+            border: 2px solid #27ae60;
+        }
+
+        .repo-title {
+            color: #000;
+            font-size: 1.4em;
+            font-weight: 700;
+            margin-bottom: 20px;
+            text-align: center;
+        }
+
+        .repo-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 20px;
+        }
+
+        .repo-box {
+            background: white;
+            border: 2px solid #27ae60;
+            border-radius: 8px;
+            padding: 20px;
+            color: #000;
+        }
+
+        .repo-name {
+            font-weight: 700;
+            font-size: 1.1em;
+            margin-bottom: 10px;
+            color: #000;
+        }
+
+        .repo-description {
+            font-size: 0.9em;
+            color: #000;
+            line-height: 1.5;
+        }
+
+        .deployment-info {
+            margin-top: 30px;
+            padding: 20px;
+            background: #e8f5e8;
+            border-radius: 8px;
+            border: 2px solid #27ae60;
+        }
+
+        .deployment-title {
+            color: #000;
+            font-weight: 700;
+            font-size: 1.2em;
+            margin-bottom: 15px;
+        }
+
+        .cluster-info {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 15px;
+            margin-top: 15px;
+        }
+
+        .cluster-box {
+            background: white;
+            border: 2px solid #27ae60;
+            border-radius: 6px;
+            padding: 15px;
+            color: #000;
+        }
+
+        @media (max-width: 768px) {
+            .architecture-grid {
+                grid-template-columns: 1fr;
+            }
+            
+            .flow-steps {
+                flex-direction: column;
+            }
+            
+            .flow-arrow {
+                transform: rotate(90deg);
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <h1>🌾 Sasya Arogya - Complete System Architecture</h1>
+            <p>Intelligent Agricultural Advisory System with AI-Powered Disease Detection & Insurance Integration</p>
+        </div>
+
+        <div class="architecture-container">
+            <div class="architecture-grid">
+                <!-- Mobile App Component -->
+                <div class="component-box mobile-app" id="mobile-app">
+                    <div class="component-title">
+                        <span class="icon">📱</span>
+                        Mobile App (Android)
+                    </div>
+                <div class="component-description">
+                    Native Android app with FSM-driven chat interface and camera integration for agricultural advisory.
+                </div>
+                <div class="key-features">
+                    • FSM conversational UI • Camera capture • Real-time streaming • Session management
+                </div>
+                <div class="tech-stack">
+                    <span class="tech-tag">Kotlin</span>
+                    <span class="tech-tag">Android SDK</span>
+                    <span class="tech-tag">Retrofit</span>
+                    <span class="tech-tag">FSM</span>
+                    <span class="tech-tag">Camera2 API</span>
+                </div>
+            </div>
+
+            <!-- LangGraph Agent Component -->
+            <div class="component-box langgraph-agent" id="langgraph-agent">
+                <div class="component-title">
+                    <span class="icon">🤖</span>
+                    LangGraph Agent Core
+                </div>
+                <div class="component-description">
+                    Intelligent orchestration engine managing conversational workflows with conditional logic and multi-tool integration.
+                </div>
+                <div class="key-features">
+                    • Intent classification • Tool routing • Multi-modal processing • Context management
+                </div>
+                <div class="tech-stack">
+                    <span class="tech-tag">LangGraph</span>
+                    <span class="tech-tag">Python</span>
+                    <span class="tech-tag">FastAPI</span>
+                    <span class="tech-tag">Ollama</span>
+                    <span class="tech-tag">LLaMA 3.1</span>
+                </div>
+            </div>
+
+            <!-- CNN Disease Classification Component -->
+            <div class="component-box cnn-classification" id="cnn-classification">
+                <div class="component-title">
+                    <span class="icon">🔬</span>
+                    CNN Disease Classification
+                </div>
+                <div class="component-description">
+                    Deep learning image analysis system for accurate plant disease detection using CNNs.
+                </div>
+                <div class="key-features">
+                    • Multi-crop detection • Real-time processing • Confidence scoring • GPU acceleration
+                </div>
+                <div class="tech-stack">
+                    <span class="tech-tag">TensorFlow</span>
+                    <span class="tech-tag">ResNet</span>
+                    <span class="tech-tag">EfficientNet</span>
+                    <span class="tech-tag">OpenCV</span>
+                    <span class="tech-tag">MLflow</span>
+                </div>
+            </div>
+
+            <!-- Prescription RAG Component -->
+            <div class="component-box prescription-rag" id="prescription-rag">
+                <div class="component-title">
+                    <span class="icon">💊</span>
+                    Prescription RAG System
+                </div>
+                <div class="component-description">
+                    RAG system providing contextual agricultural prescriptions and treatment recommendations.
+                </div>
+                <div class="key-features">
+                    • Vector database • Semantic search • Context-aware generation • Treatment tracking
+                </div>
+                <div class="tech-stack">
+                    <span class="tech-tag">ChromaDB</span>
+                    <span class="tech-tag">HuggingFace</span>
+                    <span class="tech-tag">E5-Large</span>
+                    <span class="tech-tag">RAG</span>
+                    <span class="tech-tag">Vector Search</span>
+                </div>
+            </div>
+
+            <!-- MCP Insurance Server Component -->
+            <div class="component-box mcp-insurance" id="mcp-insurance">
+                <div class="component-title">
+                    <span class="icon">🛡️</span>
+                    MCP Insurance Server
+                </div>
+                <div class="component-description">
+                    MCP server handling agricultural insurance claims, policy management, and certificate generation.
+                </div>
+                <div class="key-features">
+                    • Claims processing • Policy verification • Certificate generation • Risk assessment
+                </div>
+                <div class="tech-stack">
+                    <span class="tech-tag">MCP Protocol</span>
+                    <span class="tech-tag">Python</span>
+                    <span class="tech-tag">FastAPI</span>
+                    <span class="tech-tag">PDF Generation</span>
+                    <span class="tech-tag">PostgreSQL</span>
+                </div>
+            </div>
+
+            <!-- General Crop Queries Component -->
+            <div class="component-box crop-advisory" id="crop-advisory">
+                <div class="component-title">
+                    <span class="icon">🌱</span>
+                    General Crop Advisory
+                </div>
+                <div class="component-description">
+                    Knowledge base system providing agricultural guidance, crop care tips, and farming best practices.
+                </div>
+                <div class="key-features">
+                    • Crop guidelines • Seasonal calendar • Weather recommendations • Soil management
+                </div>
+                <div class="tech-stack">
+                    <span class="tech-tag">Knowledge Base</span>
+                    <span class="tech-tag">NLP</span>
+                    <span class="tech-tag">Weather APIs</span>
+                    <span class="tech-tag">Agricultural DB</span>
+                    <span class="tech-tag">Expert Systems</span>
+                </div>
+            </div>
+
+            <!-- Connection Lines and Flow Arrows -->
+            <!-- Mobile App to LangGraph Agent -->
+            <div class="connection-line" style="width: 60px; height: 2px; top: 70px; left: 300px;"></div>
+            <div class="connection-arrow arrow-right" style="top: 65px; left: 358px;"></div>
+            <div class="flow-label" style="top: 45px; left: 310px;">User Input</div>
+
+            <!-- LangGraph Agent to CNN Classification -->
+            <div class="connection-line" style="width: 60px; height: 2px; top: 70px; left: 640px;"></div>
+            <div class="connection-arrow arrow-right" style="top: 65px; left: 698px;"></div>
+            <div class="flow-label" style="top: 45px; left: 650px;">Image Query</div>
+
+            <!-- LangGraph Agent to Prescription RAG -->
+            <div class="connection-line" style="width: 2px; height: 60px; top: 160px; left: 500px;"></div>
+            <div class="connection-arrow arrow-down" style="top: 218px; left: 494px;"></div>
+            <div class="flow-label" style="top: 180px; left: 420px;">Disease Info</div>
+
+            <!-- LangGraph Agent to MCP Insurance -->
+            <div class="connection-line" style="width: 2px; height: 60px; top: 160px; left: 500px;"></div>
+            <div class="connection-arrow arrow-down" style="top: 218px; left: 494px;"></div>
+            <div class="flow-label" style="top: 180px; left: 510px;">Insurance</div>
+
+            <!-- LangGraph Agent to Crop Advisory -->
+            <div class="connection-line" style="width: 60px; height: 2px; top: 120px; left: 640px;"></div>
+            <div class="connection-line" style="width: 2px; height: 100px; top: 120px; left: 700px;"></div>
+            <div class="connection-arrow arrow-down" style="top: 218px; left: 694px;"></div>
+            <div class="flow-label" style="top: 160px; left: 710px;">General</div>
+
+            <!-- CNN to Prescription RAG -->
+            <div class="connection-line" style="width: 2px; height: 60px; top: 160px; left: 840px;"></div>
+            <div class="connection-line" style="width: 540px; height: 2px; top: 220px; left: 300px;"></div>
+            <div class="connection-arrow arrow-right" style="top: 215px; left: 293px;"></div>
+            <div class="flow-label" style="top: 195px; left: 550px;">Disease Result</div>
+
+        </div>
+
+        <!-- Business Flow Visualization -->
+        <div class="flow-diagram">
+            <div class="flow-title">🔄 Business Flow & User Journey</div>
+            <div style="display: grid; grid-template-columns: repeat(5, 1fr); gap: 15px; align-items: center; margin: 20px 0;">
+                <div style="background: #e8f5e8; border: 2px solid #27ae60; border-radius: 8px; padding: 15px; text-align: center; color: #000;">
+                    <div style="font-size: 1.5em; margin-bottom: 5px;">📱</div>
+                    <div style="font-weight: 600; font-size: 0.9em;">User Input</div>
+                    <div style="font-size: 0.8em;">Text/Image Query</div>
+                </div>
+                <div style="color: #27ae60; font-size: 1.5em; text-align: center;">→</div>
+                <div style="background: #e8f5e8; border: 2px solid #27ae60; border-radius: 8px; padding: 15px; text-align: center; color: #000;">
+                    <div style="font-size: 1.5em; margin-bottom: 5px;">🤖</div>
+                    <div style="font-weight: 600; font-size: 0.9em;">Intent Analysis</div>
+                    <div style="font-size: 0.8em;">Route to Tools</div>
+                </div>
+                <div style="color: #27ae60; font-size: 1.5em; text-align: center;">→</div>
+                <div style="background: #e8f5e8; border: 2px solid #27ae60; border-radius: 8px; padding: 15px; text-align: center; color: #000;">
+                    <div style="font-size: 1.5em; margin-bottom: 5px;">⚙️</div>
+                    <div style="font-weight: 600; font-size: 0.9em;">Tool Processing</div>
+                    <div style="font-size: 0.8em;">CNN/RAG/MCP/Advisory</div>
+                </div>
+            </div>
+            <div style="display: grid; grid-template-columns: repeat(3, 1fr); gap: 15px; align-items: center; margin: 20px 0;">
+                <div style="background: #e8f5e8; border: 2px solid #27ae60; border-radius: 8px; padding: 15px; text-align: center; color: #000;">
+                    <div style="font-size: 1.5em; margin-bottom: 5px;">💬</div>
+                    <div style="font-weight: 600; font-size: 0.9em;">Response Synthesis</div>
+                    <div style="font-size: 0.8em;">LangGraph Orchestration</div>
+                </div>
+                <div style="color: #27ae60; font-size: 1.5em; text-align: center;">→</div>
+                <div style="background: #e8f5e8; border: 2px solid #27ae60; border-radius: 8px; padding: 15px; text-align: center; color: #000;">
+                    <div style="font-size: 1.5em; margin-bottom: 5px;">📲</div>
+                    <div style="font-weight: 600; font-size: 0.9em;">User Response</div>
+                    <div style="font-size: 0.8em;">Streaming to Mobile</div>
+                </div>
+            </div>
+        </div>
+
+        <!-- System Flow Diagram -->
+        <div class="flow-diagram">
+            <div class="flow-title">🔄 Technical Workflow & Data Flow</div>
+            <div class="flow-steps">
+                <div class="flow-step">
+                    📱<br>User Input<br>(Text/Image)
+                </div>
+                <div class="flow-arrow">→</div>
+                <div class="flow-step">
+                    🤖<br>LangGraph<br>Agent
+                </div>
+                <div class="flow-arrow">→</div>
+                <div class="flow-step">
+                    🎯<br>Intent<br>Classification
+                </div>
+                <div class="flow-arrow">→</div>
+                <div class="flow-step">
+                    🔧<br>Tool<br>Selection
+                </div>
+                <div class="flow-arrow">→</div>
+                <div class="flow-step">
+                    📊<br>Processing<br>& Analysis
+                </div>
+                <div class="flow-arrow">→</div>
+                <div class="flow-step">
+                    💬<br>Response<br>Generation
+                </div>
+            </div>
+        </div>
+
+        <!-- Repository Information -->
+        <div class="repositories">
+            <div class="repo-title">📂 Repository Structure & Components</div>
+            <div class="repo-grid">
+                <div class="repo-box">
+                    <div class="repo-name">🏗️ sasya-arogya-engine</div>
+                    <div class="repo-description">
+                        Core LangGraph agent implementation with FSM workflow, tool orchestration, and multi-modal processing capabilities. Contains the main intelligence layer.
+                    </div>
+                </div>
+                <div class="repo-box">
+                    <div class="repo-name">📱 sasya-arogya-app</div>
+                    <div class="repo-description">
+                        Native Android application with FSM-driven chat interface, camera integration, and real-time streaming for seamless user experience.
+                    </div>
+                </div>
+                <div class="repo-box">
+                    <div class="repo-name">💊 prescription-rag</div>
+                    <div class="repo-description">
+                        RAG system with ChromaDB vector database, agricultural knowledge base, and context-aware prescription generation for treatment recommendations.
+                    </div>
+                </div>
+                <div class="repo-box">
+                    <div class="repo-name">🛡️ sasya-arogya-mcp</div>
+                    <div class="repo-description">
+                        MCP server for insurance integration, automated claims processing, policy management, and digital certificate generation.
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Deployment Information -->
+        <div class="deployment-info">
+            <div class="deployment-title">☁️ Deployment Architecture & Infrastructure</div>
+            <div class="cluster-info">
+                <div class="cluster-box">
+                    <strong>🚀 GPU Cluster (High Performance)</strong><br>
+                    <em>engine-sasya-chikitsa</em><br>
+                    • Complex disease analysis<br>
+                    • CNN model inference<br>
+                    • Image processing pipeline<br>
+                    • cluster-mqklc.sandbox601
+                </div>
+                <div class="cluster-box">
+                    <strong>⚡ Non-GPU Cluster (Standard)</strong><br>
+                    <em>engine-sasya-arogya</em><br>
+                    • General crop queries<br>
+                    • Text-based interactions<br>
+                    • Insurance processing<br>
+                    • cluster-dg9gp.sandbox1039
+                </div>
+                <div class="cluster-box">
+                    <strong>🗄️ Data & Storage Layer</strong><br>
+                    • PostgreSQL (User data)<br>
+                    • Redis (Session cache)<br>
+                    • ChromaDB (Vector storage)<br>
+                    • S3 (Image/Document storage)
+                </div>
+                <div class="cluster-box">
+                    <strong>📊 Monitoring & Analytics</strong><br>
+                    • Prometheus (Metrics)<br>
+                    • Grafana (Dashboards)<br>
+                    • Jaeger (Tracing)<br>
+                    • MLflow (Model tracking)
+                </div>
+            </div>
+        </div>
+    </div>
+</body>
+</html>
+
