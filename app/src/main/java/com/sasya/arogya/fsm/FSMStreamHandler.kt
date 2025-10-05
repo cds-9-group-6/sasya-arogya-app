@@ -286,13 +286,19 @@ class FSMStreamHandler {
         message: String,
         imageBase64: String? = null,
         sessionId: String? = null,
-        context: Map<String, Any>? = null
+        context: Map<String, Any>? = null,
+        state: String? = null,
+        areaHectare: Double? = null,
+        farmerName: String? = null
     ): FSMChatRequest {
         return FSMChatRequest(
             sessionId = sessionId,
             message = message,
             imageB64 = imageBase64,
-            context = context
+            context = context,
+            state = state,
+            areaHectare = areaHectare,
+            farmerName = farmerName
         )
     }
     

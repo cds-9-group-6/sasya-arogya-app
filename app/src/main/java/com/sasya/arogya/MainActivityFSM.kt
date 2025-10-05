@@ -602,14 +602,27 @@ class MainActivityFSM : ComponentActivity(), FSMStreamHandler.StreamCallback {
                 
                 val context = createEnrichedContext(userProfile)
                 
+                // Extract insurance-specific fields from profile for root-level request params
+                val farmerName = userProfile["farmer_name"]?.takeIf { it.isNotBlank() }
+                val userState = userProfile["state"]?.takeIf { it.isNotBlank() } ?: "Tamil Nadu"
+                val userFarmSize = userProfile["farm_size"]?.takeIf { it.isNotBlank() } ?: "Small (< 1 acre)"
+                val areaHectare = convertFarmSizeToHectares(userFarmSize)
+                
                 // Debug: Log the context being sent to server
                 Log.d(TAG, "📤 Sending context to server: $context")
+                Log.d(TAG, "🎯 Root-level insurance fields:")
+                Log.d(TAG, "  └─ state: $userState")
+                Log.d(TAG, "  └─ area_hectare: $areaHectare")
+                Log.d(TAG, "  └─ farmer_name: ${farmerName ?: "(not provided)"}")
                 
                 val request = streamHandler.createChatRequest(
                     message = message,
                     imageBase64 = imageBase64,
                     sessionId = currentSessionState.sessionId,
-                    context = context
+                    context = context,
+                    state = userState,
+                    areaHectare = areaHectare,
+                    farmerName = farmerName
                 )
                 
                 // Debug: Log the complete request being sent
@@ -618,9 +631,9 @@ class MainActivityFSM : ComponentActivity(), FSMStreamHandler.StreamCallback {
                 Log.d(TAG, "  └─ Session ID: ${currentSessionState.sessionId}")
                 Log.d(TAG, "  └─ Has Image: ${imageBase64 != null}")
                 Log.d(TAG, "  └─ Context keys: ${context.keys}")
-                Log.d(TAG, "  └─ farmer_name in context: ${context["farmer_name"]}")
-                Log.d(TAG, "  └─ area_hectare in context: ${context["area_hectare"]}")
-                Log.d(TAG, "  └─ state in context: ${context["state"]}")
+                Log.d(TAG, "  └─ Root-level state: $userState")
+                Log.d(TAG, "  └─ Root-level area_hectare: $areaHectare")
+                Log.d(TAG, "  └─ Root-level farmer_name: $farmerName")
                 
                 // Set different timeouts based on server type
                 val timeoutMillis = when (ServerConfig.getServerType(this@MainActivityFSM)) {
