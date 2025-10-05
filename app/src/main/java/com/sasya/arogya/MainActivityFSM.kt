@@ -612,7 +612,15 @@ class MainActivityFSM : ComponentActivity(), FSMStreamHandler.StreamCallback {
                     context = context
                 )
                 
-                Log.d(TAG, "Sending request to FSM agent: $message")
+                // Debug: Log the complete request being sent
+                Log.d(TAG, "📨 Complete request to FSM agent:")
+                Log.d(TAG, "  └─ Message: $message")
+                Log.d(TAG, "  └─ Session ID: ${currentSessionState.sessionId}")
+                Log.d(TAG, "  └─ Has Image: ${imageBase64 != null}")
+                Log.d(TAG, "  └─ Context keys: ${context.keys}")
+                Log.d(TAG, "  └─ farmer_name in context: ${context["farmer_name"]}")
+                Log.d(TAG, "  └─ area_hectare in context: ${context["area_hectare"]}")
+                Log.d(TAG, "  └─ state in context: ${context["state"]}")
                 
                 // Set different timeouts based on server type
                 val timeoutMillis = when (ServerConfig.getServerType(this@MainActivityFSM)) {
