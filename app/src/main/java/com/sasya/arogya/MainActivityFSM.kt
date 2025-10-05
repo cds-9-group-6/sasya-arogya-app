@@ -789,8 +789,8 @@ class MainActivityFSM : ComponentActivity(), FSMStreamHandler.StreamCallback {
                 val farmSize = userProfile["farm_size"]?.takeIf { it.isNotBlank() } ?: "Small (< 1 acre)"
                 val farmSizeHectares = convertFarmSizeToHectares(farmSize)
                 
-                // Create a helpful insurance query prompt
-                val insurancePrompt = "I would like to get crop insurance for my ${String.format("%.1f", farmSizeHectares)} hectare farm in $state. Please show me premium options."
+                // Create a helpful insurance query prompt with default crop (tomato)
+                val insurancePrompt = "I would like to get crop insurance for my ${String.format("%.1f", farmSizeHectares)} hectare tomato farm in $state. Please show me premium options."
                 
                 // Add the generated prompt as user message
                 val followUpMessage = ChatMessage(
