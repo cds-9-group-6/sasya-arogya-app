@@ -703,6 +703,7 @@ class MainActivityFSM : ComponentActivity(), FSMStreamHandler.StreamCallback {
         val farmSizeHectares = convertFarmSizeToHectares(userFarmSize)
         
         Log.d(TAG, "🏛️ Using state: $userState, farm size: $userFarmSize ($farmSizeHectares ha), season: $currentSeason")
+        Log.d(TAG, "🚜 Sending area_hectare to FSM agent: $farmSizeHectares (for insurance fallback)")
         if (farmerName.isNotEmpty()) {
             Log.d(TAG, "👨‍🌾 Farmer name: $farmerName")
         }
@@ -717,7 +718,8 @@ class MainActivityFSM : ComponentActivity(), FSMStreamHandler.StreamCallback {
             "location" to userState,
             "state" to userState,  
             "farm_size" to userFarmSize,
-            "farm_size_hectares" to farmSizeHectares, // For insurance calculations
+            "farm_size_hectares" to farmSizeHectares, // Deprecated, kept for backward compatibility
+            "area_hectare" to farmSizeHectares, // Standard field for insurance calculations (used by FSM agent)
             "farming_experience" to "intermediate", // Default value
             "crop_type" to "general", // Default to general plant diagnosis
             "season" to currentSeason,
