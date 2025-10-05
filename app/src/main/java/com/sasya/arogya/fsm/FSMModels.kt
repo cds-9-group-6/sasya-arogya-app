@@ -12,12 +12,7 @@ data class FSMChatRequest(
     @SerializedName("session_id") val sessionId: String? = null,
     @SerializedName("message") val message: String,
     @SerializedName("image_b64") val imageB64: String? = null,
-    @SerializedName("context") val context: Map<String, Any>? = null,
-    
-    // Insurance-specific fields (required at root level by backend)
-    @SerializedName("state") val state: String? = null,
-    @SerializedName("area_hectare") val areaHectare: Double? = null,
-    @SerializedName("farmer_name") val farmerName: String? = null
+    @SerializedName("context") val context: Map<String, Any>? = null
 )
 
 // Response models
