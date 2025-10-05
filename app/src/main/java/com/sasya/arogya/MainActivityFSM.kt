@@ -409,14 +409,27 @@ class MainActivityFSM : ComponentActivity(), FSMStreamHandler.StreamCallback {
     }
     
     private fun addWelcomeMessage() {
+        // Get user profile to create personalized quick actions
+        val userProfile = getUserAgriculturalProfile()
+        val farmSize = userProfile["farm_size"]?.takeIf { it.isNotBlank() } ?: "Small (< 1 acre)"
+        val state = userProfile["state"]?.takeIf { it.isNotBlank() } ?: "your state"
+        val farmSizeHectares = convertFarmSizeToHectares(farmSize)
+        
+        // Create smart insurance quick action with profile data
+        val insuranceAction = if (userProfile["state"]?.isNotBlank() == true) {
+            "🛡️ Get Insurance Quote (${String.format("%.1f", farmSizeHectares)} ha farm in $state)"
+        } else {
+            "🛡️ Get Insurance Quote"
+        }
+        
         val welcomeMessage = ChatMessage(
             text = "🌿 **Welcome to Sasya Arogya!**\n\nI'm your intelligent plant health assistant, designed specifically for Indian farmers. I can help you with comprehensive agricultural support.\n\n**🌱 What I can do for you:**\n• **🔬 Diagnose plant diseases** from photos with AI precision\n• **💊 Recommend treatments** and organic medicines\n• **🛡️ Help with crop insurance** and premium calculations\n• **📅 Provide seasonal care** advice for your crops\n",
             isUser = false,
             state = "Ready",
             followUpItems = listOf(
                 "📸 Analyze Plant Photo",
+                insuranceAction,
                 "🌱 Seasonal Care Tips",
-                "🌿 Plant Health Guide",
                 "🧪 Soil Testing Guide"
             )
         )
@@ -780,55 +793,109 @@ class MainActivityFSM : ComponentActivity(), FSMStreamHandler.StreamCallback {
     private fun handleFollowUpClick(followUpText: String) {
         Log.d(TAG, "Follow-up clicked: $followUpText")
         
-        // Add follow-up as user message
-        val followUpMessage = ChatMessage(
-            text = followUpText,
-            isUser = true
-        )
-        
-        chatAdapter.addMessage(followUpMessage)
-        currentSessionState.messages.add(followUpMessage)
-        
-        // Save to session manager
-        currentSessionState.sessionId?.let { sessionId ->
-            sessionManager.addMessageToSession(sessionId, followUpMessage)
-        }
-        scrollToBottom()
-        
-        // Special handling for certain actions
-        when (followUpText) {
-            "📸 Analyze Plant Photo" -> {
+        // Special handling for certain actions BEFORE adding to chat
+        when {
+            followUpText.startsWith("🛡️ Get Insurance Quote") -> {
+                // Extract profile data to create detailed insurance query
+                val userProfile = getUserAgriculturalProfile()
+                val state = userProfile["state"]?.takeIf { it.isNotBlank() } ?: "your state"
+                val farmSize = userProfile["farm_size"]?.takeIf { it.isNotBlank() } ?: "Small (< 1 acre)"
+                val farmSizeHectares = convertFarmSizeToHectares(farmSize)
+                
+                // Create a helpful insurance query prompt
+                val insurancePrompt = "I would like to get crop insurance for my ${String.format("%.1f", farmSizeHectares)} hectare farm in $state. Please show me premium options."
+                
+                // Add the generated prompt as user message
+                val followUpMessage = ChatMessage(
+                    text = insurancePrompt,
+                    isUser = true
+                )
+                
+                chatAdapter.addMessage(followUpMessage)
+                currentSessionState.messages.add(followUpMessage)
+                
+                // Save to session manager
+                currentSessionState.sessionId?.let { sessionId ->
+                    sessionManager.addMessageToSession(sessionId, followUpMessage)
+                }
+                scrollToBottom()
+                
+                // Send the detailed query to FSM agent
+                sendToFSMAgent(insurancePrompt, null)
+                showThinkingIndicator()
+                return
+            }
+            
+            followUpText == "📸 Analyze Plant Photo" -> {
+                // Add follow-up as user message first
+                val followUpMessage = ChatMessage(
+                    text = followUpText,
+                    isUser = true
+                )
+                chatAdapter.addMessage(followUpMessage)
+                currentSessionState.messages.add(followUpMessage)
+                currentSessionState.sessionId?.let { sessionId ->
+                    sessionManager.addMessageToSession(sessionId, followUpMessage)
+                }
+                scrollToBottom()
+                
                 // Immediately trigger image picker for photo analysis
                 openImagePicker()
                 stopThinkingIndicator() // Don't show thinking indicator for image picker
                 return
             }
 
-            "🌱 Seasonal Care Tips" -> {
+            followUpText == "🌱 Seasonal Care Tips" -> {
+                // Add follow-up as user message
+                val followUpMessage = ChatMessage(
+                    text = followUpText,
+                    isUser = true
+                )
+                chatAdapter.addMessage(followUpMessage)
+                currentSessionState.messages.add(followUpMessage)
+                currentSessionState.sessionId?.let { sessionId ->
+                    sessionManager.addMessageToSession(sessionId, followUpMessage)
+                }
+                scrollToBottom()
+                
                 // Send season-specific query
                 val season = getCurrentSeason()
                 sendToFSMAgent("Give me seasonal plant care tips and recommendations for $season season, including what to plant, water, and watch for.", null)
-            }
-            
-            "🌿 Plant Health Guide" -> {
-                // Send query for health guide
-                sendToFSMAgent("Provide me with a comprehensive plant health guide covering nutrition, light requirements, watering, and disease prevention.", null)
-            }
-            
-            "🧪 Soil Testing Guide" -> {
-                // Send query for soil testing
-                sendToFSMAgent("Show me how to test soil conditions, understand pH levels, nutrient deficiencies, and improve soil quality for better plant health.", null)
+                showThinkingIndicator()
+                return
             }
             
             else -> {
-                // Default: send original text to FSM agent
-                sendToFSMAgent(followUpText, null)
+                // For all other quick actions, add as user message and send
+                val followUpMessage = ChatMessage(
+                    text = followUpText,
+                    isUser = true
+                )
+                chatAdapter.addMessage(followUpMessage)
+                currentSessionState.messages.add(followUpMessage)
+                currentSessionState.sessionId?.let { sessionId ->
+                    sessionManager.addMessageToSession(sessionId, followUpMessage)
+                }
+                scrollToBottom()
+                
+                // Handle specific actions with custom queries
+                when (followUpText) {
+                    "🌿 Plant Health Guide" -> {
+                        sendToFSMAgent("Provide me with a comprehensive plant health guide covering nutrition, light requirements, watering, and disease prevention.", null)
+                    }
+                    "🧪 Soil Testing Guide" -> {
+                        sendToFSMAgent("Show me how to test soil conditions, understand pH levels, nutrient deficiencies, and improve soil quality for better plant health.", null)
+                    }
+                    else -> {
+                        // Default: send original text to FSM agent
+                        sendToFSMAgent(followUpText, null)
+                    }
+                }
+                
+                // Show thinking indicator for FSM queries
+                showThinkingIndicator()
             }
         }
-        
-        // Show thinking indicator for FSM queries
-        showThinkingIndicator()
-        // Processing state handled by thinking indicator, not status indicator
         
         // Hide follow-up container
         followUpContainer.visibility = View.GONE
