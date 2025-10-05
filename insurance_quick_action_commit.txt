@@ -1,0 +1,59 @@
+feat: Add smart insurance quick action with profile-based prompt generation
+
+User Experience Enhancement for Insurance Queries
+
+Problem:
+Users didn't know what prompt to use to get insurance premium quotes.
+
+Solution:
+Added intelligent insurance quick action button that:
+1. Shows farm size and state from profile
+2. Auto-generates proper insurance query when clicked
+3. Helps users discover insurance feature easily
+
+Implementation:
+
+1. Smart Welcome Message:
+   - Reads user's agricultural profile
+   - Creates personalized insurance quick action
+   - Shows farm size in hectares and state name
+   
+   Examples:
+   - With profile: "Get Insurance Quote (2.0 ha farm in Karnataka)"
+   - Without profile: "Get Insurance Quote"
+
+2. Intelligent Prompt Generation:
+   When insurance quick action clicked:
+   - Extracts profile data (state, farm_size)
+   - Converts farm size to hectares  
+   - Generates natural language query
+   - Sends to FSM agent automatically
+   
+   Generated prompt:
+   "I would like to get crop insurance for my 2.0 hectare farm in Karnataka. Please show me premium options."
+
+3. Profile Integration:
+   - Uses existing convertFarmSizeToHectares() method
+   - Formats hectares with 1 decimal place
+   - Falls back to defaults if profile not set
+
+Benefits:
+
+- Discoverability: Users see insurance feature immediately
+- Ease of Use: Single click to request insurance
+- Personalization: Shows user's actual farm size and location
+- Proper Query Format: Backend receives well-formatted request
+- Profile Utilization: Demonstrates value of profile setup
+
+User Flow:
+
+1. User with profile (Karnataka, Medium farm):
+   - Sees: "Get Insurance Quote (2.0 ha farm in Karnataka)"
+   - Clicks -> Sends: "...for my 2.0 hectare farm in Karnataka..."
+   - Gets personalized insurance options
+
+2. User without profile:
+   - Sees: "Get Insurance Quote"
+   - Clicks -> Sends: "...for my 0.4 hectare farm in your state..."
+   - Encourages profile setup
+

@@ -1,0 +1,703 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Sasya Arogya - Technical Architecture & Agentic Flow</title>
+    <style>
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            margin: 0;
+            padding: 20px;
+            background: linear-gradient(135deg, #f5f7fa 0%, #c3cfe2 100%);
+            min-height: 100vh;
+        }
+
+        .container {
+            max-width: 1600px;
+            margin: 0 auto;
+            background: white;
+            border-radius: 15px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.1);
+            padding: 30px;
+        }
+
+        .header {
+            text-align: center;
+            margin-bottom: 40px;
+        }
+
+        .header h1 {
+            color: #2c3e50;
+            font-size: 2.5em;
+            margin-bottom: 10px;
+            font-weight: 700;
+        }
+
+        .header p {
+            color: #7f8c8d;
+            font-size: 1.2em;
+            margin: 0;
+        }
+
+        .architecture-layers {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            grid-template-rows: repeat(3, 1fr);
+            gap: 30px 20px;
+            margin-bottom: 40px;
+            max-width: 1400px;
+            margin: 0 auto 40px auto;
+            position: relative;
+        }
+
+        .layer {
+            background: #f8f9fa;
+            border: 2px solid #27ae60;
+            border-radius: 12px;
+            padding: 20px;
+            position: relative;
+        }
+
+        .layer-title {
+            color: #000;
+            font-size: 1.3em;
+            font-weight: 700;
+            margin-bottom: 15px;
+            text-align: center;
+            background: #27ae60;
+            color: white;
+            padding: 8px 15px;
+            border-radius: 20px;
+            display: inline-block;
+            position: absolute;
+            top: -15px;
+            left: 50%;
+            transform: translateX(-50%);
+        }
+
+        .layer-content {
+            display: grid;
+            gap: 10px;
+            margin-top: 20px;
+            grid-template-columns: 1fr;
+        }
+
+        .zigzag-container {
+            position: relative;
+        }
+
+        .zigzag-arrow {
+            position: absolute;
+            z-index: 5;
+        }
+
+        .horizontal-arrow {
+            width: 60px;
+            height: 4px;
+            background: #27ae60;
+            position: relative;
+        }
+
+        .horizontal-arrow::after {
+            content: '';
+            position: absolute;
+            right: -8px;
+            top: 50%;
+            transform: translateY(-50%);
+            width: 0;
+            height: 0;
+            border-top: 8px solid transparent;
+            border-bottom: 8px solid transparent;
+            border-left: 12px solid #27ae60;
+        }
+
+        .diagonal-arrow {
+            width: 80px;
+            height: 4px;
+            background: #27ae60;
+            position: relative;
+            transform: rotate(45deg);
+        }
+
+        .diagonal-arrow::after {
+            content: '';
+            position: absolute;
+            right: -6px;
+            top: 50%;
+            transform: translateY(-50%) rotate(-45deg);
+            width: 0;
+            height: 0;
+            border-top: 8px solid transparent;
+            border-bottom: 8px solid transparent;
+            border-left: 12px solid #27ae60;
+        }
+
+        .diagonal-arrow-down {
+            transform: rotate(-45deg);
+        }
+
+        .diagonal-arrow-down::after {
+            transform: translateY(-50%) rotate(45deg);
+        }
+
+        .tech-component {
+            background: white;
+            border: 2px solid #27ae60;
+            border-radius: 8px;
+            padding: 12px;
+            text-align: center;
+            transition: all 0.3s ease;
+            position: relative;
+            min-height: 80px;
+            display: flex;
+            flex-direction: column;
+            justify-content: space-between;
+        }
+
+        .layer:nth-child(1) { grid-column: 1; grid-row: 1; }
+        .layer:nth-child(2) { grid-column: 2; grid-row: 1; }
+        .layer:nth-child(3) { grid-column: 3; grid-row: 1; }
+        .layer:nth-child(4) { grid-column: 1; grid-row: 2; }
+        .layer:nth-child(5) { grid-column: 2; grid-row: 2; }
+        .layer:nth-child(6) { grid-column: 3; grid-row: 2; }
+        .layer:nth-child(7) { grid-column: 1; grid-row: 3; }
+        .layer:nth-child(8) { grid-column: 2; grid-row: 3; }
+        .layer:nth-child(9) { grid-column: 3; grid-row: 3; }
+
+        .agent-center {
+            border: 3px solid #e74c3c !important;
+            background: #fdf2f2 !important;
+        }
+
+        .llm-driver {
+            border: 3px solid #9b59b6 !important;
+            background: #f8f4fd !important;
+        }
+
+        .tech-component:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 5px 15px rgba(0,0,0,0.15);
+            border-color: #2ecc71;
+        }
+
+        .tech-component .icon {
+            font-size: 1.5em;
+            margin-bottom: 5px;
+        }
+
+        .tech-component .name {
+            color: #000;
+            font-weight: 700;
+            font-size: 0.85em;
+            margin-bottom: 4px;
+        }
+
+        .tech-component .description {
+            color: #000;
+            font-size: 0.7em;
+            line-height: 1.2;
+            margin-bottom: 6px;
+        }
+
+        .tech-component .tech-tags {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 3px;
+            justify-content: center;
+        }
+
+        .tech-tag {
+            background: #ecf0f1;
+            color: #000;
+            padding: 2px 5px;
+            border-radius: 8px;
+            font-size: 0.65em;
+            font-weight: 500;
+            border: 1px solid #bdc3c7;
+        }
+
+        .flow-arrows {
+            position: relative;
+            margin: 20px 0;
+        }
+
+        .vertical-arrow {
+            width: 4px;
+            height: 40px;
+            background: #27ae60;
+            margin: 0 auto;
+            position: relative;
+        }
+
+        .vertical-arrow::after {
+            content: '';
+            position: absolute;
+            bottom: -8px;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 0;
+            height: 0;
+            border-left: 8px solid transparent;
+            border-right: 8px solid transparent;
+            border-top: 12px solid #27ae60;
+        }
+
+        .flow-label {
+            background: #27ae60;
+            color: white;
+            padding: 4px 12px;
+            border-radius: 15px;
+            font-size: 0.8em;
+            font-weight: 600;
+            position: absolute;
+            left: 50%;
+            top: 50%;
+            transform: translate(-50%, -50%);
+            white-space: nowrap;
+        }
+
+        .agentic-flow {
+            background: #e8f5e8;
+            border: 2px solid #27ae60;
+            border-radius: 12px;
+            padding: 25px;
+            margin: 30px 0;
+        }
+
+        .agentic-title {
+            color: #000;
+            font-size: 1.4em;
+            font-weight: 700;
+            text-align: center;
+            margin-bottom: 20px;
+        }
+
+        .flow-steps {
+            display: grid;
+            grid-template-columns: repeat(6, 1fr);
+            gap: 15px;
+            align-items: center;
+        }
+
+        .flow-step {
+            background: white;
+            border: 2px solid #27ae60;
+            border-radius: 8px;
+            padding: 12px;
+            text-align: center;
+            color: #000;
+            font-size: 0.8em;
+            font-weight: 600;
+            min-height: 80px;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+        }
+
+        .flow-step .step-icon {
+            font-size: 1.5em;
+            margin-bottom: 5px;
+        }
+
+        .flow-step .step-title {
+            font-weight: 700;
+            margin-bottom: 3px;
+        }
+
+        .flow-step .step-desc {
+            font-size: 0.75em;
+            color: #666;
+        }
+
+        .flow-connector {
+            color: #27ae60;
+            font-size: 1.2em;
+            font-weight: bold;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .technical-details {
+            background: #f8f9fa;
+            border: 2px solid #27ae60;
+            border-radius: 12px;
+            padding: 20px;
+            margin: 30px 0;
+        }
+
+        .technical-title {
+            color: #000;
+            font-size: 1.3em;
+            font-weight: 700;
+            margin-bottom: 15px;
+            text-align: center;
+        }
+
+        .detail-grid {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 15px;
+        }
+
+        .detail-box {
+            background: white;
+            border: 2px solid #27ae60;
+            border-radius: 8px;
+            padding: 15px;
+            color: #000;
+        }
+
+        .detail-box .detail-title {
+            font-weight: 700;
+            font-size: 1em;
+            margin-bottom: 8px;
+            color: #27ae60;
+        }
+
+        .detail-box .detail-content {
+            font-size: 0.85em;
+            line-height: 1.4;
+        }
+
+        @media (max-width: 1200px) {
+            .processing-layer .layer-content {
+                grid-template-columns: repeat(2, 1fr);
+            }
+            .data-layer .layer-content {
+                grid-template-columns: repeat(2, 1fr);
+            }
+            .flow-steps {
+                grid-template-columns: repeat(3, 1fr);
+            }
+        }
+
+        @media (max-width: 768px) {
+            .orchestration-layer .layer-content,
+            .processing-layer .layer-content,
+            .data-layer .layer-content,
+            .infrastructure-layer .layer-content {
+                grid-template-columns: 1fr;
+            }
+            .flow-steps {
+                grid-template-columns: 1fr;
+            }
+            .detail-grid {
+                grid-template-columns: 1fr;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <h1>🌾 Sasya Arogya - Technical Architecture & Agentic Flow</h1>
+            <p>End-to-End Technical Implementation with LangGraph Agent Orchestration</p>
+        </div>
+
+        <div class="zigzag-container">
+            <div class="architecture-layers">
+                <!-- Row 1: User Interface, LLM Drivers, External Services -->
+                <div class="layer presentation-layer">
+                    <div class="layer-title">📱 User Interface</div>
+                    <div class="layer-content">
+                        <div class="tech-component">
+                            <div class="icon">📱</div>
+                            <div class="name">Android Mobile App</div>
+                            <div class="description">FSM-driven chat interface with camera integration and streaming HTTP</div>
+                            <div class="tech-tags">
+                                <span class="tech-tag">Kotlin</span>
+                                <span class="tech-tag">HTTP/WebSocket</span>
+                                <span class="tech-tag">Camera2</span>
+                                <span class="tech-tag">Streaming</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="layer llm-layer llm-driver">
+                    <div class="layer-title">🧠 LLM Drivers</div>
+                    <div class="layer-content">
+                        <div class="tech-component">
+                            <div class="icon">🦙</div>
+                            <div class="name">Ollama Service</div>
+                            <div class="description">LLaMA 3.1 8B for intent analysis and response generation</div>
+                            <div class="tech-tags">
+                                <span class="tech-tag">Ollama</span>
+                                <span class="tech-tag">LLaMA 3.1</span>
+                                <span class="tech-tag">HTTP API</span>
+                            </div>
+                        </div>
+                        <div class="tech-component">
+                            <div class="icon">👁️</div>
+                            <div class="name">LLaVA Vision</div>
+                            <div class="description">Multimodal vision-language model for image understanding</div>
+                            <div class="tech-tags">
+                                <span class="tech-tag">LLaVA</span>
+                                <span class="tech-tag">Vision-Language</span>
+                                <span class="tech-tag">Multimodal</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="layer external-layer">
+                    <div class="layer-title">🌐 External Services</div>
+                    <div class="layer-content">
+                        <div class="tech-component">
+                            <div class="icon">🏢</div>
+                            <div class="name">Insurance Providers</div>
+                            <div class="description">Third-party insurance companies via HTTP APIs</div>
+                            <div class="tech-tags">
+                                <span class="tech-tag">HTTP APIs</span>
+                                <span class="tech-tag">REST</span>
+                                <span class="tech-tag">Third-party</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Row 2: Agent Center, ML Processing, Data Storage -->
+                <div class="layer session-layer">
+                    <div class="layer-title">📋 Session & Context</div>
+                    <div class="layer-content">
+                        <div class="tech-component">
+                            <div class="icon">📋</div>
+                            <div class="name">Session Manager</div>
+                            <div class="description">Context management and file-based state persistence</div>
+                            <div class="tech-tags">
+                                <span class="tech-tag">Redis</span>
+                                <span class="tech-tag">JSON Files</span>
+                                <span class="tech-tag">Context</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="layer agent-layer agent-center">
+                    <div class="layer-title">🎯 LangGraph Agent</div>
+                    <div class="layer-content">
+                        <div class="tech-component">
+                            <div class="icon">🤖</div>
+                            <div class="name">Central Agent</div>
+                            <div class="description">FSM-based orchestrator with tool routing and workflow management</div>
+                            <div class="tech-tags">
+                                <span class="tech-tag">LangGraph</span>
+                                <span class="tech-tag">FSM</span>
+                                <span class="tech-tag">Tool Router</span>
+                                <span class="tech-tag">Orchestrator</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="layer ml-layer">
+                    <div class="layer-title">🔬 ML Processing</div>
+                    <div class="layer-content">
+                        <div class="tech-component">
+                            <div class="icon">🔬</div>
+                            <div class="name">CNN Classification</div>
+                            <div class="description">CNN with attention mechanisms for plant disease detection</div>
+                            <div class="tech-tags">
+                                <span class="tech-tag">TensorFlow</span>
+                                <span class="tech-tag">CNN + Attention</span>
+                                <span class="tech-tag">GPU</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Row 3: Data Sources, RAG System, MCP Services -->
+                <div class="layer data-layer">
+                    <div class="layer-title">🗃️ Vector Storage</div>
+                    <div class="layer-content">
+                        <div class="tech-component">
+                            <div class="icon">🗃️</div>
+                            <div class="name">ChromaDB</div>
+                            <div class="description">Vector database for embeddings and semantic search</div>
+                            <div class="tech-tags">
+                                <span class="tech-tag">ChromaDB</span>
+                                <span class="tech-tag">Embeddings</span>
+                                <span class="tech-tag">Vector Search</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="layer rag-layer">
+                    <div class="layer-title">💊 Prescription RAG</div>
+                    <div class="layer-content">
+                        <div class="tech-component">
+                            <div class="icon">💊</div>
+                            <div class="name">RAG System</div>
+                            <div class="description">Retrieval-augmented generation for agricultural prescriptions</div>
+                            <div class="tech-tags">
+                                <span class="tech-tag">RAG</span>
+                                <span class="tech-tag">HuggingFace</span>
+                                <span class="tech-tag">E5-Large</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="layer mcp-layer">
+                    <div class="layer-title">🛡️ MCP Insurance</div>
+                    <div class="layer-content">
+                        <div class="tech-component">
+                            <div class="icon">🛡️</div>
+                            <div class="name">Insurance Server</div>
+                            <div class="description">MCP server with in-memory repository for crop insurance calculations</div>
+                            <div class="tech-tags">
+                                <span class="tech-tag">MCP Protocol</span>
+                                <span class="tech-tag">In-Memory DB</span>
+                                <span class="tech-tag">PDF Gen</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Properly Positioned Flow Arrows -->
+            <!-- Mobile App to Agent -->
+            <div class="zigzag-arrow horizontal-arrow" style="top: 8%; left: 15%; width: 50px; z-index: 10;"></div>
+            <div class="flow-label" style="top: 6%; left: 18%; z-index: 11; font-size: 0.7em;">HTTP/Streaming</div>
+
+            <!-- LLM to Agent -->
+            <div class="zigzag-arrow horizontal-arrow" style="top: 40%; left: 48%; width: 50px; z-index: 10; transform: rotate(90deg);"></div>
+            <div class="flow-label" style="top: 25%; left: 51%; z-index: 11; font-size: 0.7em;">Intent/Response</div>
+
+            <!-- Agent to ML -->
+            <div class="zigzag-arrow horizontal-arrow" style="top: 40%; left: 68%; width: 50px; z-index: 10;"></div>
+            <div class="flow-label" style="top: 38%; left: 71%; z-index: 11; font-size: 0.7em;">Image Analysis</div>
+
+            <!-- Agent to Session -->
+            <div class="zigzag-arrow horizontal-arrow" style="top: 40%; left: 28%; width: 50px; z-index: 10; transform: rotate(180deg);"></div>
+            <div class="flow-label" style="top: 38%; left: 31%; z-index: 11; font-size: 0.7em;">Context</div>
+
+            <!-- RAG to ChromaDB -->
+            <div class="zigzag-arrow horizontal-arrow" style="top: 72%; left: 28%; width: 50px; z-index: 10; transform: rotate(180deg);"></div>
+            <div class="flow-label" style="top: 70%; left: 31%; z-index: 11; font-size: 0.7em;">Vector Query</div>
+
+            <!-- RAG to Ollama -->
+            <div class="zigzag-arrow horizontal-arrow" style="top: 55%; left: 48%; width: 50px; z-index: 10; transform: rotate(90deg);"></div>
+            <div class="flow-label" style="top: 58%; left: 51%; z-index: 11; font-size: 0.7em;">LLM Query</div>
+
+            <!-- MCP to External -->
+            <div class="zigzag-arrow horizontal-arrow" style="top: 55%; left: 82%; width: 50px; z-index: 10; transform: rotate(90deg);"></div>
+            <div class="flow-label" style="top: 58%; left: 85%; z-index: 11; font-size: 0.7em;">HTTP API</div>
+
+            <!-- Agent to RAG -->
+            <div class="zigzag-arrow horizontal-arrow" style="top: 55%; left: 48%; width: 50px; z-index: 10; transform: rotate(-90deg);"></div>
+            <div class="flow-label" style="top: 52%; left: 51%; z-index: 11; font-size: 0.7em;">Prescription</div>
+
+            <!-- Agent to MCP -->
+            <div class="zigzag-arrow horizontal-arrow" style="top: 55%; left: 68%; width: 50px; z-index: 10; transform: rotate(-90deg);"></div>
+            <div class="flow-label" style="top: 52%; left: 71%; z-index: 11; font-size: 0.7em;">Insurance</div>
+        </div>
+
+        <!-- Agentic Flow Diagram -->
+        <div class="agentic-flow">
+            <div class="agentic-title">🔄 End-to-End Agentic Workflow</div>
+            <div class="flow-steps">
+                <div class="flow-step">
+                    <div class="step-icon">📱</div>
+                    <div class="step-title">Input Capture</div>
+                    <div class="step-desc">User query/image via mobile app</div>
+                </div>
+                <div class="flow-connector">→</div>
+                <div class="flow-step">
+                    <div class="step-icon">🎯</div>
+                    <div class="step-title">Intent Analysis</div>
+                    <div class="step-desc">LangGraph classifies user intent</div>
+                </div>
+                <div class="flow-connector">→</div>
+                <div class="flow-step">
+                    <div class="step-icon">🔧</div>
+                    <div class="step-title">Tool Selection</div>
+                    <div class="step-desc">Route to appropriate AI tools</div>
+                </div>
+                <div class="flow-connector">→</div>
+                <div class="flow-step">
+                    <div class="step-icon">⚙️</div>
+                    <div class="step-title">Processing</div>
+                    <div class="step-desc">CNN/RAG/MCP/Advisory execution</div>
+                </div>
+                <div class="flow-connector">→</div>
+                <div class="flow-step">
+                    <div class="step-icon">🧠</div>
+                    <div class="step-title">Synthesis</div>
+                    <div class="step-desc">LLM combines tool outputs</div>
+                </div>
+                <div class="flow-connector">→</div>
+                <div class="flow-step">
+                    <div class="step-icon">📲</div>
+                    <div class="step-title">Response</div>
+                    <div class="step-desc">Streaming back to mobile</div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Technical Implementation Details -->
+        <div class="technical-details">
+            <div class="technical-title">🔧 Technical Implementation Details</div>
+            <div class="detail-grid">
+                <div class="detail-box">
+                    <div class="detail-title">🤖 Agent Architecture</div>
+                    <div class="detail-content">
+                        • <strong>State Machine:</strong> FSM-driven conversation flow<br>
+                        • <strong>Tool Integration:</strong> Dynamic tool selection and execution<br>
+                        • <strong>Context Management:</strong> Session-aware processing<br>
+                        • <strong>Streaming:</strong> Real-time response delivery
+                    </div>
+                </div>
+                <div class="detail-box">
+                    <div class="detail-title">🔬 ML Pipeline</div>
+                    <div class="detail-content">
+                        • <strong>Image Processing:</strong> OpenCV preprocessing pipeline<br>
+                        • <strong>Disease Detection:</strong> CNN with Attention mechanisms<br>
+                        • <strong>Confidence Scoring:</strong> Threshold-based validation<br>
+                        • <strong>GPU Acceleration:</strong> CUDA-optimized inference
+                    </div>
+                </div>
+                <div class="detail-box">
+                    <div class="detail-title">📚 RAG System</div>
+                    <div class="detail-content">
+                        • <strong>Vector Store:</strong> ChromaDB with E5-Large embeddings<br>
+                        • <strong>Retrieval:</strong> Semantic similarity search<br>
+                        • <strong>Generation:</strong> Context-aware LLM responses<br>
+                        • <strong>Knowledge Base:</strong> Agricultural prescription database
+                    </div>
+                </div>
+                <div class="detail-box">
+                    <div class="detail-title">🛡️ MCP Integration</div>
+                    <div class="detail-content">
+                        • <strong>Protocol:</strong> Model Context Protocol standard<br>
+                        • <strong>Claims Processing:</strong> Automated assessment logic<br>
+                        • <strong>Certificate Generation:</strong> PDF/digital document creation<br>
+                        • <strong>Policy Management:</strong> Real-time eligibility checks
+                    </div>
+                </div>
+                <div class="detail-box">
+                    <div class="detail-title">🌐 API Architecture</div>
+                    <div class="detail-content">
+                        • <strong>Gateway:</strong> FastAPI with JWT authentication<br>
+                        • <strong>Rate Limiting:</strong> Redis-based throttling<br>
+                        • <strong>Load Balancing:</strong> NGINX upstream configuration<br>
+                        • <strong>Health Checks:</strong> Kubernetes liveness/readiness probes
+                    </div>
+                </div>
+                <div class="detail-box">
+                    <div class="detail-title">☁️ Deployment</div>
+                    <div class="detail-content">
+                        • <strong>Containerization:</strong> Docker multi-stage builds<br>
+                        • <strong>Orchestration:</strong> OpenShift/Kubernetes clusters<br>
+                        • <strong>Scaling:</strong> Horizontal Pod Autoscaling (HPA)<br>
+                        • <strong>Monitoring:</strong> Prometheus + Grafana + Jaeger
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</body>
+</html>

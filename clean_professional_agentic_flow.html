@@ -1,0 +1,454 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Sasya Arogya - Clean Agentic Flow</title>
+    <script src="https://cdn.jsdelivr.net/npm/html2canvas@1.4.1/dist/html2canvas.min.js"></script>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            font-family: 'Segoe UI', -apple-system, BlinkMacSystemFont, sans-serif;
+            background: #f8f9fa;
+            min-height: 100vh;
+            padding: 20px;
+        }
+        
+        .container {
+            max-width: 1400px;
+            margin: 0 auto;
+            background: white;
+            border-radius: 8px;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+            overflow: hidden;
+        }
+        
+        .header {
+            background: linear-gradient(135deg, #A5D6A7 0%, #81C784 100%);
+            color: white;
+            padding: 30px 40px;
+            position: relative;
+        }
+        
+        .header-content {
+            position: relative;
+            z-index: 1;
+        }
+        
+        .header h1 {
+            font-size: 2.2em;
+            font-weight: 500;
+            margin-bottom: 8px;
+            display: flex;
+            align-items: center;
+            gap: 15px;
+        }
+        
+        .leaf-icon {
+            width: 40px;
+            height: 40px;
+            background: rgba(255,255,255,0.2);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 20px;
+        }
+        
+        .header p {
+            font-size: 1.1em;
+            opacity: 0.95;
+            font-weight: 400;
+        }
+        
+        .diagram-container {
+            padding: 40px;
+            background: white;
+            position: relative;
+        }
+        
+        .professional-diagram {
+            width: 100%;
+            height: auto;
+            max-width: 1200px;
+            margin: 0 auto;
+            display: block;
+        }
+        
+        .controls {
+            padding: 20px 40px;
+            background: #f8f9fa;
+            border-top: 1px solid #e9ecef;
+            text-align: center;
+        }
+        
+        .btn {
+            display: inline-block;
+            padding: 12px 24px;
+            margin: 0 10px;
+            background: #81C784;
+            color: white;
+            text-decoration: none;
+            border-radius: 6px;
+            font-weight: 500;
+            transition: all 0.3s ease;
+            border: none;
+            cursor: pointer;
+            font-size: 14px;
+        }
+        
+        .btn:hover {
+            background: #66BB6A;
+            transform: translateY(-1px);
+            box-shadow: 0 4px 8px rgba(129,199,132,0.3);
+        }
+        
+        .btn-secondary {
+            background: #90A4AE;
+        }
+        
+        .btn-secondary:hover {
+            background: #78909C;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <div class="header-content">
+                <h1>
+                    <div class="leaf-icon">🌱</div>
+                    Sasya Arogya - LangGraph Agentic Flow
+                </h1>
+                <p>AI-Powered State Machine Architecture for Comprehensive Crop Care</p>
+            </div>
+        </div>
+        
+        <div class="diagram-container">
+            <svg class="professional-diagram" viewBox="0 0 1200 750" xmlns="http://www.w3.org/2000/svg">
+                <defs>
+                    <!-- Light Professional Gradients -->
+                    <linearGradient id="lightGreen" x1="0%" y1="0%" x2="100%" y2="100%">
+                        <stop offset="0%" style="stop-color:#C8E6C9;stop-opacity:1" />
+                        <stop offset="100%" style="stop-color:#A5D6A7;stop-opacity:1" />
+                    </linearGradient>
+                    
+                    <linearGradient id="mediumGreen" x1="0%" y1="0%" x2="100%" y2="100%">
+                        <stop offset="0%" style="stop-color:#A5D6A7;stop-opacity:1" />
+                        <stop offset="100%" style="stop-color:#81C784;stop-opacity:1" />
+                    </linearGradient>
+                    
+                    <linearGradient id="softBrown" x1="0%" y1="0%" x2="100%" y2="100%">
+                        <stop offset="0%" style="stop-color:#D7CCC8;stop-opacity:1" />
+                        <stop offset="100%" style="stop-color:#BCAAA4;stop-opacity:1" />
+                    </linearGradient>
+                    
+                    <linearGradient id="paleGreen" x1="0%" y1="0%" x2="100%" y2="100%">
+                        <stop offset="0%" style="stop-color:#DCEDC8;stop-opacity:1" />
+                        <stop offset="100%" style="stop-color:#C5E1A5;stop-opacity:1" />
+                    </linearGradient>
+                    
+                    <!-- Arrow Marker -->
+                    <marker id="arrowhead" markerWidth="12" markerHeight="8" 
+                            refX="11" refY="4" orient="auto">
+                        <polygon points="0 0, 12 4, 0 8" fill="#4CAF50" />
+                    </marker>
+                    
+                    <!-- Light Drop Shadow -->
+                    <filter id="lightShadow" x="-20%" y="-20%" width="140%" height="140%">
+                        <feDropShadow dx="0" dy="1" stdDeviation="1" flood-opacity="0.1"/>
+                    </filter>
+                </defs>
+                
+                <!-- Clean Background -->
+                <rect width="100%" height="100%" fill="#fafafa" opacity="0.3"/>
+                
+                <!-- Title Section -->
+                <text x="600" y="40" text-anchor="middle" fill="#2E7D32" font-size="26" font-weight="600" font-family="Segoe UI">
+                    LangGraph Agent State Machine Flow
+                </text>
+                <text x="600" y="65" text-anchor="middle" fill="#388E3C" font-size="16" font-family="Segoe UI">
+                    Intelligent Agricultural AI Workflow Orchestration
+                </text>
+                
+                <!-- Main Flow States with Larger Fonts -->
+                
+                <!-- 1. Session Initialization -->
+                <g transform="translate(50, 100)">
+                    <rect width="220" height="80" rx="8" fill="url(#lightGreen)" filter="url(#lightShadow)" stroke="#81C784" stroke-width="2"/>
+                    <text x="110" y="35" text-anchor="middle" fill="#1B5E20" font-size="16" font-weight="600" font-family="Segoe UI">🏁 Session Initialization</text>
+                    <text x="110" y="55" text-anchor="middle" fill="#2E7D32" font-size="13" font-family="Segoe UI">User Context & Profile Setup</text>
+                    <text x="110" y="70" text-anchor="middle" fill="#388E3C" font-size="11" font-family="Segoe UI">Crop Type • Location • Season</text>
+                </g>
+                
+                <!-- 2. Intent Analysis -->
+                <g transform="translate(320, 100)">
+                    <rect width="220" height="80" rx="8" fill="url(#mediumGreen)" filter="url(#lightShadow)" stroke="#66BB6A" stroke-width="2"/>
+                    <text x="110" y="35" text-anchor="middle" fill="#1B5E20" font-size="16" font-weight="600" font-family="Segoe UI">🎯 Intent Classification</text>
+                    <text x="110" y="55" text-anchor="middle" fill="#2E7D32" font-size="13" font-family="Segoe UI">NLP-Powered Query Analysis</text>
+                    <text x="110" y="70" text-anchor="middle" fill="#388E3C" font-size="11" font-family="Segoe UI">Disease • Care • Insurance • General</text>
+                </g>
+                
+                <!-- 3. Workflow Routing -->
+                <g transform="translate(590, 100)">
+                    <rect width="220" height="80" rx="8" fill="url(#softBrown)" filter="url(#lightShadow)" stroke="#A1887F" stroke-width="2"/>
+                    <text x="110" y="35" text-anchor="middle" fill="#3E2723" font-size="16" font-weight="600" font-family="Segoe UI">🔄 Workflow Routing</text>
+                    <text x="110" y="55" text-anchor="middle" fill="#5D4037" font-size="13" font-family="Segoe UI">Intelligent Path Selection</text>
+                    <text x="110" y="70" text-anchor="middle" fill="#6D4C41" font-size="11" font-family="Segoe UI">Context-Aware Decision Making</text>
+                </g>
+                
+                <!-- Specialized Processing Workflows with Larger Fonts -->
+                
+                <!-- Disease Detection -->
+                <g transform="translate(50, 230)">
+                    <rect width="200" height="100" rx="8" fill="url(#paleGreen)" filter="url(#lightShadow)" stroke="#8BC34A" stroke-width="2"/>
+                    <text x="100" y="30" text-anchor="middle" fill="#1B5E20" font-size="15" font-weight="600" font-family="Segoe UI">🔬 Disease Detection</text>
+                    <text x="100" y="50" text-anchor="middle" fill="#2E7D32" font-size="12" font-family="Segoe UI">CNN Image Classification</text>
+                    <text x="100" y="65" text-anchor="middle" fill="#388E3C" font-size="11" font-family="Segoe UI">LLaVA Vision Analysis</text>
+                    <text x="100" y="80" text-anchor="middle" fill="#4CAF50" font-size="11" font-family="Segoe UI">85% Confidence Threshold</text>
+                    <text x="100" y="95" text-anchor="middle" fill="#2E7D32" font-size="10" font-weight="500" font-family="Segoe UI">ResNet • EfficientNet</text>
+                </g>
+                
+                <!-- Prescription RAG -->
+                <g transform="translate(280, 230)">
+                    <rect width="200" height="100" rx="8" fill="url(#paleGreen)" filter="url(#lightShadow)" stroke="#8BC34A" stroke-width="2"/>
+                    <text x="100" y="30" text-anchor="middle" fill="#1B5E20" font-size="15" font-weight="600" font-family="Segoe UI">💊 Prescription RAG</text>
+                    <text x="100" y="50" text-anchor="middle" fill="#2E7D32" font-size="12" font-family="Segoe UI">Vector Similarity Search</text>
+                    <text x="100" y="65" text-anchor="middle" fill="#388E3C" font-size="11" font-family="Segoe UI">Knowledge Base Retrieval</text>
+                    <text x="100" y="80" text-anchor="middle" fill="#4CAF50" font-size="11" font-family="Segoe UI">Context-Aware Generation</text>
+                    <text x="100" y="95" text-anchor="middle" fill="#2E7D32" font-size="10" font-weight="500" font-family="Segoe UI">ChromaDB • Ollama LLM</text>
+                </g>
+                
+                <!-- Crop Care -->
+                <g transform="translate(510, 230)">
+                    <rect width="200" height="100" rx="8" fill="url(#paleGreen)" filter="url(#lightShadow)" stroke="#8BC34A" stroke-width="2"/>
+                    <text x="100" y="30" text-anchor="middle" fill="#1B5E20" font-size="15" font-weight="600" font-family="Segoe UI">🌱 Crop Care Advisory</text>
+                    <text x="100" y="50" text-anchor="middle" fill="#2E7D32" font-size="12" font-family="Segoe UI">Seasonal Analysis Engine</text>
+                    <text x="100" y="65" text-anchor="middle" fill="#388E3C" font-size="11" font-family="Segoe UI">Weather Data Integration</text>
+                    <text x="100" y="80" text-anchor="middle" fill="#4CAF50" font-size="11" font-family="Segoe UI">Best Practices Database</text>
+                    <text x="100" y="95" text-anchor="middle" fill="#2E7D32" font-size="10" font-weight="500" font-family="Segoe UI">Expert Knowledge System</text>
+                </g>
+                
+                <!-- Insurance MCP -->
+                <g transform="translate(740, 230)">
+                    <rect width="200" height="100" rx="8" fill="url(#paleGreen)" filter="url(#lightShadow)" stroke="#8BC34A" stroke-width="2"/>
+                    <text x="100" y="30" text-anchor="middle" fill="#1B5E20" font-size="15" font-weight="600" font-family="Segoe UI">🛡️ Insurance Processing</text>
+                    <text x="100" y="50" text-anchor="middle" fill="#2E7D32" font-size="12" font-family="Segoe UI">MCP Protocol Integration</text>
+                    <text x="100" y="65" text-anchor="middle" fill="#388E3C" font-size="11" font-family="Segoe UI">Automated Claims Analysis</text>
+                    <text x="100" y="80" text-anchor="middle" fill="#4CAF50" font-size="11" font-family="Segoe UI">Certificate Generation</text>
+                    <text x="100" y="95" text-anchor="middle" fill="#2E7D32" font-size="10" font-weight="500" font-family="Segoe UI">Policy Matching • Risk Assessment</text>
+                </g>
+                
+                <!-- Tool Integration Layer with Larger Tools -->
+                <g transform="translate(50, 380)">
+                    <rect width="890" height="120" rx="8" fill="#F1F8E9" stroke="#C5E1A5" stroke-width="2" opacity="0.9"/>
+                    <text x="445" y="30" text-anchor="middle" fill="#1B5E20" font-size="18" font-weight="600" font-family="Segoe UI">🛠️ Specialized Tool Integration Layer</text>
+                    
+                    <!-- Larger Tool Icons with Better Spacing -->
+                    <g transform="translate(80, 45)">
+                        <circle cx="35" cy="30" r="28" fill="url(#softBrown)" stroke="#8D6E63" stroke-width="2"/>
+                        <text x="35" y="38" text-anchor="middle" fill="white" font-size="20">📷</text>
+                        <text x="35" y="70" text-anchor="middle" fill="#3E2723" font-size="12" font-weight="500" font-family="Segoe UI">Image Processing</text>
+                    </g>
+                    
+                    <g transform="translate(200, 45)">
+                        <circle cx="35" cy="30" r="28" fill="url(#softBrown)" stroke="#8D6E63" stroke-width="2"/>
+                        <text x="35" y="38" text-anchor="middle" fill="white" font-size="20">🧠</text>
+                        <text x="35" y="70" text-anchor="middle" fill="#3E2723" font-size="12" font-weight="500" font-family="Segoe UI">ML Models</text>
+                    </g>
+                    
+                    <g transform="translate(320, 45)">
+                        <circle cx="35" cy="30" r="28" fill="url(#softBrown)" stroke="#8D6E63" stroke-width="2"/>
+                        <text x="35" y="38" text-anchor="middle" fill="white" font-size="20">🔍</text>
+                        <text x="35" y="70" text-anchor="middle" fill="#3E2723" font-size="12" font-weight="500" font-family="Segoe UI">Vector Search</text>
+                    </g>
+                    
+                    <g transform="translate(440, 45)">
+                        <circle cx="35" cy="30" r="28" fill="url(#softBrown)" stroke="#8D6E63" stroke-width="2"/>
+                        <text x="35" y="38" text-anchor="middle" fill="white" font-size="20">📚</text>
+                        <text x="35" y="70" text-anchor="middle" fill="#3E2723" font-size="12" font-weight="500" font-family="Segoe UI">Knowledge Base</text>
+                    </g>
+                    
+                    <g transform="translate(560, 45)">
+                        <circle cx="35" cy="30" r="28" fill="url(#softBrown)" stroke="#8D6E63" stroke-width="2"/>
+                        <text x="35" y="38" text-anchor="middle" fill="white" font-size="20">🌤️</text>
+                        <text x="35" y="70" text-anchor="middle" fill="#3E2723" font-size="12" font-weight="500" font-family="Segoe UI">Weather API</text>
+                    </g>
+                    
+                    <g transform="translate(680, 45)">
+                        <circle cx="35" cy="30" r="28" fill="url(#softBrown)" stroke="#8D6E63" stroke-width="2"/>
+                        <text x="35" y="38" text-anchor="middle" fill="white" font-size="20">📋</text>
+                        <text x="35" y="70" text-anchor="middle" fill="#3E2723" font-size="12" font-weight="500" font-family="Segoe UI">Claims Engine</text>
+                    </g>
+                    
+                    <g transform="translate(800, 45)">
+                        <circle cx="35" cy="30" r="28" fill="url(#softBrown)" stroke="#8D6E63" stroke-width="2"/>
+                        <text x="35" y="38" text-anchor="middle" fill="white" font-size="20">📄</text>
+                        <text x="35" y="70" text-anchor="middle" fill="#3E2723" font-size="12" font-weight="500" font-family="Segoe UI">Document Gen</text>
+                    </g>
+                </g>
+                
+                <!-- Response Synthesis -->
+                <g transform="translate(400, 550)">
+                    <rect width="280" height="90" rx="8" fill="url(#mediumGreen)" filter="url(#lightShadow)" stroke="#66BB6A" stroke-width="2"/>
+                    <text x="140" y="35" text-anchor="middle" fill="#1B5E20" font-size="16" font-weight="600" font-family="Segoe UI">🎼 Response Synthesis</text>
+                    <text x="140" y="55" text-anchor="middle" fill="#2E7D32" font-size="13" font-family="Segoe UI">LLM Orchestration & Streaming</text>
+                    <text x="140" y="70" text-anchor="middle" fill="#388E3C" font-size="11" font-family="Segoe UI">Real-time SSE • Context Integration</text>
+                    <text x="140" y="85" text-anchor="middle" fill="#4CAF50" font-size="10" font-family="Segoe UI">Ollama Llama 3.1 • Personalized Output</text>
+                </g>
+                
+                <!-- Context Management Panel -->
+                <g transform="translate(980, 200)">
+                    <rect width="200" height="180" rx="8" fill="#F9FBE7" stroke="#8BC34A" stroke-width="2" stroke-dasharray="6,6"/>
+                    <text x="100" y="25" text-anchor="middle" fill="#1B5E20" font-size="15" font-weight="600" font-family="Segoe UI">📋 Context Management</text>
+                    
+                    <g transform="translate(10, 40)">
+                        <rect width="180" height="30" rx="6" fill="#E8F5E8" stroke="#4CAF50" stroke-width="1"/>
+                        <text x="90" y="20" text-anchor="middle" fill="#1B5E20" font-size="11" font-family="Segoe UI">🗂️ Session State</text>
+                    </g>
+                    
+                    <g transform="translate(10, 80)">
+                        <rect width="180" height="30" rx="6" fill="#E8F5E8" stroke="#4CAF50" stroke-width="1"/>
+                        <text x="90" y="20" text-anchor="middle" fill="#1B5E20" font-size="11" font-family="Segoe UI">👤 User Profile</text>
+                    </g>
+                    
+                    <g transform="translate(10, 120)">
+                        <rect width="180" height="30" rx="6" fill="#E8F5E8" stroke="#4CAF50" stroke-width="1"/>
+                        <text x="90" y="20" text-anchor="middle" fill="#1B5E20" font-size="11" font-family="Segoe UI">💬 Conversation</text>
+                    </g>
+                    
+                    <g transform="translate(10, 160)">
+                        <rect width="180" height="30" rx="6" fill="#E8F5E8" stroke="#4CAF50" stroke-width="1"/>
+                        <text x="90" y="20" text-anchor="middle" fill="#1B5E20" font-size="11" font-family="Segoe UI">🧠 Agent Memory</text>
+                    </g>
+                </g>
+                
+                <!-- Straight Flow Arrows -->
+                <path d="M 270 140 L 320 140" stroke="#4CAF50" stroke-width="3" fill="none" marker-end="url(#arrowhead)"/>
+                <path d="M 540 140 L 590 140" stroke="#4CAF50" stroke-width="3" fill="none" marker-end="url(#arrowhead)"/>
+                
+                <!-- Straight Routing to Workflows -->
+                <path d="M 700 180 L 700 200 L 150 200 L 150 230" stroke="#4CAF50" stroke-width="2" fill="none" marker-end="url(#arrowhead)"/>
+                <path d="M 700 180 L 700 200 L 380 200 L 380 230" stroke="#4CAF50" stroke-width="2" fill="none" marker-end="url(#arrowhead)"/>
+                <path d="M 700 180 L 700 200 L 610 200 L 610 230" stroke="#4CAF50" stroke-width="2" fill="none" marker-end="url(#arrowhead)"/>
+                <path d="M 700 180 L 700 200 L 840 200 L 840 230" stroke="#4CAF50" stroke-width="2" fill="none" marker-end="url(#arrowhead)"/>
+                
+                <!-- Straight Workflows to Tools -->
+                <path d="M 150 330 L 150 380" stroke="#8D6E63" stroke-width="2" fill="none" stroke-dasharray="3,3"/>
+                <path d="M 380 330 L 380 380" stroke="#8D6E63" stroke-width="2" fill="none" stroke-dasharray="3,3"/>
+                <path d="M 610 330 L 610 380" stroke="#8D6E63" stroke-width="2" fill="none" stroke-dasharray="3,3"/>
+                <path d="M 840 330 L 840 380" stroke="#8D6E63" stroke-width="2" fill="none" stroke-dasharray="3,3"/>
+                
+                <!-- Straight Workflows to Synthesis -->
+                <path d="M 150 330 L 150 520 L 400 520 L 400 550" stroke="#4CAF50" stroke-width="2" fill="none" marker-end="url(#arrowhead)"/>
+                <path d="M 380 330 L 380 520 L 480 520 L 480 550" stroke="#4CAF50" stroke-width="2" fill="none" marker-end="url(#arrowhead)"/>
+                <path d="M 610 330 L 610 520 L 580 520 L 580 550" stroke="#4CAF50" stroke-width="2" fill="none" marker-end="url(#arrowhead)"/>
+                <path d="M 840 330 L 840 520 L 640 520 L 640 550" stroke="#4CAF50" stroke-width="2" fill="none" marker-end="url(#arrowhead)"/>
+                
+                <!-- Straight Context Management Connections -->
+                <path d="M 980 290 L 810 290 L 810 140" stroke="#8BC34A" stroke-width="2" fill="none" stroke-dasharray="4,4" opacity="0.7"/>
+                <path d="M 980 320 L 900 320 L 900 595 L 680 595" stroke="#8BC34A" stroke-width="2" fill="none" stroke-dasharray="4,4" opacity="0.7"/>
+                
+                <!-- Performance & Technology Info -->
+                <g transform="translate(50, 680)">
+                    <rect width="300" height="60" rx="6" fill="#E8F5E8" stroke="#4CAF50" stroke-width="1"/>
+                    <text x="150" y="25" text-anchor="middle" fill="#1B5E20" font-size="14" font-weight="600" font-family="Segoe UI">⚡ Performance Metrics</text>
+                    <text x="75" y="42" text-anchor="middle" fill="#2E7D32" font-size="11" font-family="Segoe UI">Response: 1.2s avg</text>
+                    <text x="150" y="42" text-anchor="middle" fill="#2E7D32" font-size="11" font-family="Segoe UI">Accuracy: 94.2%</text>
+                    <text x="225" y="42" text-anchor="middle" fill="#2E7D32" font-size="11" font-family="Segoe UI">Uptime: 99.95%</text>
+                    <text x="150" y="55" text-anchor="middle" fill="#388E3C" font-size="10" font-family="Segoe UI">Throughput: 150 RPS • Confidence: 85%+</text>
+                </g>
+                
+                <g transform="translate(380, 680)">
+                    <rect width="320" height="60" rx="6" fill="#FFF3E0" stroke="#BCAAA4" stroke-width="1"/>
+                    <text x="160" y="25" text-anchor="middle" fill="#3E2723" font-size="14" font-weight="600" font-family="Segoe UI">🔧 Technology Stack</text>
+                    <text x="64" y="42" text-anchor="middle" fill="#5D4037" font-size="11" font-family="Segoe UI">LangGraph</text>
+                    <text x="128" y="42" text-anchor="middle" fill="#5D4037" font-size="11" font-family="Segoe UI">Ollama</text>
+                    <text x="192" y="42" text-anchor="middle" fill="#5D4037" font-size="11" font-family="Segoe UI">ChromaDB</text>
+                    <text x="256" y="42" text-anchor="middle" fill="#5D4037" font-size="11" font-family="Segoe UI">FastAPI</text>
+                    <text x="160" y="55" text-anchor="middle" fill="#6D4C41" font-size="10" font-family="Segoe UI">Redis • PostgreSQL • MLflow</text>
+                </g>
+                
+            </svg>
+        </div>
+        
+        <div class="controls">
+            <button class="btn" onclick="downloadSVG()">📥 Download SVG</button>
+            <button class="btn" onclick="downloadPNG()">📸 Download PNG (High-Res)</button>
+            <button class="btn btn-secondary" onclick="window.print()">🖨️ Print</button>
+        </div>
+    </div>
+
+    <script>
+        function downloadSVG() {
+            const svg = document.querySelector('.professional-diagram');
+            const svgData = new XMLSerializer().serializeToString(svg);
+            const svgBlob = new Blob([svgData], {type: 'image/svg+xml;charset=utf-8'});
+            const svgUrl = URL.createObjectURL(svgBlob);
+            const downloadLink = document.createElement('a');
+            downloadLink.href = svgUrl;
+            downloadLink.download = 'sasya-arogya-clean-agentic-flow.svg';
+            document.body.appendChild(downloadLink);
+            downloadLink.click();
+            document.body.removeChild(downloadLink);
+            URL.revokeObjectURL(svgUrl);
+        }
+
+        function downloadPNG() {
+            const diagramContainer = document.querySelector('.diagram-container');
+            if (!diagramContainer) {
+                alert('No diagram found to download');
+                return;
+            }
+
+            const pngButton = Array.from(document.querySelectorAll('.btn')).find(btn => btn.textContent.includes('PNG'));
+            if (pngButton) {
+                pngButton.textContent = '⏳ Generating High-Res PNG...';
+                pngButton.style.pointerEvents = 'none';
+            }
+
+            html2canvas(diagramContainer, {
+                backgroundColor: '#ffffff',
+                scale: 3,
+                useCORS: true,
+                allowTaint: true,
+                foreignObjectRendering: true,
+                logging: false,
+                width: diagramContainer.scrollWidth,
+                height: diagramContainer.scrollHeight
+            }).then(canvas => {
+                canvas.toBlob(function(blob) {
+                    const url = URL.createObjectURL(blob);
+                    const downloadLink = document.createElement('a');
+                    downloadLink.href = url;
+                    downloadLink.download = 'sasya-arogya-clean-agentic-flow.png';
+                    document.body.appendChild(downloadLink);
+                    downloadLink.click();
+                    document.body.removeChild(downloadLink);
+                    URL.revokeObjectURL(url);
+                    
+                    if (pngButton) {
+                        pngButton.textContent = '📸 Download PNG (High-Res)';
+                        pngButton.style.pointerEvents = 'auto';
+                    }
+                }, 'image/png', 1.0);
+            }).catch(error => {
+                console.error('Error generating PNG:', error);
+                alert('Error generating PNG. Please try downloading as SVG instead.');
+                
+                if (pngButton) {
+                    pngButton.textContent = '📸 Download PNG (High-Res)';
+                    pngButton.style.pointerEvents = 'auto';
+                }
+            });
+        }
+    </script>
+</body>
+</html>
+
+
