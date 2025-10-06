@@ -24,7 +24,7 @@ android {
             applicationIdSuffix = ".gpu"
             versionNameSuffix = "-gpu"
             
-            buildConfigField("String", "SERVER_URL_GPU", "\"http://engine-sasya-arogya.apps.cluster-8j4j8.8j4j8.sandbox447.opentlc.com/\"")
+            buildConfigField("String", "SERVER_URL_GPU", "\"http://engine-sasya-arogya.shailendra14k.in/\"")
             buildConfigField("String", "SERVER_URL_NON_GPU", "\"http://engine-sasya-arogya.apps.cluster-dg9gp.dg9gp.sandbox1039.opentlc.com/\"")
             buildConfigField("String", "DEFAULT_SERVER_TYPE", "\"GPU\"")
             buildConfigField("String", "APP_VARIANT", "\"GPU\"")
@@ -35,7 +35,7 @@ android {
             applicationIdSuffix = ".nongpu"
             versionNameSuffix = "-nongpu"
             
-            buildConfigField("String", "SERVER_URL_GPU", "\"http://engine-sasya-arogya.apps.cluster-8j4j8.8j4j8.sandbox447.opentlc.com/\"")
+            buildConfigField("String", "SERVER_URL_GPU", "\"http://engine-sasya-arogya.shailendra14k.in/\"")
             buildConfigField("String", "SERVER_URL_NON_GPU", "\"http://engine-sasya-arogya.apps.cluster-dg9gp.dg9gp.sandbox1039.opentlc.com/\"")
             buildConfigField("String", "DEFAULT_SERVER_TYPE", "\"NON_GPU\"")
             buildConfigField("String", "APP_VARIANT", "\"Non-GPU\"")
@@ -57,7 +57,7 @@ android {
             isDebuggable = true
             // Use the same URLs as production flavors, but with DEBUG server type
             // This allows debug builds to connect to production servers when needed
-            buildConfigField("String", "SERVER_URL_GPU", "\"http://engine-sasya-arogya.apps.cluster-8j4j8.8j4j8.sandbox447.opentlc.com/\"")
+            buildConfigField("String", "SERVER_URL_GPU", "\"http://engine-sasya-arogya.shailendra14k.in/\"")
             buildConfigField("String", "SERVER_URL_NON_GPU", "\"http://engine-sasya-arogya.apps.cluster-dg9gp.dg9gp.sandbox1039.opentlc.com/\"")
             buildConfigField("String", "DEFAULT_SERVER_TYPE", "\"NON_GPU\"") // Default to Non-GPU for debug
         }

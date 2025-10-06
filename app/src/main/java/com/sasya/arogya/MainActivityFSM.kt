@@ -417,6 +417,8 @@ class MainActivityFSM : ComponentActivity(), FSMStreamHandler.StreamCallback {
                 "📸 Analyze Plant Photo",
                 "🛡️ Get Insurance Quote",
                 "🌱 Seasonal Care Tips",
+                "🧪 Plant Testing Guide",
+                "💧 Watering Tips",
                 "🧪 Soil Testing Guide"
             )
         )
@@ -869,6 +871,14 @@ class MainActivityFSM : ComponentActivity(), FSMStreamHandler.StreamCallback {
                 when (followUpText) {
                     "🌿 Plant Health Guide" -> {
                         sendToFSMAgent("Provide me with a comprehensive plant health guide covering nutrition, light requirements, watering, and disease prevention.", null)
+                    }
+                    "🧪 Plant Testing Guide" -> {
+                        sendToFSMAgent("How can I test my plants to check their health status? What are the signs of healthy plants and common testing methods I can use at home?", null)
+                    }
+                    "💧 Watering Tips" -> {
+                        val userProfile = getUserAgriculturalProfile()
+                        val state = userProfile["state"]?.takeIf { it.isNotBlank() } ?: "India"
+                        sendToFSMAgent("Give me watering tips and best practices for plants in $state. How much water do different crops need, when to water, and signs of over/under-watering?", null)
                     }
                     "🧪 Soil Testing Guide" -> {
                         sendToFSMAgent("Show me how to test soil conditions, understand pH levels, nutrient deficiencies, and improve soil quality for better plant health.", null)
