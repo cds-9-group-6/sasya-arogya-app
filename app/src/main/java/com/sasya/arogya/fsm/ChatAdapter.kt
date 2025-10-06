@@ -951,34 +951,43 @@ class ChatAdapter(
                             <meta name="viewport" content="width=device-width, initial-scale=1.0, minimum-scale=0.5, maximum-scale=5.0, user-scalable=yes">
                             <style>
                                 * { margin: 0; padding: 0; box-sizing: border-box; }
+                                html {
+                                    overflow: auto;
+                                    height: 100%;
+                                }
                                 body { 
                                     background: #525659;
                                     font-family: Arial, sans-serif;
-                                    overflow-x: auto;
-                                    overflow-y: auto;
+                                    overflow: auto;
                                     touch-action: pan-x pan-y pinch-zoom;
                                     margin: 0;
                                     padding: 0;
+                                    min-height: 100%;
+                                    position: relative;
                                 }
                                 #container {
-                                    width: 100%;
+                                    width: max-content;
+                                    min-width: 100%;
                                     padding: 5px;
                                     display: flex;
                                     flex-direction: column;
-                                    align-items: stretch;
-                                    transform-origin: top center;
+                                    align-items: center;
+                                    transform-origin: top left;
                                     transition: transform 0.3s ease;
                                 }
                                 .page-wrapper {
-                                    width: 100%;
+                                    width: auto;
+                                    min-width: calc(100vw - 10px);
                                     margin-bottom: 15px;
                                     box-shadow: 0 4px 12px rgba(0,0,0,0.5);
                                     background: white;
+                                    display: inline-block;
                                 }
                                 canvas {
                                     display: block;
-                                    width: 100%;
+                                    width: auto;
                                     height: auto;
+                                    min-width: calc(100vw - 10px);
                                 }
                                 .loading {
                                     color: white;
@@ -1113,7 +1122,7 @@ class ChatAdapter(
                                 // Load and render PDF with better quality
                                 pdfjsLib.getDocument({data: pdfBytes}).promise.then(function(pdf) {
                                     loading.style.display = 'none';
-                                    pageInfo.textContent = '📄 ' + pdf.numPages + ' page(s) - Pinch to zoom';
+                                    pageInfo.textContent = '📄 ' + pdf.numPages + ' page(s) - Swipe to pan, Pinch to zoom';
                                     zoomControls.style.display = 'flex';
                                     
                                     // Render all pages with higher scale for better text rendering
@@ -1121,8 +1130,8 @@ class ChatAdapter(
                                     for (let pageNum = 1; pageNum <= pdf.numPages; pageNum++) {
                                         renderPromises.push(
                                             pdf.getPage(pageNum).then(function(page) {
-                                                // Use scale 2.5 for crisp text rendering (balanced quality/size)
-                                                const scale = 2.5;
+                                                // Use scale 2.0 for good quality while allowing full width
+                                                const scale = 2.0;
                                                 const viewport = page.getViewport({scale: scale});
                                                 
                                                 // Create page wrapper
@@ -1136,15 +1145,20 @@ class ChatAdapter(
                                                 canvas.height = viewport.height;
                                                 canvas.width = viewport.width;
                                                 
-                                                // Calculate proper CSS dimensions to fit screen
-                                                // Use available width minus minimal padding
-                                                const availableWidth = window.innerWidth - 10;
-                                                const scaleFactor = availableWidth / viewport.width;
+                                                // Calculate CSS dimensions to fit screen width
+                                                const screenWidth = window.innerWidth - 10;
+                                                const scaleRatio = screenWidth / viewport.width;
                                                 
-                                                // Set CSS size to fit screen while maintaining aspect ratio
-                                                canvas.style.width = '100%';
-                                                canvas.style.height = 'auto';
-                                                canvas.style.display = 'block';
+                                                // Set CSS size - if PDF is wider than screen, allow horizontal scroll
+                                                if (viewport.width > screenWidth) {
+                                                    // PDF wider than screen - use natural size, allow horizontal scroll
+                                                    canvas.style.width = viewport.width + 'px';
+                                                    canvas.style.height = viewport.height + 'px';
+                                                } else {
+                                                    // PDF fits screen - scale to fit
+                                                    canvas.style.width = screenWidth + 'px';
+                                                    canvas.style.height = (viewport.height * scaleRatio) + 'px';
+                                                }
                                                 
                                                 pageWrapper.appendChild(canvas);
                                                 container.appendChild(pageWrapper);
