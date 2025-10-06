@@ -959,25 +959,31 @@ class ChatAdapter(
                                     touch-action: pan-x pan-y pinch-zoom;
                                 }
                                 #container {
-                                    width: fit-content;
-                                    min-width: 100%;
-                                    padding: 10px;
+                                    width: 100%;
+                                    max-width: 100%;
+                                    padding: 5px;
                                     display: flex;
                                     flex-direction: column;
                                     align-items: center;
                                     transform-origin: top center;
                                     transition: transform 0.3s ease;
+                                    overflow: visible;
                                 }
                                 .page-wrapper {
+                                    width: 100%;
+                                    max-width: 100%;
                                     margin-bottom: 15px;
                                     box-shadow: 0 4px 12px rgba(0,0,0,0.5);
                                     background: white;
                                     position: relative;
+                                    overflow: visible;
                                 }
                                 canvas {
                                     display: block;
-                                    width: 100%;
-                                    height: auto;
+                                    width: 100% !important;
+                                    height: auto !important;
+                                    max-width: 100%;
+                                    object-fit: contain;
                                 }
                                 .loading {
                                     color: white;
@@ -1133,12 +1139,16 @@ class ChatAdapter(
                                                 canvas.height = viewport.height;
                                                 canvas.width = viewport.width;
                                                 
-                                                // Set canvas CSS size to fit screen width
-                                                const screenWidth = window.innerWidth - 40;
+                                                // Set canvas CSS size to fit screen width with proper aspect ratio
+                                                const screenWidth = window.innerWidth - 20;
                                                 const pdfWidth = viewport.width;
                                                 const cssScale = screenWidth / pdfWidth;
+                                                const cssHeight = viewport.height * cssScale;
+                                                
                                                 canvas.style.width = screenWidth + 'px';
-                                                canvas.style.height = (viewport.height * cssScale) + 'px';
+                                                canvas.style.height = cssHeight + 'px';
+                                                canvas.style.maxWidth = '100%';
+                                                canvas.style.height = 'auto';
                                                 
                                                 pageWrapper.appendChild(canvas);
                                                 container.appendChild(pageWrapper);
