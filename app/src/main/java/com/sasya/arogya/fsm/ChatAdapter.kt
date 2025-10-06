@@ -1135,7 +1135,7 @@ class ChatAdapter(
                                 // Load and render PDF with better quality
                                 pdfjsLib.getDocument({data: pdfBytes}).promise.then(function(pdf) {
                                     loading.style.display = 'none';
-                                    pageInfo.textContent = '📄 ' + pdf.numPages + ' page(s) - Swipe to pan, Pinch to zoom';
+                                    pageInfo.textContent = '📄 ' + pdf.numPages + ' page(s) - Tap + or pinch to zoom for details';
                                     zoomControls.style.display = 'flex';
                                     
                                     // Render all pages with higher scale for better text rendering
