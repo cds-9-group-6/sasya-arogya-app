@@ -941,54 +941,185 @@ class ChatAdapter(
                     dialog.dismiss()
                 }
                 
-                // Load PDF using data URI in WebView
+                // Load PDF using Mozilla PDF.js viewer (works reliably across all Android versions)
                 try {
-                    // Embed PDF using Google Docs Viewer as fallback, or direct data URI
-                    val pdfDataUri = "data:application/pdf;base64,$pdfBase64"
-                    
-                    // Method 1: Try direct data URI (works on some Android versions)
-                    webView.loadData(pdfBase64, "application/pdf", "base64")
-                    
-                    // Method 2 (fallback): Use HTML with embedded PDF viewer
+                    // Use PDF.js viewer to render the PDF
                     val htmlContent = """
+                        <!DOCTYPE html>
+                        <html>
+                        <head>
+                            <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=3.0">
+                            <style>
+                                * { margin: 0; padding: 0; box-sizing: border-box; }
+                                body { 
+                                    background: #525659;
+                                    font-family: Arial, sans-serif;
+                                    overflow-x: hidden;
+                                }
+                                #container {
+                                    width: 100%;
+                                    padding: 10px;
+                                    display: flex;
+                                    flex-direction: column;
+                                    align-items: center;
+                                }
+                                canvas {
+                                    width: 100% !important;
+                                    height: auto !important;
+                                    box-shadow: 0 4px 8px rgba(0,0,0,0.3);
+                                    margin-bottom: 10px;
+                                    background: white;
+                                }
+                                .loading {
+                                    color: white;
+                                    padding: 20px;
+                                    text-align: center;
+                                    font-size: 16px;
+                                }
+                                .error {
+                                    color: #ff6b6b;
+                                    padding: 20px;
+                                    text-align: center;
+                                    background: white;
+                                    margin: 20px;
+                                    border-radius: 8px;
+                                }
+                                .page-info {
+                                    color: white;
+                                    padding: 10px;
+                                    text-align: center;
+                                    background: rgba(0,0,0,0.5);
+                                    position: fixed;
+                                    top: 60px;
+                                    left: 50%;
+                                    transform: translateX(-50%);
+                                    border-radius: 8px;
+                                    font-size: 14px;
+                                    z-index: 1000;
+                                }
+                            </style>
+                            <script src="https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.min.js"></script>
+                        </head>
+                        <body>
+                            <div class="page-info" id="pageInfo">Loading PDF...</div>
+                            <div id="container">
+                                <div class="loading" id="loading">📄 Loading Insurance Certificate...</div>
+                            </div>
+                            
+                            <script>
+                                // Set PDF.js worker
+                                pdfjsLib.GlobalWorkerOptions.workerSrc = 'https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.worker.min.js';
+                                
+                                const pdfData = atob('$pdfBase64');
+                                const container = document.getElementById('container');
+                                const loading = document.getElementById('loading');
+                                const pageInfo = document.getElementById('pageInfo');
+                                
+                                // Convert base64 to Uint8Array
+                                const pdfBytes = new Uint8Array(pdfData.length);
+                                for (let i = 0; i < pdfData.length; i++) {
+                                    pdfBytes[i] = pdfData.charCodeAt(i);
+                                }
+                                
+                                // Load and render PDF
+                                pdfjsLib.getDocument({data: pdfBytes}).promise.then(function(pdf) {
+                                    loading.style.display = 'none';
+                                    pageInfo.textContent = 'Insurance Certificate - ' + pdf.numPages + ' page(s)';
+                                    
+                                    // Render all pages
+                                    const renderPromises = [];
+                                    for (let pageNum = 1; pageNum <= pdf.numPages; pageNum++) {
+                                        renderPromises.push(
+                                            pdf.getPage(pageNum).then(function(page) {
+                                                const scale = 2.0; // High quality
+                                                const viewport = page.getViewport({scale: scale});
+                                                
+                                                const canvas = document.createElement('canvas');
+                                                const context = canvas.getContext('2d');
+                                                canvas.height = viewport.height;
+                                                canvas.width = viewport.width;
+                                                
+                                                container.appendChild(canvas);
+                                                
+                                                return page.render({
+                                                    canvasContext: context,
+                                                    viewport: viewport
+                                                }).promise;
+                                            })
+                                        );
+                                    }
+                                    
+                                    return Promise.all(renderPromises);
+                                }).then(function() {
+                                    console.log('✅ All pages rendered successfully');
+                                    setTimeout(() => {
+                                        pageInfo.style.display = 'none';
+                                    }, 3000);
+                                }).catch(function(error) {
+                                    console.error('❌ Error loading PDF:', error);
+                                    loading.innerHTML = '<div class="error">❌ Error loading PDF<br><br>' + 
+                                        'Policy ID: $policyId<br>' +
+                                        'Error: ' + error.message + '<br><br>' +
+                                        'PDF Size: ${pdfBase64.length} chars</div>';
+                                    pageInfo.style.display = 'none';
+                                });
+                            </script>
+                        </body>
+                        </html>
+                    """.trimIndent()
+                    
+                    // Load HTML with PDF.js renderer
+                    webView.loadDataWithBaseURL("https://example.com", htmlContent, "text/html", "UTF-8", null)
+                    
+                    Log.d("ChatAdapter", "✅ PDF.js viewer loaded into WebView")
+                } catch (e: Exception) {
+                    Log.e("ChatAdapter", "Error loading PDF.js viewer: ${e.message}", e)
+                    // Fallback: Show error message
+                    val errorHtml = """
                         <!DOCTYPE html>
                         <html>
                         <head>
                             <meta name="viewport" content="width=device-width, initial-scale=1.0">
                             <style>
-                                body { margin: 0; padding: 0; }
-                                iframe { border: none; width: 100%; height: 100vh; }
+                                body { 
+                                    font-family: Arial; 
+                                    padding: 20px; 
+                                    text-align: center;
+                                    background: #f5f5f5;
+                                }
+                                .container {
+                                    background: white;
+                                    padding: 30px;
+                                    border-radius: 12px;
+                                    margin-top: 50px;
+                                    box-shadow: 0 4px 8px rgba(0,0,0,0.1);
+                                }
+                                .error { 
+                                    color: #c62828; 
+                                    margin: 20px 0;
+                                    font-size: 18px;
+                                    font-weight: bold;
+                                }
+                                .info { 
+                                    color: #666; 
+                                    margin: 10px 0;
+                                    font-size: 14px;
+                                    line-height: 1.6;
+                                }
+                                .icon { font-size: 48px; margin-bottom: 20px; }
                             </style>
                         </head>
                         <body>
-                            <iframe src="$pdfDataUri" type="application/pdf"></iframe>
-                        </body>
-                        </html>
-                    """.trimIndent()
-                    
-                    // Load HTML with embedded PDF
-                    webView.loadDataWithBaseURL(null, htmlContent, "text/html", "UTF-8", null)
-                    
-                    Log.d("ChatAdapter", "✅ PDF loaded into WebView successfully")
-                } catch (e: Exception) {
-                    Log.e("ChatAdapter", "Error loading PDF into WebView: ${e.message}", e)
-                    // Fallback: Show error message in WebView
-                    val errorHtml = """
-                        <!DOCTYPE html>
-                        <html>
-                        <head>
-                            <style>
-                                body { font-family: Arial; padding: 20px; text-align: center; }
-                                .error { color: #c62828; margin: 20px; }
-                                .info { color: #666; margin: 10px; }
-                            </style>
-                        </head>
-                        <body>
-                            <h2>📄 Insurance Certificate</h2>
-                            <p class="error">Unable to display PDF in WebView</p>
-                            <p class="info">Policy ID: $policyId</p>
-                            <p class="info">PDF Data Size: ${pdfBase64.length} characters</p>
-                            <p class="info">Please download the certificate from the insurance company portal</p>
+                            <div class="container">
+                                <div class="icon">📄</div>
+                                <h2>Insurance Certificate</h2>
+                                <p class="error">Unable to display PDF</p>
+                                <p class="info">Policy ID: <strong>$policyId</strong></p>
+                                <p class="info">PDF Size: ${pdfBase64.length} characters</p>
+                                <p class="info">Error: ${e.message}</p>
+                                <hr style="margin: 20px 0;">
+                                <p class="info">Please contact support to receive your certificate via email</p>
+                            </div>
                         </body>
                         </html>
                     """.trimIndent()
