@@ -866,32 +866,133 @@ class ChatAdapter(
         }
         
         /**
-         * Show PDF viewer for insurance certificate
+         * Show PDF viewer for insurance certificate using WebView
          */
         private fun showPdfViewer(pdfBase64: String, policyId: String) {
             try {
-                // Create custom dialog for PDF viewing
+                Log.d("ChatAdapter", "📄 Opening PDF viewer for certificate: $policyId, PDF size: ${pdfBase64.length} chars")
+                
+                // Create full-screen dialog
                 val dialog = Dialog(itemView.context, android.R.style.Theme_Black_NoTitleBar_Fullscreen)
-                dialog.setContentView(R.layout.dialog_pdf_viewer)
                 
-                // Set up dialog views
-                val pdfView = dialog.findViewById<androidx.core.widget.NestedScrollView>(R.id.pdfScrollView)
-                val pdfContent = dialog.findViewById<TextView>(R.id.pdfContent)
-                val btnClose = dialog.findViewById<ImageButton>(R.id.btnClosePdf)
-                val pdfTitle = dialog.findViewById<TextView>(R.id.pdfTitle)
+                // Create layout programmatically for WebView-based PDF viewing
+                val layout = android.widget.LinearLayout(itemView.context).apply {
+                    orientation = android.widget.LinearLayout.VERTICAL
+                    setBackgroundColor(android.graphics.Color.WHITE)
+                    layoutParams = android.view.ViewGroup.LayoutParams(
+                        android.view.ViewGroup.LayoutParams.MATCH_PARENT,
+                        android.view.ViewGroup.LayoutParams.MATCH_PARENT
+                    )
+                }
                 
-                // Set title
-                pdfTitle.text = "Insurance Certificate - $policyId"
+                // Header with title and close button
+                val header = android.widget.LinearLayout(itemView.context).apply {
+                    orientation = android.widget.LinearLayout.HORIZONTAL
+                    setBackgroundColor(android.graphics.Color.parseColor("#2E7D32"))
+                    setPadding(16, 16, 16, 16)
+                    gravity = android.view.Gravity.CENTER_VERTICAL
+                }
                 
-                // For now, show certificate details as text (in a real app, you'd use a PDF library)
-                pdfContent.text = "📄 Insurance Certificate\n\n" +
-                        "Policy ID: $policyId\n" +
-                        "PDF Data Available: ${if (pdfBase64.isNotEmpty()) "Yes (${pdfBase64.length} characters)" else "No"}\n\n" +
-                        "Note: In a production app, this would display the actual PDF using a PDF viewer library like AndroidPdfViewer or similar."
+                val title = android.widget.TextView(itemView.context).apply {
+                    text = "🛡️ Insurance Certificate - $policyId"
+                    textSize = 18f
+                    setTextColor(android.graphics.Color.WHITE)
+                    layoutParams = android.widget.LinearLayout.LayoutParams(
+                        0,
+                        android.widget.LinearLayout.LayoutParams.WRAP_CONTENT,
+                        1f
+                    )
+                }
+                
+                val closeButton = android.widget.Button(itemView.context).apply {
+                    text = "✕"
+                    textSize = 20f
+                    setTextColor(android.graphics.Color.WHITE)
+                    setBackgroundColor(android.graphics.Color.parseColor("#1B5E20"))
+                    setPadding(24, 8, 24, 8)
+                }
+                
+                header.addView(title)
+                header.addView(closeButton)
+                layout.addView(header)
+                
+                // WebView for PDF display
+                val webView = android.webkit.WebView(itemView.context).apply {
+                    layoutParams = android.widget.LinearLayout.LayoutParams(
+                        android.widget.LinearLayout.LayoutParams.MATCH_PARENT,
+                        0,
+                        1f
+                    )
+                    settings.javaScriptEnabled = true
+                    settings.builtInZoomControls = true
+                    settings.displayZoomControls = false
+                    settings.setSupportZoom(true)
+                    settings.loadWithOverviewMode = true
+                    settings.useWideViewPort = true
+                }
+                
+                layout.addView(webView)
+                
+                // Set the layout to dialog
+                dialog.setContentView(layout)
                 
                 // Close button functionality
-                btnClose.setOnClickListener {
+                closeButton.setOnClickListener {
                     dialog.dismiss()
+                }
+                
+                // Load PDF using data URI in WebView
+                try {
+                    // Embed PDF using Google Docs Viewer as fallback, or direct data URI
+                    val pdfDataUri = "data:application/pdf;base64,$pdfBase64"
+                    
+                    // Method 1: Try direct data URI (works on some Android versions)
+                    webView.loadData(pdfBase64, "application/pdf", "base64")
+                    
+                    // Method 2 (fallback): Use HTML with embedded PDF viewer
+                    val htmlContent = """
+                        <!DOCTYPE html>
+                        <html>
+                        <head>
+                            <meta name="viewport" content="width=device-width, initial-scale=1.0">
+                            <style>
+                                body { margin: 0; padding: 0; }
+                                iframe { border: none; width: 100%; height: 100vh; }
+                            </style>
+                        </head>
+                        <body>
+                            <iframe src="$pdfDataUri" type="application/pdf"></iframe>
+                        </body>
+                        </html>
+                    """.trimIndent()
+                    
+                    // Load HTML with embedded PDF
+                    webView.loadDataWithBaseURL(null, htmlContent, "text/html", "UTF-8", null)
+                    
+                    Log.d("ChatAdapter", "✅ PDF loaded into WebView successfully")
+                } catch (e: Exception) {
+                    Log.e("ChatAdapter", "Error loading PDF into WebView: ${e.message}", e)
+                    // Fallback: Show error message in WebView
+                    val errorHtml = """
+                        <!DOCTYPE html>
+                        <html>
+                        <head>
+                            <style>
+                                body { font-family: Arial; padding: 20px; text-align: center; }
+                                .error { color: #c62828; margin: 20px; }
+                                .info { color: #666; margin: 10px; }
+                            </style>
+                        </head>
+                        <body>
+                            <h2>📄 Insurance Certificate</h2>
+                            <p class="error">Unable to display PDF in WebView</p>
+                            <p class="info">Policy ID: $policyId</p>
+                            <p class="info">PDF Data Size: ${pdfBase64.length} characters</p>
+                            <p class="info">Please download the certificate from the insurance company portal</p>
+                        </body>
+                        </html>
+                    """.trimIndent()
+                    webView.loadDataWithBaseURL(null, errorHtml, "text/html", "UTF-8", null)
                 }
                 
                 // Allow tapping outside to close
@@ -901,12 +1002,15 @@ class ChatAdapter(
                 // Show the dialog
                 dialog.show()
                 
-                Log.d("ChatAdapter", "📄 Opened PDF viewer for certificate: $policyId")
+                Log.d("ChatAdapter", "📄 PDF viewer dialog displayed")
                 
             } catch (e: Exception) {
                 Log.e("ChatAdapter", "Error showing PDF viewer: ${e.message}", e)
-                // Fallback: trigger follow-up action
-                onFollowUpClick("Please help me view the insurance certificate PDF")
+                android.widget.Toast.makeText(
+                    itemView.context,
+                    "Unable to display PDF. Please try again.",
+                    android.widget.Toast.LENGTH_LONG
+                ).show()
             }
         }
         
