@@ -466,27 +466,28 @@
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:orientation="vertical"
-                    android:layout_marginTop="16dp"
+                    android:layout_marginTop="12dp"
                     android:background="@drawable/followup_container_background"
-                    android:padding="16dp"
+                    android:padding="12dp"
                     android:visibility="gone">
 
                     <TextView
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:text="🚀 Quick Actions"
-                        android:textSize="16sp"
+                        android:textSize="15sp"
                         android:textStyle="bold"
                         android:textColor="@color/forest_green"
-                        android:layout_marginBottom="12dp"
-                        android:drawablePadding="8dp" />
+                        android:layout_marginBottom="8dp"
+                        android:drawablePadding="6dp" />
 
                     <!-- 2-Column Grid Quick Actions -->
                     <androidx.recyclerview.widget.RecyclerView
                         android:id="@+id/quickActionsRecyclerView"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:nestedScrollingEnabled="false" />
+                        android:nestedScrollingEnabled="false"
+                        android:clipToPadding="false" />
 
                 </LinearLayout>
 
