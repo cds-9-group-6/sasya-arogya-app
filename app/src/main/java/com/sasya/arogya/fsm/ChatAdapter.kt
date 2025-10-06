@@ -866,32 +866,389 @@ class ChatAdapter(
         }
         
         /**
-         * Show PDF viewer for insurance certificate
+         * Show PDF viewer for insurance certificate using WebView
          */
         private fun showPdfViewer(pdfBase64: String, policyId: String) {
             try {
-                // Create custom dialog for PDF viewing
+                Log.d("ChatAdapter", "📄 Opening PDF viewer for certificate: $policyId, PDF size: ${pdfBase64.length} chars")
+                
+                // Create full-screen dialog
                 val dialog = Dialog(itemView.context, android.R.style.Theme_Black_NoTitleBar_Fullscreen)
-                dialog.setContentView(R.layout.dialog_pdf_viewer)
                 
-                // Set up dialog views
-                val pdfView = dialog.findViewById<androidx.core.widget.NestedScrollView>(R.id.pdfScrollView)
-                val pdfContent = dialog.findViewById<TextView>(R.id.pdfContent)
-                val btnClose = dialog.findViewById<ImageButton>(R.id.btnClosePdf)
-                val pdfTitle = dialog.findViewById<TextView>(R.id.pdfTitle)
+                // Create layout programmatically for WebView-based PDF viewing
+                val layout = android.widget.LinearLayout(itemView.context).apply {
+                    orientation = android.widget.LinearLayout.VERTICAL
+                    setBackgroundColor(android.graphics.Color.WHITE)
+                    layoutParams = android.view.ViewGroup.LayoutParams(
+                        android.view.ViewGroup.LayoutParams.MATCH_PARENT,
+                        android.view.ViewGroup.LayoutParams.MATCH_PARENT
+                    )
+                }
                 
-                // Set title
-                pdfTitle.text = "Insurance Certificate - $policyId"
+                // Header with title and close button
+                val header = android.widget.LinearLayout(itemView.context).apply {
+                    orientation = android.widget.LinearLayout.HORIZONTAL
+                    setBackgroundColor(android.graphics.Color.parseColor("#2E7D32"))
+                    setPadding(16, 16, 16, 16)
+                    gravity = android.view.Gravity.CENTER_VERTICAL
+                }
                 
-                // For now, show certificate details as text (in a real app, you'd use a PDF library)
-                pdfContent.text = "📄 Insurance Certificate\n\n" +
-                        "Policy ID: $policyId\n" +
-                        "PDF Data Available: ${if (pdfBase64.isNotEmpty()) "Yes (${pdfBase64.length} characters)" else "No"}\n\n" +
-                        "Note: In a production app, this would display the actual PDF using a PDF viewer library like AndroidPdfViewer or similar."
+                val title = android.widget.TextView(itemView.context).apply {
+                    text = "🛡️ Insurance Certificate - $policyId"
+                    textSize = 18f
+                    setTextColor(android.graphics.Color.WHITE)
+                    layoutParams = android.widget.LinearLayout.LayoutParams(
+                        0,
+                        android.widget.LinearLayout.LayoutParams.WRAP_CONTENT,
+                        1f
+                    )
+                }
+                
+                val closeButton = android.widget.Button(itemView.context).apply {
+                    text = "✕"
+                    textSize = 20f
+                    setTextColor(android.graphics.Color.WHITE)
+                    setBackgroundColor(android.graphics.Color.parseColor("#1B5E20"))
+                    setPadding(24, 8, 24, 8)
+                }
+                
+                header.addView(title)
+                header.addView(closeButton)
+                layout.addView(header)
+                
+                // WebView for PDF display
+                val webView = android.webkit.WebView(itemView.context).apply {
+                    layoutParams = android.widget.LinearLayout.LayoutParams(
+                        android.widget.LinearLayout.LayoutParams.MATCH_PARENT,
+                        0,
+                        1f
+                    )
+                    settings.javaScriptEnabled = true
+                    settings.builtInZoomControls = true
+                    settings.displayZoomControls = false
+                    settings.setSupportZoom(true)
+                    settings.loadWithOverviewMode = true
+                    settings.useWideViewPort = true
+                }
+                
+                layout.addView(webView)
+                
+                // Set the layout to dialog
+                dialog.setContentView(layout)
                 
                 // Close button functionality
-                btnClose.setOnClickListener {
+                closeButton.setOnClickListener {
                     dialog.dismiss()
+                }
+                
+                // Load PDF using Mozilla PDF.js viewer (works reliably across all Android versions)
+                try {
+                    // Use PDF.js viewer to render the PDF with zoom controls
+                    val htmlContent = """
+                        <!DOCTYPE html>
+                        <html>
+                        <head>
+                            <meta name="viewport" content="width=device-width, initial-scale=1.0, minimum-scale=0.5, maximum-scale=5.0, user-scalable=yes">
+                            <style>
+                                * { margin: 0; padding: 0; box-sizing: border-box; }
+                                html {
+                                    overflow: auto;
+                                    height: 100%;
+                                }
+                                body { 
+                                    background: #525659;
+                                    font-family: Arial, sans-serif;
+                                    overflow: hidden;
+                                    touch-action: pan-x pan-y pinch-zoom;
+                                    margin: 0;
+                                    padding: 0;
+                                    min-height: 100%;
+                                    position: relative;
+                                }
+                                #container {
+                                    width: 100%;
+                                    padding: 5px;
+                                    display: flex;
+                                    flex-direction: column;
+                                    align-items: center;
+                                    transform-origin: top center;
+                                    transition: transform 0.3s ease;
+                                }
+                                #container.zoomed {
+                                    width: max-content;
+                                    transform-origin: top left;
+                                }
+                                .page-wrapper {
+                                    width: 100%;
+                                    margin-bottom: 15px;
+                                    box-shadow: 0 4px 12px rgba(0,0,0,0.5);
+                                    background: white;
+                                }
+                                canvas {
+                                    display: block;
+                                    width: 100%;
+                                    height: auto;
+                                }
+                                .loading {
+                                    color: white;
+                                    padding: 20px;
+                                    text-align: center;
+                                    font-size: 16px;
+                                }
+                                .error {
+                                    color: #ff6b6b;
+                                    padding: 20px;
+                                    text-align: center;
+                                    background: white;
+                                    margin: 20px;
+                                    border-radius: 8px;
+                                }
+                                .page-info {
+                                    color: white;
+                                    padding: 8px 16px;
+                                    text-align: center;
+                                    background: rgba(0,0,0,0.7);
+                                    position: fixed;
+                                    top: 60px;
+                                    left: 50%;
+                                    transform: translateX(-50%);
+                                    border-radius: 20px;
+                                    font-size: 13px;
+                                    z-index: 1000;
+                                    font-weight: bold;
+                                }
+                                .zoom-controls {
+                                    position: fixed;
+                                    bottom: 30px;
+                                    right: 20px;
+                                    display: flex;
+                                    flex-direction: column;
+                                    gap: 10px;
+                                    z-index: 1000;
+                                }
+                                .zoom-btn {
+                                    width: 50px;
+                                    height: 50px;
+                                    border-radius: 50%;
+                                    background: rgba(46, 125, 50, 0.95);
+                                    color: white;
+                                    border: 2px solid white;
+                                    font-size: 24px;
+                                    font-weight: bold;
+                                    cursor: pointer;
+                                    display: flex;
+                                    align-items: center;
+                                    justify-content: center;
+                                    box-shadow: 0 4px 12px rgba(0,0,0,0.4);
+                                    touch-action: manipulation;
+                                }
+                                .zoom-btn:active {
+                                    background: rgba(27, 94, 32, 0.95);
+                                    transform: scale(0.95);
+                                }
+                                .zoom-level {
+                                    background: rgba(0,0,0,0.7);
+                                    color: white;
+                                    padding: 8px 12px;
+                                    border-radius: 20px;
+                                    font-size: 12px;
+                                    text-align: center;
+                                    font-weight: bold;
+                                }
+                            </style>
+                            <script src="https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.min.js"></script>
+                        </head>
+                        <body>
+                            <div class="page-info" id="pageInfo">Loading PDF...</div>
+                            <div id="container">
+                                <div class="loading" id="loading">📄 Loading Insurance Certificate...</div>
+                            </div>
+                            
+                            <!-- Zoom Controls -->
+                            <div class="zoom-controls" id="zoomControls" style="display: none;">
+                                <div class="zoom-btn" onclick="zoomIn()">+</div>
+                                <div class="zoom-level" id="zoomLevel">100%</div>
+                                <div class="zoom-btn" onclick="zoomOut()">−</div>
+                                <div class="zoom-btn" onclick="resetZoom()" style="font-size: 18px;">⟲</div>
+                            </div>
+                            
+                            <script>
+                                // Set PDF.js worker
+                                pdfjsLib.GlobalWorkerOptions.workerSrc = 'https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.worker.min.js';
+                                
+                                const pdfData = atob('$pdfBase64');
+                                const container = document.getElementById('container');
+                                const loading = document.getElementById('loading');
+                                const pageInfo = document.getElementById('pageInfo');
+                                const zoomControls = document.getElementById('zoomControls');
+                                const zoomLevel = document.getElementById('zoomLevel');
+                                
+                                let currentZoom = 1.0;
+                                const minZoom = 0.5;
+                                const maxZoom = 4.0;
+                                const zoomStep = 0.25;
+                                
+                                // Convert base64 to Uint8Array
+                                const pdfBytes = new Uint8Array(pdfData.length);
+                                for (let i = 0; i < pdfData.length; i++) {
+                                    pdfBytes[i] = pdfData.charCodeAt(i);
+                                }
+                                
+                                // Zoom functions
+                                function zoomIn() {
+                                    if (currentZoom < maxZoom) {
+                                        currentZoom += zoomStep;
+                                        applyZoom();
+                                    }
+                                }
+                                
+                                function zoomOut() {
+                                    if (currentZoom > minZoom) {
+                                        currentZoom -= zoomStep;
+                                        applyZoom();
+                                    }
+                                }
+                                
+                                function resetZoom() {
+                                    currentZoom = 1.0;
+                                    applyZoom();
+                                }
+                                
+                                function applyZoom() {
+                                    container.style.transform = 'scale(' + currentZoom + ')';
+                                    zoomLevel.textContent = Math.round(currentZoom * 100) + '%';
+                                    
+                                    // Enable/disable pan based on zoom level
+                                    if (currentZoom > 1.0) {
+                                        // Zoomed in - enable pan by adding class
+                                        container.classList.add('zoomed');
+                                        document.body.style.overflow = 'auto';
+                                    } else {
+                                        // At 100% - disable pan by removing class
+                                        container.classList.remove('zoomed');
+                                        document.body.style.overflow = 'hidden';
+                                        // Reset scroll position
+                                        window.scrollTo(0, 0);
+                                    }
+                                }
+                                
+                                // Load and render PDF with better quality
+                                pdfjsLib.getDocument({data: pdfBytes}).promise.then(function(pdf) {
+                                    loading.style.display = 'none';
+                                    pageInfo.textContent = '📄 ' + pdf.numPages + ' page(s) - Tap + or pinch to zoom for details';
+                                    zoomControls.style.display = 'flex';
+                                    
+                                    // Render all pages with higher scale for better text rendering
+                                    const renderPromises = [];
+                                    for (let pageNum = 1; pageNum <= pdf.numPages; pageNum++) {
+                                        renderPromises.push(
+                                            pdf.getPage(pageNum).then(function(page) {
+                                                // Use scale 2.5 for crisp text rendering
+                                                const scale = 2.5;
+                                                const viewport = page.getViewport({scale: scale});
+                                                
+                                                // Create page wrapper
+                                                const pageWrapper = document.createElement('div');
+                                                pageWrapper.className = 'page-wrapper';
+                                                
+                                                const canvas = document.createElement('canvas');
+                                                const context = canvas.getContext('2d');
+                                                
+                                                // Set canvas to actual PDF dimensions at scale (high-res)
+                                                canvas.height = viewport.height;
+                                                canvas.width = viewport.width;
+                                                
+                                                // Canvas CSS will be 100% width (controlled by page-wrapper)
+                                                // This ensures it always fits the window initially
+                                                // When zoomed, the scale transform handles enlargement
+                                                
+                                                pageWrapper.appendChild(canvas);
+                                                container.appendChild(pageWrapper);
+                                                
+                                                return page.render({
+                                                    canvasContext: context,
+                                                    viewport: viewport
+                                                }).promise;
+                                            })
+                                        );
+                                    }
+                                    
+                                    return Promise.all(renderPromises);
+                                }).then(function() {
+                                    console.log('✅ All pages rendered successfully');
+                                    setTimeout(() => {
+                                        pageInfo.style.opacity = '0';
+                                        setTimeout(() => pageInfo.style.display = 'none', 300);
+                                    }, 3000);
+                                }).catch(function(error) {
+                                    console.error('❌ Error loading PDF:', error);
+                                    loading.innerHTML = '<div class="error">❌ Error loading PDF<br><br>' + 
+                                        'Policy ID: $policyId<br>' +
+                                        'Error: ' + error.message + '<br><br>' +
+                                        'PDF Size: ${pdfBase64.length} chars</div>';
+                                    pageInfo.style.display = 'none';
+                                });
+                            </script>
+                        </body>
+                        </html>
+                    """.trimIndent()
+                    
+                    // Load HTML with PDF.js renderer
+                    webView.loadDataWithBaseURL("https://example.com", htmlContent, "text/html", "UTF-8", null)
+                    
+                    Log.d("ChatAdapter", "✅ PDF.js viewer loaded into WebView")
+                } catch (e: Exception) {
+                    Log.e("ChatAdapter", "Error loading PDF.js viewer: ${e.message}", e)
+                    // Fallback: Show error message
+                    val errorHtml = """
+                        <!DOCTYPE html>
+                        <html>
+                        <head>
+                            <meta name="viewport" content="width=device-width, initial-scale=1.0">
+                            <style>
+                                body { 
+                                    font-family: Arial; 
+                                    padding: 20px; 
+                                    text-align: center;
+                                    background: #f5f5f5;
+                                }
+                                .container {
+                                    background: white;
+                                    padding: 30px;
+                                    border-radius: 12px;
+                                    margin-top: 50px;
+                                    box-shadow: 0 4px 8px rgba(0,0,0,0.1);
+                                }
+                                .error { 
+                                    color: #c62828; 
+                                    margin: 20px 0;
+                                    font-size: 18px;
+                                    font-weight: bold;
+                                }
+                                .info { 
+                                    color: #666; 
+                                    margin: 10px 0;
+                                    font-size: 14px;
+                                    line-height: 1.6;
+                                }
+                                .icon { font-size: 48px; margin-bottom: 20px; }
+                            </style>
+                        </head>
+                        <body>
+                            <div class="container">
+                                <div class="icon">📄</div>
+                                <h2>Insurance Certificate</h2>
+                                <p class="error">Unable to display PDF</p>
+                                <p class="info">Policy ID: <strong>$policyId</strong></p>
+                                <p class="info">PDF Size: ${pdfBase64.length} characters</p>
+                                <p class="info">Error: ${e.message}</p>
+                                <hr style="margin: 20px 0;">
+                                <p class="info">Please contact support to receive your certificate via email</p>
+                            </div>
+                        </body>
+                        </html>
+                    """.trimIndent()
+                    webView.loadDataWithBaseURL(null, errorHtml, "text/html", "UTF-8", null)
                 }
                 
                 // Allow tapping outside to close
@@ -901,12 +1258,15 @@ class ChatAdapter(
                 // Show the dialog
                 dialog.show()
                 
-                Log.d("ChatAdapter", "📄 Opened PDF viewer for certificate: $policyId")
+                Log.d("ChatAdapter", "📄 PDF viewer dialog displayed")
                 
             } catch (e: Exception) {
                 Log.e("ChatAdapter", "Error showing PDF viewer: ${e.message}", e)
-                // Fallback: trigger follow-up action
-                onFollowUpClick("Please help me view the insurance certificate PDF")
+                android.widget.Toast.makeText(
+                    itemView.context,
+                    "Unable to display PDF. Please try again.",
+                    android.widget.Toast.LENGTH_LONG
+                ).show()
             }
         }
         
