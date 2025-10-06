@@ -943,32 +943,41 @@ class ChatAdapter(
                 
                 // Load PDF using Mozilla PDF.js viewer (works reliably across all Android versions)
                 try {
-                    // Use PDF.js viewer to render the PDF
+                    // Use PDF.js viewer to render the PDF with zoom controls
                     val htmlContent = """
                         <!DOCTYPE html>
                         <html>
                         <head>
-                            <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=3.0">
+                            <meta name="viewport" content="width=device-width, initial-scale=1.0, minimum-scale=0.5, maximum-scale=5.0, user-scalable=yes">
                             <style>
                                 * { margin: 0; padding: 0; box-sizing: border-box; }
                                 body { 
                                     background: #525659;
                                     font-family: Arial, sans-serif;
-                                    overflow-x: hidden;
+                                    overflow-x: auto;
+                                    overflow-y: auto;
+                                    touch-action: pan-x pan-y pinch-zoom;
                                 }
                                 #container {
-                                    width: 100%;
+                                    width: fit-content;
+                                    min-width: 100%;
                                     padding: 10px;
                                     display: flex;
                                     flex-direction: column;
                                     align-items: center;
+                                    transform-origin: top center;
+                                    transition: transform 0.3s ease;
+                                }
+                                .page-wrapper {
+                                    margin-bottom: 15px;
+                                    box-shadow: 0 4px 12px rgba(0,0,0,0.5);
+                                    background: white;
+                                    position: relative;
                                 }
                                 canvas {
-                                    width: 100% !important;
-                                    height: auto !important;
-                                    box-shadow: 0 4px 8px rgba(0,0,0,0.3);
-                                    margin-bottom: 10px;
-                                    background: white;
+                                    display: block;
+                                    width: 100%;
+                                    height: auto;
                                 }
                                 .loading {
                                     color: white;
@@ -986,16 +995,55 @@ class ChatAdapter(
                                 }
                                 .page-info {
                                     color: white;
-                                    padding: 10px;
+                                    padding: 8px 16px;
                                     text-align: center;
-                                    background: rgba(0,0,0,0.5);
+                                    background: rgba(0,0,0,0.7);
                                     position: fixed;
                                     top: 60px;
                                     left: 50%;
                                     transform: translateX(-50%);
-                                    border-radius: 8px;
-                                    font-size: 14px;
+                                    border-radius: 20px;
+                                    font-size: 13px;
                                     z-index: 1000;
+                                    font-weight: bold;
+                                }
+                                .zoom-controls {
+                                    position: fixed;
+                                    bottom: 30px;
+                                    right: 20px;
+                                    display: flex;
+                                    flex-direction: column;
+                                    gap: 10px;
+                                    z-index: 1000;
+                                }
+                                .zoom-btn {
+                                    width: 50px;
+                                    height: 50px;
+                                    border-radius: 50%;
+                                    background: rgba(46, 125, 50, 0.95);
+                                    color: white;
+                                    border: 2px solid white;
+                                    font-size: 24px;
+                                    font-weight: bold;
+                                    cursor: pointer;
+                                    display: flex;
+                                    align-items: center;
+                                    justify-content: center;
+                                    box-shadow: 0 4px 12px rgba(0,0,0,0.4);
+                                    touch-action: manipulation;
+                                }
+                                .zoom-btn:active {
+                                    background: rgba(27, 94, 32, 0.95);
+                                    transform: scale(0.95);
+                                }
+                                .zoom-level {
+                                    background: rgba(0,0,0,0.7);
+                                    color: white;
+                                    padding: 8px 12px;
+                                    border-radius: 20px;
+                                    font-size: 12px;
+                                    text-align: center;
+                                    font-weight: bold;
                                 }
                             </style>
                             <script src="https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.min.js"></script>
@@ -1006,6 +1054,14 @@ class ChatAdapter(
                                 <div class="loading" id="loading">📄 Loading Insurance Certificate...</div>
                             </div>
                             
+                            <!-- Zoom Controls -->
+                            <div class="zoom-controls" id="zoomControls" style="display: none;">
+                                <div class="zoom-btn" onclick="zoomIn()">+</div>
+                                <div class="zoom-level" id="zoomLevel">100%</div>
+                                <div class="zoom-btn" onclick="zoomOut()">−</div>
+                                <div class="zoom-btn" onclick="resetZoom()" style="font-size: 18px;">⟲</div>
+                            </div>
+                            
                             <script>
                                 // Set PDF.js worker
                                 pdfjsLib.GlobalWorkerOptions.workerSrc = 'https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.worker.min.js';
@@ -1014,6 +1070,13 @@ class ChatAdapter(
                                 const container = document.getElementById('container');
                                 const loading = document.getElementById('loading');
                                 const pageInfo = document.getElementById('pageInfo');
+                                const zoomControls = document.getElementById('zoomControls');
+                                const zoomLevel = document.getElementById('zoomLevel');
+                                
+                                let currentZoom = 1.0;
+                                const minZoom = 0.5;
+                                const maxZoom = 4.0;
+                                const zoomStep = 0.25;
                                 
                                 // Convert base64 to Uint8Array
                                 const pdfBytes = new Uint8Array(pdfData.length);
@@ -1021,25 +1084,64 @@ class ChatAdapter(
                                     pdfBytes[i] = pdfData.charCodeAt(i);
                                 }
                                 
-                                // Load and render PDF
+                                // Zoom functions
+                                function zoomIn() {
+                                    if (currentZoom < maxZoom) {
+                                        currentZoom += zoomStep;
+                                        applyZoom();
+                                    }
+                                }
+                                
+                                function zoomOut() {
+                                    if (currentZoom > minZoom) {
+                                        currentZoom -= zoomStep;
+                                        applyZoom();
+                                    }
+                                }
+                                
+                                function resetZoom() {
+                                    currentZoom = 1.0;
+                                    applyZoom();
+                                }
+                                
+                                function applyZoom() {
+                                    container.style.transform = 'scale(' + currentZoom + ')';
+                                    zoomLevel.textContent = Math.round(currentZoom * 100) + '%';
+                                }
+                                
+                                // Load and render PDF with better quality
                                 pdfjsLib.getDocument({data: pdfBytes}).promise.then(function(pdf) {
                                     loading.style.display = 'none';
-                                    pageInfo.textContent = 'Insurance Certificate - ' + pdf.numPages + ' page(s)';
+                                    pageInfo.textContent = '📄 ' + pdf.numPages + ' page(s) - Pinch to zoom';
+                                    zoomControls.style.display = 'flex';
                                     
-                                    // Render all pages
+                                    // Render all pages with higher scale for better text rendering
                                     const renderPromises = [];
                                     for (let pageNum = 1; pageNum <= pdf.numPages; pageNum++) {
                                         renderPromises.push(
                                             pdf.getPage(pageNum).then(function(page) {
-                                                const scale = 2.0; // High quality
+                                                // Use scale 3.0 for crisp text rendering
+                                                const scale = 3.0;
                                                 const viewport = page.getViewport({scale: scale});
+                                                
+                                                // Create page wrapper
+                                                const pageWrapper = document.createElement('div');
+                                                pageWrapper.className = 'page-wrapper';
                                                 
                                                 const canvas = document.createElement('canvas');
                                                 const context = canvas.getContext('2d');
                                                 canvas.height = viewport.height;
                                                 canvas.width = viewport.width;
                                                 
-                                                container.appendChild(canvas);
+                                                // Set canvas CSS size to fit screen width
+                                                const screenWidth = window.innerWidth - 40;
+                                                const pdfWidth = viewport.width;
+                                                const cssScale = screenWidth / pdfWidth;
+                                                canvas.style.width = screenWidth + 'px';
+                                                canvas.style.height = (viewport.height * cssScale) + 'px';
+                                                
+                                                pageWrapper.appendChild(canvas);
+                                                container.appendChild(pageWrapper);
                                                 
                                                 return page.render({
                                                     canvasContext: context,
@@ -1053,7 +1155,8 @@ class ChatAdapter(
                                 }).then(function() {
                                     console.log('✅ All pages rendered successfully');
                                     setTimeout(() => {
-                                        pageInfo.style.display = 'none';
+                                        pageInfo.style.opacity = '0';
+                                        setTimeout(() => pageInfo.style.display = 'none', 300);
                                     }, 3000);
                                 }).catch(function(error) {
                                     console.error('❌ Error loading PDF:', error);
