@@ -1,0 +1,478 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Quick Actions - Whitespace Fix</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            padding: 20px;
+            min-height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+        }
+
+        .container {
+            max-width: 900px;
+            width: 100%;
+        }
+
+        .comparison-grid {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 30px;
+            margin-bottom: 30px;
+        }
+
+        .phone-mockup {
+            background: white;
+            border-radius: 30px;
+            padding: 15px;
+            box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
+        }
+
+        .screen {
+            background: #f5f5f5;
+            border-radius: 20px;
+            padding: 15px;
+            min-height: 500px;
+        }
+
+        .status-badge {
+            text-align: center;
+            padding: 10px;
+            border-radius: 10px;
+            font-weight: bold;
+            margin-bottom: 15px;
+            font-size: 14px;
+        }
+
+        .status-before {
+            background: #ffebee;
+            color: #c62828;
+        }
+
+        .status-after {
+            background: #e8f5e9;
+            color: #2e7d32;
+        }
+
+        .message-bubble {
+            background: white;
+            border-radius: 18px;
+            padding: 12px;
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+        }
+
+        .message-header {
+            font-weight: bold;
+            color: #2e7d32;
+            margin-bottom: 8px;
+            font-size: 15px;
+        }
+
+        .message-text {
+            font-size: 14px;
+            color: #333;
+            line-height: 1.5;
+            margin-bottom: 10px;
+        }
+
+        /* Before styling - bloated */
+        .quick-actions-before {
+            background: linear-gradient(135deg, #F1F8E9 0%, #E8F5E8 100%);
+            border: 1px solid #C8E6C9;
+            border-radius: 12px;
+            padding: 16px;
+            margin-top: 16px;
+        }
+
+        .quick-actions-title-before {
+            font-size: 16px;
+            font-weight: bold;
+            color: #2e7d32;
+            margin-bottom: 12px;
+        }
+
+        .buttons-grid-before {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 8px 8px;
+        }
+
+        .button-before {
+            background: linear-gradient(135deg, #e8f5e9 0%, #c8e6c9 100%);
+            border: 2px solid #66bb6a;
+            border-radius: 20px;
+            padding: 12px;
+            text-align: center;
+            font-size: 12px;
+            font-weight: bold;
+            color: #2e7d32;
+            min-height: 56px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin: 4px;
+        }
+
+        /* After styling - compact */
+        .quick-actions-after {
+            background: linear-gradient(135deg, #F1F8E9 0%, #E8F5E8 100%);
+            border: 1px solid #C8E6C9;
+            border-radius: 12px;
+            padding: 12px;
+            margin-top: 12px;
+        }
+
+        .quick-actions-title-after {
+            font-size: 15px;
+            font-weight: bold;
+            color: #2e7d32;
+            margin-bottom: 8px;
+        }
+
+        .buttons-grid-after {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 6px 6px;
+        }
+
+        .button-after {
+            background: linear-gradient(135deg, #e8f5e9 0%, #c8e6c9 100%);
+            border: 2px solid #66bb6a;
+            border-radius: 16px;
+            padding: 10px;
+            text-align: center;
+            font-size: 12px;
+            font-weight: bold;
+            color: #2e7d32;
+            min-height: 52px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin: 3px;
+        }
+
+        .metrics-section {
+            background: white;
+            border-radius: 20px;
+            padding: 30px;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.2);
+        }
+
+        .metrics-title {
+            font-size: 24px;
+            font-weight: bold;
+            text-align: center;
+            margin-bottom: 20px;
+            color: #2e7d32;
+        }
+
+        .metrics-grid {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 15px;
+            margin-bottom: 20px;
+        }
+
+        .metric-card {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            padding: 20px;
+            border-radius: 12px;
+            text-align: center;
+        }
+
+        .metric-value {
+            font-size: 32px;
+            font-weight: bold;
+            margin-bottom: 5px;
+        }
+
+        .metric-label {
+            font-size: 13px;
+            opacity: 0.9;
+        }
+
+        .changes-list {
+            background: #f5f5f5;
+            border-left: 4px solid #2e7d32;
+            padding: 20px;
+            border-radius: 8px;
+        }
+
+        .changes-list h3 {
+            color: #2e7d32;
+            margin-bottom: 15px;
+            font-size: 18px;
+        }
+
+        .change-item {
+            display: grid;
+            grid-template-columns: auto 1fr auto;
+            gap: 15px;
+            padding: 10px 0;
+            border-bottom: 1px solid #ddd;
+            align-items: center;
+        }
+
+        .change-item:last-child {
+            border-bottom: none;
+        }
+
+        .change-label {
+            font-weight: bold;
+            color: #555;
+            font-size: 14px;
+        }
+
+        .change-values {
+            font-size: 13px;
+            color: #666;
+        }
+
+        .change-before {
+            text-decoration: line-through;
+            color: #c62828;
+        }
+
+        .change-after {
+            color: #2e7d32;
+            font-weight: bold;
+        }
+
+        .change-savings {
+            background: #e8f5e9;
+            color: #2e7d32;
+            padding: 4px 10px;
+            border-radius: 12px;
+            font-size: 12px;
+            font-weight: bold;
+        }
+
+        .annotation {
+            position: absolute;
+            background: #ff5722;
+            color: white;
+            padding: 4px 8px;
+            border-radius: 8px;
+            font-size: 11px;
+            font-weight: bold;
+            z-index: 10;
+        }
+
+        .arrow-down {
+            width: 0;
+            height: 0;
+            border-left: 6px solid transparent;
+            border-right: 6px solid transparent;
+            border-top: 8px solid #ff5722;
+            margin: 0 auto;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <!-- Before/After Comparison -->
+        <div class="comparison-grid">
+            <!-- Before -->
+            <div class="phone-mockup">
+                <div class="screen">
+                    <div class="status-badge status-before">❌ BEFORE: Bloated Spacing</div>
+                    
+                    <div class="message-bubble">
+                        <div class="message-header">🤖 Sasya Arogya</div>
+                        <div class="message-text">
+                            Welcome! I can help you with plant diseases, insurance, and care tips.
+                        </div>
+                        
+                        <div class="quick-actions-before">
+                            <div style="position: relative;">
+                                <div class="annotation" style="top: -35px; left: 50%; transform: translateX(-50%);">
+                                    Too much padding!
+                                </div>
+                                <div class="arrow-down"></div>
+                            </div>
+                            <div class="quick-actions-title-before">🚀 Quick Actions</div>
+                            <div class="buttons-grid-before">
+                                <div class="button-before">📸 Analyze<br>Plant Photo</div>
+                                <div class="button-before">🛡️ Get Insurance<br>Quote</div>
+                                <div class="button-before">🌱 Seasonal<br>Care Tips</div>
+                                <div class="button-before">🧪 Plant<br>Testing Guide</div>
+                                <div class="button-before">💧 Watering<br>Tips</div>
+                                <div class="button-before">🧪 Soil Testing<br>Guide</div>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div style="margin-top: 20px; padding: 15px; background: #ffebee; border-radius: 12px; text-align: center;">
+                        <div style="font-size: 24px; font-weight: bold; color: #c62828; margin-bottom: 5px;">~240px</div>
+                        <div style="font-size: 12px; color: #666;">Total Container Height</div>
+                        <div style="font-size: 11px; color: #999; margin-top: 5px;">❌ Wasted screen space</div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- After -->
+            <div class="phone-mockup">
+                <div class="screen">
+                    <div class="status-badge status-after">✅ AFTER: Compact & Clean</div>
+                    
+                    <div class="message-bubble">
+                        <div class="message-header">🤖 Sasya Arogya</div>
+                        <div class="message-text">
+                            Welcome! I can help you with plant diseases, insurance, and care tips.
+                        </div>
+                        
+                        <div class="quick-actions-after">
+                            <div style="position: relative;">
+                                <div class="annotation" style="top: -35px; left: 50%; transform: translateX(-50%); background: #4caf50;">
+                                    Perfect spacing!
+                                </div>
+                                <div class="arrow-down" style="border-top-color: #4caf50;"></div>
+                            </div>
+                            <div class="quick-actions-title-after">🚀 Quick Actions</div>
+                            <div class="buttons-grid-after">
+                                <div class="button-after">📸 Analyze<br>Plant Photo</div>
+                                <div class="button-after">🛡️ Get Insurance<br>Quote</div>
+                                <div class="button-after">🌱 Seasonal<br>Care Tips</div>
+                                <div class="button-after">🧪 Plant<br>Testing Guide</div>
+                                <div class="button-after">💧 Watering<br>Tips</div>
+                                <div class="button-after">🧪 Soil Testing<br>Guide</div>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div style="margin-top: 20px; padding: 15px; background: #e8f5e9; border-radius: 12px; text-align: center;">
+                        <div style="font-size: 24px; font-weight: bold; color: #2e7d32; margin-bottom: 5px;">~200px</div>
+                        <div style="font-size: 12px; color: #666;">Total Container Height</div>
+                        <div style="font-size: 11px; color: #2e7d32; margin-top: 5px;">✅ 40px saved (~17% reduction)</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Metrics Section -->
+        <div class="metrics-section">
+            <div class="metrics-title">📊 Spacing Optimization Impact</div>
+            
+            <div class="metrics-grid">
+                <div class="metric-card">
+                    <div class="metric-value">-40px</div>
+                    <div class="metric-label">Space Saved</div>
+                </div>
+                <div class="metric-card">
+                    <div class="metric-value">17%</div>
+                    <div class="metric-label">Size Reduction</div>
+                </div>
+                <div class="metric-card">
+                    <div class="metric-value">✅</div>
+                    <div class="metric-label">Touch Targets OK</div>
+                </div>
+            </div>
+
+            <div class="changes-list">
+                <h3>🔧 Detailed Changes</h3>
+                
+                <div class="change-item">
+                    <div class="change-label">Container Top Margin</div>
+                    <div class="change-values">
+                        <span class="change-before">16dp</span> → 
+                        <span class="change-after">12dp</span>
+                    </div>
+                    <div class="change-savings">-4dp</div>
+                </div>
+
+                <div class="change-item">
+                    <div class="change-label">Container Padding</div>
+                    <div class="change-values">
+                        <span class="change-before">16dp</span> → 
+                        <span class="change-after">12dp</span>
+                    </div>
+                    <div class="change-savings">-8dp</div>
+                </div>
+
+                <div class="change-item">
+                    <div class="change-label">Title Text Size</div>
+                    <div class="change-values">
+                        <span class="change-before">16sp</span> → 
+                        <span class="change-after">15sp</span>
+                    </div>
+                    <div class="change-savings">-1sp</div>
+                </div>
+
+                <div class="change-item">
+                    <div class="change-label">Title Bottom Margin</div>
+                    <div class="change-values">
+                        <span class="change-before">12dp</span> → 
+                        <span class="change-after">8dp</span>
+                    </div>
+                    <div class="change-savings">-4dp</div>
+                </div>
+
+                <div class="change-item">
+                    <div class="change-label">Button Corner Radius</div>
+                    <div class="change-values">
+                        <span class="change-before">20dp</span> → 
+                        <span class="change-after">16dp</span>
+                    </div>
+                    <div class="change-savings">Cleaner</div>
+                </div>
+
+                <div class="change-item">
+                    <div class="change-label">Button Min Height</div>
+                    <div class="change-values">
+                        <span class="change-before">56dp</span> → 
+                        <span class="change-after">52dp</span>
+                    </div>
+                    <div class="change-savings">-4dp</div>
+                </div>
+
+                <div class="change-item">
+                    <div class="change-label">Button Padding</div>
+                    <div class="change-values">
+                        <span class="change-before">12dp</span> → 
+                        <span class="change-after">10dp</span>
+                    </div>
+                    <div class="change-savings">-4dp</div>
+                </div>
+
+                <div class="change-item">
+                    <div class="change-label">Button Bottom Margin</div>
+                    <div class="change-values">
+                        <span class="change-before">8dp</span> → 
+                        <span class="change-after">6dp</span>
+                    </div>
+                    <div class="change-savings">-2dp × 6</div>
+                </div>
+            </div>
+
+            <div style="margin-top: 25px; padding: 20px; background: linear-gradient(135deg, #2e7d32 0%, #4caf50 100%); color: white; border-radius: 12px;">
+                <h3 style="font-size: 20px; margin-bottom: 15px; text-align: center;">✨ Benefits Summary</h3>
+                <div style="display: grid; grid-template-columns: repeat(2, 1fr); gap: 10px; font-size: 14px;">
+                    <div>✅ More content visible</div>
+                    <div>✅ Professional appearance</div>
+                    <div>✅ Less scrolling needed</div>
+                    <div>✅ Modern UI patterns</div>
+                    <div>✅ Touch targets maintained (52dp ≥ 48dp)</div>
+                    <div>✅ Better screen utilization</div>
+                </div>
+                <div style="text-align: center; margin-top: 15px; padding-top: 15px; border-top: 1px solid rgba(255,255,255,0.3); font-size: 15px;">
+                    <strong>Result:</strong> Compact, clean, professional quick actions! 🎉
+                </div>
+            </div>
+        </div>
+    </div>
+</body>
+</html>
+

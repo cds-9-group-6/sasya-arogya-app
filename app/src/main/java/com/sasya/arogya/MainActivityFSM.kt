@@ -1241,9 +1241,17 @@ class MainActivityFSM : ComponentActivity(), FSMStreamHandler.StreamCallback {
             // Trigger initial selection to show/hide custom input
             urlSpinner.onItemSelectedListener?.onItemSelected(urlSpinner, null, currentIndex, 0)
 
+            // Build version info
+            val versionInfo = """
+                App Version: ${BuildConfig.VERSION_NAME} (${BuildConfig.VERSION_CODE})
+                Variant: ${BuildConfig.APP_VARIANT}
+                
+                Select your server endpoint:
+            """.trimIndent()
+            
             AlertDialog.Builder(this)
                 .setTitle("🌐 Server Configuration")
-                .setMessage("Select your server endpoint for the Sasya Chikitsa AI assistant:")
+                .setMessage(versionInfo)
                 .setView(dialogView)
                 .setPositiveButton("Connect") { _, _ ->
                     val selectedPosition = urlSpinner.selectedItemPosition
