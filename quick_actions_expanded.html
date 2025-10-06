@@ -1,0 +1,561 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Sasya Arogya - Expanded Quick Actions (6 Buttons)</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, sans-serif;
+            background: linear-gradient(135deg, #f5f7fa 0%, #c3cfe2 100%);
+            padding: 20px;
+            min-height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+        }
+
+        .container {
+            max-width: 800px;
+            width: 100%;
+        }
+
+        .section {
+            background: white;
+            border-radius: 20px;
+            padding: 30px;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
+            margin-bottom: 30px;
+        }
+
+        .section-title {
+            font-size: 28px;
+            font-weight: bold;
+            margin-bottom: 10px;
+            text-align: center;
+            color: #2e7d32;
+        }
+
+        .section-subtitle {
+            font-size: 16px;
+            text-align: center;
+            color: #666;
+            margin-bottom: 25px;
+        }
+
+        .header {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            padding: 20px;
+            border-radius: 15px;
+            margin-bottom: 15px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .header-icon {
+            font-size: 32px;
+        }
+
+        .header-text h2 {
+            font-size: 20px;
+            font-weight: bold;
+            margin-bottom: 5px;
+        }
+
+        .header-text p {
+            font-size: 14px;
+            opacity: 0.9;
+        }
+
+        .quick-actions-grid {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 12px;
+            margin-top: 15px;
+        }
+
+        .quick-action-btn {
+            background: linear-gradient(135deg, #e8f5e9 0%, #c8e6c9 100%);
+            border: 2px solid #66bb6a;
+            border-radius: 20px;
+            padding: 16px 12px;
+            text-align: center;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            font-size: 13px;
+            font-weight: bold;
+            color: #2e7d32;
+            min-height: 80px;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            gap: 5px;
+            box-shadow: 0 2px 8px rgba(102, 187, 106, 0.2);
+            position: relative;
+            overflow: hidden;
+        }
+
+        .quick-action-btn.new {
+            background: linear-gradient(135deg, #fff3e0 0%, #ffe0b2 100%);
+            border-color: #ff9800;
+            color: #e65100;
+        }
+
+        .quick-action-btn.new::after {
+            content: "NEW";
+            position: absolute;
+            top: 5px;
+            right: 5px;
+            background: #ff5722;
+            color: white;
+            font-size: 9px;
+            padding: 2px 6px;
+            border-radius: 8px;
+            font-weight: bold;
+        }
+
+        .quick-action-btn:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 6px 16px rgba(102, 187, 106, 0.3);
+        }
+
+        .quick-action-btn.new:hover {
+            box-shadow: 0 6px 16px rgba(255, 152, 0, 0.3);
+        }
+
+        .quick-action-btn:active {
+            transform: translateY(0);
+        }
+
+        .btn-icon {
+            font-size: 28px;
+            line-height: 1;
+        }
+
+        .btn-text {
+            line-height: 1.3;
+            word-wrap: break-word;
+        }
+
+        .feature-grid {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 15px;
+            margin-top: 20px;
+        }
+
+        .feature-card {
+            background: #f5f5f5;
+            padding: 20px;
+            border-radius: 12px;
+            border-left: 4px solid #2e7d32;
+        }
+
+        .feature-card.new-feature {
+            border-left-color: #ff9800;
+            background: #fff8e1;
+        }
+
+        .feature-card h3 {
+            font-size: 18px;
+            margin-bottom: 10px;
+            color: #2e7d32;
+        }
+
+        .feature-card.new-feature h3 {
+            color: #e65100;
+        }
+
+        .feature-card p {
+            font-size: 14px;
+            color: #555;
+            line-height: 1.6;
+            margin-bottom: 10px;
+        }
+
+        .feature-card ul {
+            margin-left: 20px;
+            font-size: 13px;
+            color: #666;
+        }
+
+        .feature-card ul li {
+            margin-bottom: 5px;
+        }
+
+        .badge {
+            display: inline-block;
+            padding: 4px 10px;
+            border-radius: 12px;
+            font-size: 11px;
+            font-weight: bold;
+            margin-top: 8px;
+        }
+
+        .badge-new {
+            background: #ff9800;
+            color: white;
+        }
+
+        .badge-existing {
+            background: #4caf50;
+            color: white;
+        }
+
+        .stats-grid {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 15px;
+            margin-top: 20px;
+        }
+
+        .stat-box {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            padding: 20px;
+            border-radius: 12px;
+            text-align: center;
+        }
+
+        .stat-number {
+            font-size: 36px;
+            font-weight: bold;
+            margin-bottom: 5px;
+        }
+
+        .stat-label {
+            font-size: 14px;
+            opacity: 0.9;
+        }
+
+        .demo-interaction {
+            background: #e3f2fd;
+            border: 2px solid #2196f3;
+            border-radius: 12px;
+            padding: 20px;
+            margin-top: 20px;
+        }
+
+        .demo-interaction h4 {
+            color: #1976d2;
+            margin-bottom: 15px;
+            font-size: 18px;
+        }
+
+        .interaction-row {
+            display: grid;
+            grid-template-columns: auto 1fr;
+            gap: 15px;
+            margin-bottom: 15px;
+            align-items: start;
+        }
+
+        .interaction-arrow {
+            font-size: 24px;
+            color: #2196f3;
+        }
+
+        .interaction-content {
+            background: white;
+            padding: 12px;
+            border-radius: 8px;
+            box-shadow: 0 2px 6px rgba(0, 0, 0, 0.1);
+        }
+
+        .interaction-label {
+            font-size: 12px;
+            font-weight: bold;
+            color: #1976d2;
+            margin-bottom: 5px;
+        }
+
+        .interaction-text {
+            font-size: 13px;
+            color: #333;
+            line-height: 1.5;
+        }
+
+        .highlight {
+            background: #ffeb3b;
+            padding: 2px 4px;
+            border-radius: 3px;
+            font-weight: bold;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <!-- Main Quick Actions Display -->
+        <div class="section">
+            <div class="section-title">🌿 Sasya Arogya Quick Actions</div>
+            <div class="section-subtitle">Expanded to 6 buttons - Complete agricultural assistance</div>
+            
+            <div class="header">
+                <div class="header-icon">🚀</div>
+                <div class="header-text">
+                    <h2>Quick Actions</h2>
+                    <p>Now with Plant Testing & Watering Tips!</p>
+                </div>
+            </div>
+
+            <div class="quick-actions-grid">
+                <div class="quick-action-btn">
+                    <div class="btn-icon">📸</div>
+                    <div class="btn-text">Analyze<br>Plant Photo</div>
+                </div>
+                <div class="quick-action-btn">
+                    <div class="btn-icon">🛡️</div>
+                    <div class="btn-text">Get Insurance<br>Quote</div>
+                </div>
+                <div class="quick-action-btn">
+                    <div class="btn-icon">🌱</div>
+                    <div class="btn-text">Seasonal Care<br>Tips</div>
+                </div>
+                <div class="quick-action-btn new">
+                    <div class="btn-icon">🧪</div>
+                    <div class="btn-text">Plant Testing<br>Guide</div>
+                </div>
+                <div class="quick-action-btn new">
+                    <div class="btn-icon">💧</div>
+                    <div class="btn-text">Watering<br>Tips</div>
+                </div>
+                <div class="quick-action-btn">
+                    <div class="btn-icon">🧪</div>
+                    <div class="btn-text">Soil Testing<br>Guide</div>
+                </div>
+            </div>
+
+            <div class="stats-grid" style="margin-top: 25px;">
+                <div class="stat-box">
+                    <div class="stat-number">6</div>
+                    <div class="stat-label">Total Actions</div>
+                </div>
+                <div class="stat-box">
+                    <div class="stat-number">2</div>
+                    <div class="stat-label">New Features</div>
+                </div>
+                <div class="stat-box">
+                    <div class="stat-number">3x2</div>
+                    <div class="stat-label">Grid Layout</div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Feature Details -->
+        <div class="section">
+            <div class="section-title">✨ What's New</div>
+            <div class="feature-grid">
+                <div class="feature-card new-feature">
+                    <h3>🧪 Plant Testing Guide</h3>
+                    <p>Teaches farmers how to test plant health at home:</p>
+                    <ul>
+                        <li>Signs of healthy plants</li>
+                        <li>Visual inspection methods</li>
+                        <li>Common testing techniques</li>
+                        <li>Early problem detection</li>
+                    </ul>
+                    <span class="badge badge-new">NEW</span>
+                </div>
+                
+                <div class="feature-card new-feature">
+                    <h3>💧 Watering Tips</h3>
+                    <p>Location-aware watering guidance:</p>
+                    <ul>
+                        <li>Uses farmer's state/location</li>
+                        <li>Crop-specific water needs</li>
+                        <li>Best watering schedules</li>
+                        <li>Over/under-watering signs</li>
+                    </ul>
+                    <span class="badge badge-new">NEW</span>
+                </div>
+
+                <div class="feature-card">
+                    <h3>📸 Analyze Plant Photo</h3>
+                    <p>AI-powered disease diagnosis:</p>
+                    <ul>
+                        <li>CNN-based classification</li>
+                        <li>Disease identification</li>
+                        <li>Treatment recommendations</li>
+                    </ul>
+                    <span class="badge badge-existing">EXISTING</span>
+                </div>
+
+                <div class="feature-card">
+                    <h3>🛡️ Get Insurance Quote</h3>
+                    <p>Smart insurance assistance:</p>
+                    <ul>
+                        <li>Auto-fills farm details</li>
+                        <li>Premium calculations</li>
+                        <li>MCP server integration</li>
+                    </ul>
+                    <span class="badge badge-existing">EXISTING</span>
+                </div>
+
+                <div class="feature-card">
+                    <h3>🌱 Seasonal Care Tips</h3>
+                    <p>Season-specific guidance:</p>
+                    <ul>
+                        <li>What to plant now</li>
+                        <li>Seasonal challenges</li>
+                        <li>Care recommendations</li>
+                    </ul>
+                    <span class="badge badge-existing">EXISTING</span>
+                </div>
+
+                <div class="feature-card">
+                    <h3>🧪 Soil Testing Guide</h3>
+                    <p>Comprehensive soil analysis:</p>
+                    <ul>
+                        <li>pH testing methods</li>
+                        <li>Nutrient deficiencies</li>
+                        <li>Soil improvement tips</li>
+                    </ul>
+                    <span class="badge badge-existing">EXISTING</span>
+                </div>
+            </div>
+        </div>
+
+        <!-- Interactive Demos -->
+        <div class="section">
+            <div class="section-title">🎯 How They Work</div>
+            
+            <div class="demo-interaction">
+                <h4>💧 Watering Tips - User Flow</h4>
+                <div class="interaction-row">
+                    <div class="interaction-arrow">👨‍🌾</div>
+                    <div class="interaction-content">
+                        <div class="interaction-label">User Action:</div>
+                        <div class="interaction-text">Clicks "💧 Watering Tips"</div>
+                    </div>
+                </div>
+                <div class="interaction-row">
+                    <div class="interaction-arrow">🤖</div>
+                    <div class="interaction-content">
+                        <div class="interaction-label">Generated Query (Profile-Aware):</div>
+                        <div class="interaction-text">
+                            "Give me watering tips and best practices for plants in <span class="highlight">Karnataka</span>. 
+                            How much water do different crops need, when to water, and signs of over/under-watering?"
+                        </div>
+                    </div>
+                </div>
+                <div class="interaction-row">
+                    <div class="interaction-arrow">🌿</div>
+                    <div class="interaction-content">
+                        <div class="interaction-label">Assistant Response:</div>
+                        <div class="interaction-text">
+                            <strong>Watering Guide for Karnataka</strong><br><br>
+                            • <strong>Tomatoes:</strong> 2-3 times per week (2-3 liters/plant)<br>
+                            • <strong>Wheat:</strong> Once a week during growth phase<br>
+                            • <strong>Best Time:</strong> Early morning (6-8 AM)<br>
+                            • <strong>Over-watering signs:</strong> Yellow leaves, wilting<br>
+                            • <strong>Under-watering signs:</strong> Brown edges, drooping
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="demo-interaction" style="margin-top: 20px;">
+                <h4>🧪 Plant Testing Guide - User Flow</h4>
+                <div class="interaction-row">
+                    <div class="interaction-arrow">👨‍🌾</div>
+                    <div class="interaction-content">
+                        <div class="interaction-label">User Action:</div>
+                        <div class="interaction-text">Clicks "🧪 Plant Testing Guide"</div>
+                    </div>
+                </div>
+                <div class="interaction-row">
+                    <div class="interaction-arrow">🤖</div>
+                    <div class="interaction-content">
+                        <div class="interaction-label">Generated Query:</div>
+                        <div class="interaction-text">
+                            "How can I test my plants to check their health status? 
+                            What are the <span class="highlight">signs of healthy plants</span> and 
+                            <span class="highlight">common testing methods</span> I can use at home?"
+                        </div>
+                    </div>
+                </div>
+                <div class="interaction-row">
+                    <div class="interaction-arrow">🌿</div>
+                    <div class="interaction-content">
+                        <div class="interaction-label">Assistant Response:</div>
+                        <div class="interaction-text">
+                            <strong>Plant Health Testing at Home</strong><br><br>
+                            <strong>Visual Inspection:</strong><br>
+                            ✓ Leaves: Vibrant green, no spots/discoloration<br>
+                            ✓ Stems: Firm, not soft or brittle<br>
+                            ✓ Growth: New leaves/shoots appearing<br><br>
+                            <strong>Simple Tests:</strong><br>
+                            • Scratch test: Green under bark = healthy<br>
+                            • Snap test: Crisp snap = adequate water<br>
+                            • Root check: White roots = healthy
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Benefits Summary -->
+        <div class="section">
+            <div class="section-title">🎉 Complete Agricultural Support</div>
+            <div style="margin-top: 20px; padding: 25px; background: linear-gradient(135deg, #2e7d32 0%, #4caf50 100%); color: white; border-radius: 12px;">
+                <h3 style="font-size: 22px; margin-bottom: 15px; text-align: center;">✅ Full Spectrum Coverage</h3>
+                <div style="display: grid; grid-template-columns: repeat(2, 1fr); gap: 15px; font-size: 14px;">
+                    <div>✅ Disease Diagnosis (AI-powered)</div>
+                    <div>✅ Insurance Assistance (MCP)</div>
+                    <div>✅ Seasonal Guidance (Smart)</div>
+                    <div>✅ Plant Testing (New!)</div>
+                    <div>✅ Watering Tips (Location-aware)</div>
+                    <div>✅ Soil Analysis (Comprehensive)</div>
+                </div>
+                <div style="text-align: center; margin-top: 20px; font-size: 16px; opacity: 0.95;">
+                    <strong>Sasya Arogya:</strong> Your Complete Agricultural Companion 🌾
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // Add interactive click handlers
+        document.querySelectorAll('.quick-action-btn').forEach(btn => {
+            btn.addEventListener('click', function() {
+                const text = this.querySelector('.btn-text').textContent.trim();
+                const isNew = this.classList.contains('new');
+                const badge = isNew ? ' 🆕' : '';
+                
+                let message = '';
+                switch(text) {
+                    case 'Plant Testing\nGuide':
+                        message = '🧪 Plant Testing Guide clicked!\n\n' +
+                                'Query: "How can I test my plants to check their health status? ' +
+                                'What are the signs of healthy plants and common testing methods I can use at home?"';
+                        break;
+                    case 'Watering\nTips':
+                        message = '💧 Watering Tips clicked!\n\n' +
+                                'Query: "Give me watering tips and best practices for plants in Karnataka. ' +
+                                'How much water do different crops need, when to water, and signs of over/under-watering?"';
+                        break;
+                    case 'Get Insurance\nQuote':
+                        message = '🛡️ Insurance Quote clicked!\n\n' +
+                                'Query: "I would like to get crop insurance for my 2.0 hectare tomato farm in Karnataka. ' +
+                                'Please show me premium options."';
+                        break;
+                    default:
+                        message = '✅ ' + text.replace('\n', ' ') + ' clicked!' + badge;
+                }
+                
+                alert(message);
+            });
+        });
+    </script>
+</body>
+</html>
+
