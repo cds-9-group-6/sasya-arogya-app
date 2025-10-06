@@ -466,20 +466,24 @@
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:orientation="vertical"
-                    android:layout_marginTop="12dp"
+                    android:layout_marginTop="10dp"
                     android:background="@drawable/followup_container_background"
-                    android:padding="12dp"
+                    android:paddingStart="8dp"
+                    android:paddingEnd="8dp"
+                    android:paddingTop="10dp"
+                    android:paddingBottom="8dp"
                     android:visibility="gone">
 
                     <TextView
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:text="🚀 Quick Actions"
-                        android:textSize="15sp"
+                        android:textSize="14sp"
                         android:textStyle="bold"
                         android:textColor="@color/forest_green"
-                        android:layout_marginBottom="8dp"
-                        android:drawablePadding="6dp" />
+                        android:layout_marginBottom="6dp"
+                        android:layout_marginStart="2dp"
+                        android:drawablePadding="4dp" />
 
                     <!-- 2-Column Grid Quick Actions -->
                     <androidx.recyclerview.widget.RecyclerView
