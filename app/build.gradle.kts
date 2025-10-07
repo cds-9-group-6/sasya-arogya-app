@@ -11,8 +11,8 @@ android {
         applicationId = "com.sasya.arogya"
         minSdk = 24
         targetSdk = 34
-        versionCode = 2
-        versionName = "1.1.0"
+        versionCode = 3
+        versionName = "1.1.1"
 
         testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
         
@@ -45,7 +45,7 @@ android {
             buildConfigField("String", "DEFAULT_SERVER_TYPE", "\"NON_GPU\"")
             buildConfigField("String", "APP_VARIANT", "\"Non-GPU\"")
             
-            resValue("string", "app_name", "Sasya Chikitsa (Non-GPU)")
+            resValue("string", "app_name", "Sasya Arogya (Non-GPU)")
         }
     }
 

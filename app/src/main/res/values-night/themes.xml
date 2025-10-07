@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
     <!-- Earthly Plant Disease Detection App Dark Theme - Material Design 3 -->
-    <style name="Theme.Sasya_Chikitsa" parent="Theme.Material3.DayNight.NoActionBar">
+    <style name="Theme.Sasya_Arogya" parent="Theme.Material3.DayNight.NoActionBar">
         <!-- MD3 Primary Colors - Dark Earth Theme -->
         <item name="colorPrimary">@color/sage_green_light</item>
         <item name="colorOnPrimary">@color/rich_brown</item>

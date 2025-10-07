@@ -5,7 +5,7 @@ import android.content.SharedPreferences
 import com.sasya.arogya.BuildConfig
 
 /**
- * Server configuration management for the Sasya Chikitsa app.
+ * Server configuration management for the Sasya Arogya app.
  * 
  * This configuration supports multiple build variants:
  * - GPU Variant: Configured for GPU-enabled cluster

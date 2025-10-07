@@ -650,7 +650,7 @@ class MainActivity : ComponentActivity() {
             if (message.text.contains("📋 Recommended Actions:")) {
                 createStreamingActionItemsView(messageLayout, message.text)
             } else {
-                // Add header with icon and "Sasya Chikitsa" label with colored background
+                // Add header with icon and "Sasya Arogya" label with colored background
                 val headerLayout = LinearLayout(this).apply {
                     orientation = LinearLayout.HORIZONTAL
                     setPadding(12, 6, 12, 6) // Padding for colored background
@@ -669,7 +669,7 @@ class MainActivity : ComponentActivity() {
                 }
 
                 val headerText = TextView(this).apply {
-                    text = "🤖 Sasya Chikitsa"
+                    text = "🤖 Sasya Arogya"
                     textSize = 14f // Smaller header text
                     setTextColor(
                         ContextCompat.getColor(
@@ -763,7 +763,7 @@ class MainActivity : ComponentActivity() {
         messageLayout: LinearLayout,
         structuredResponse: StructuredResponse
     ) {
-        // Add header with icon and "Sasya Chikitsa" label with colored background
+        // Add header with icon and "Sasya Arogya" label with colored background
         val headerLayout = LinearLayout(this).apply {
             orientation = LinearLayout.HORIZONTAL
             setPadding(12, 6, 12, 6) // Padding for colored background
@@ -782,7 +782,7 @@ class MainActivity : ComponentActivity() {
         }
 
         val headerText = TextView(this).apply {
-            text = "🤖 Sasya Chikitsa"
+            text = "🤖 Sasya Arogya"
             textSize = 14f // Smaller header text
             setTextColor(ContextCompat.getColor(this@MainActivity, R.color.header_text_white))
             setTypeface(typeface, Typeface.BOLD)
@@ -884,7 +884,7 @@ class MainActivity : ComponentActivity() {
 
     // Helper method to create streaming action items view (with checkmarks ✓)
     private fun createStreamingActionItemsView(messageLayout: LinearLayout, messageText: String) {
-        // Add header with icon and "Sasya Chikitsa" label with colored background
+        // Add header with icon and "Sasya Arogya" label with colored background
         val headerLayout = LinearLayout(this).apply {
             orientation = LinearLayout.HORIZONTAL
             setPadding(12, 6, 12, 6) // Padding for colored background
@@ -903,7 +903,7 @@ class MainActivity : ComponentActivity() {
         }
 
         val headerText = TextView(this).apply {
-            text = "🤖 Sasya Chikitsa"
+            text = "🤖 Sasya Arogya"
             textSize = 14f // Smaller header text
             setTextColor(ContextCompat.getColor(this@MainActivity, R.color.header_text_white))
             setTypeface(typeface, Typeface.BOLD)
@@ -1501,7 +1501,7 @@ class MainActivity : ComponentActivity() {
 
     private fun createThinkingIndicatorView(): View {
         return TextView(this).apply {
-            text = "🤖 Sasya Chikitsa AI Agent Thinking"
+            text = "🤖 Sasya Arogya AI Agent Thinking"
             textSize = 14f
             setTextColor(getColor(R.color.assistant_text))
             setPadding(16, 8, 16, 8)
@@ -1548,8 +1548,8 @@ class MainActivity : ComponentActivity() {
 
                     // Find and update the thinking line
                     for (i in lines.indices.reversed()) {
-                        if (lines[i].contains("Sasya Chikitsa AI Agent Thinking")) {
-                            lines[i] = "🤖 Sasya Chikitsa AI Agent Thinking$dots"
+                        if (lines[i].contains("Sasya Arogya AI Agent Thinking")) {
+                            lines[i] = "🤖 Sasya Arogya AI Agent Thinking$dots"
                             break
                         }
                     }
@@ -1557,7 +1557,7 @@ class MainActivity : ComponentActivity() {
                     // Update the thinking indicator view text with dots
                     thinkingIndicatorView?.let { view ->
                         val textView = view as? TextView
-                        textView?.text = "🤖 Sasya Chikitsa AI Agent Thinking$dots"
+                        textView?.text = "🤖 Sasya Arogya AI Agent Thinking$dots"
                     }
                     
                     // NO scrolling during thinking animation - keep position stable
@@ -1611,7 +1611,7 @@ class MainActivity : ComponentActivity() {
             }
 
             // Add engaging plant analysis header
-            responseTextView.append("🤖 Sasya Chikitsa AI Analyzing...\n")
+            responseTextView.append("🤖 Sasya Arogya AI Analyzing...\n")
             responseTextView.append("🌱 Examining your plant health\n")
             responseTextView.append("🔍 Running disease detection algorithms\n")
 
@@ -1706,8 +1706,8 @@ class MainActivity : ComponentActivity() {
                         line.contains("🌱") ||
                         line.contains("Analyzing...") ||
                         line.contains("Examining") ||
-                        line.contains("Sasya Chikitsa AI Agent Typing") ||
-                        line.contains("Sasya Chikitsa AI Agent Thinking")
+                        line.contains("Sasya Arogya AI Agent Typing") ||
+                        line.contains("Sasya Arogya AI Agent Thinking")
             }
 
             // Restore clean text
@@ -2508,7 +2508,7 @@ class MainActivity : ComponentActivity() {
         if (!hasSetupProfile) {
             // Show welcome dialog encouraging profile setup
             AlertDialog.Builder(this)
-                .setTitle("🌱 Welcome to Sasya Chikitsa!")
+                .setTitle("🌱 Welcome to Sasya Arogya!")
                 .setMessage("Get personalized plant care advice by setting up your agricultural profile. This helps our AI provide recommendations specific to your crop, location, and farming context.\n\n✅ Accurate disease detection\n✅ Location-specific treatments\n✅ Seasonal recommendations\n✅ Experience-appropriate advice")
                 .setPositiveButton("Set Up Profile") { _, _ ->
                     showAgriculturalProfileDialog()
@@ -2840,7 +2840,7 @@ class MainActivity : ComponentActivity() {
 
             AlertDialog.Builder(this)
                 .setTitle("🌐 Server Configuration")
-                .setMessage("Select your server endpoint for the Sasya Chikitsa AI assistant:")
+                .setMessage("Select your server endpoint for the Sasya Arogya AI assistant:")
                 .setView(dialogView)
                 .setPositiveButton("Connect") { _, _ ->
                     val selectedPosition = urlSpinner.selectedItemPosition

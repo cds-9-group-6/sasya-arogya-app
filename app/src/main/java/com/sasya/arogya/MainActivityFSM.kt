@@ -1549,7 +1549,7 @@ class MainActivityFSM : ComponentActivity(), FSMStreamHandler.StreamCallback {
             val contentValues = ContentValues().apply {
                 put(MediaStore.Images.Media.DISPLAY_NAME, displayName)
                 put(MediaStore.Images.Media.MIME_TYPE, "image/jpeg")
-                put(MediaStore.Images.Media.RELATIVE_PATH, Environment.DIRECTORY_PICTURES + "/Sasya Chikitsa Samples")
+                put(MediaStore.Images.Media.RELATIVE_PATH, Environment.DIRECTORY_PICTURES + "/Sasya Arogya Samples")
             }
             
             // Insert into MediaStore
