@@ -1,0 +1,97 @@
+<?xml version="1.0" encoding="utf-8"?>
+<vector xmlns:android="http://schemas.android.com/apk/res/android"
+    android:width="48dp"
+    android:height="48dp"
+    android:viewportWidth="48"
+    android:viewportHeight="48">
+    
+    <!-- Main flower stem - thicker and taller -->
+    <path
+        android:fillColor="#4CAF50"
+        android:pathData="M24,8v28"/>
+    
+    <!-- Left leaves - bigger -->
+    <path
+        android:fillColor="#66BB6A"
+        android:pathData="M16,16c-4,2 -4,6 0,8l4,-4z"/>
+    
+    <path
+        android:fillColor="#66BB6A"
+        android:pathData="M18,20c-2,1 -2,3 0,4l2,-2z"/>
+    
+    <path
+        android:fillColor="#66BB6A"
+        android:pathData="M14,24c-3,1.5 -3,4.5 0,6l3,-3z"/>
+    
+    <!-- Right leaves - bigger -->
+    <path
+        android:fillColor="#66BB6A"
+        android:pathData="M32,16c4,2 4,6 0,8l-4,-4z"/>
+    
+    <path
+        android:fillColor="#66BB6A"
+        android:pathData="M30,20c2,1 2,3 0,4l-2,-2z"/>
+    
+    <path
+        android:fillColor="#66BB6A"
+        android:pathData="M34,24c3,1.5 3,4.5 0,6l-3,-3z"/>
+    
+    <!-- Main flower center - much bigger -->
+    <path
+        android:fillColor="#FFC107"
+        android:pathData="M24,6c3.5,0 6,2.5 6,6s-2.5,6 -6,6s-6,-2.5 -6,-6S20.5,6 24,6z"/>
+    
+    <!-- Flower petals - bigger and more prominent -->
+    <path
+        android:fillColor="#FF9800"
+        android:pathData="M24,6c0,-3 3,-3 3,0s-3,3 0,3C27,9 24,7.5 24,6z"/>
+    
+    <path
+        android:fillColor="#FF9800"
+        android:pathData="M30,12c3,0 3,3 0,3s-3,-3 0,-3C30,12 30,12 30,12z"/>
+    
+    <path
+        android:fillColor="#FF9800"
+        android:pathData="M24,18c0,3 -3,3 -3,0s3,-3 0,-3C21,15 24,16.5 24,18z"/>
+    
+    <path
+        android:fillColor="#FF9800"
+        android:pathData="M18,12c-3,0 -3,-3 0,-3s3,3 0,3C18,12 18,12 18,12z"/>
+    
+    <!-- Additional small flowers - bigger -->
+    <path
+        android:fillColor="#E91E63"
+        android:pathData="M16,12c1.5,0 3,1.5 3,3s-1.5,3 -3,3s-3,-1.5 -3,-3S14.5,12 16,12z"/>
+    
+    <path
+        android:fillColor="#E91E63"
+        android:pathData="M32,12c1.5,0 3,1.5 3,3s-1.5,3 -3,3s-3,-1.5 -3,-3S30.5,12 32,12z"/>
+    
+    <!-- Additional flowers on stem -->
+    <path
+        android:fillColor="#9C27B0"
+        android:pathData="M20,28c1,0 2,1 2,2s-1,2 -2,2s-2,-1 -2,-2S19,28 20,28z"/>
+    
+    <path
+        android:fillColor="#9C27B0"
+        android:pathData="M28,28c1,0 2,1 2,2s-1,2 -2,2s-2,-1 -2,-2S27,28 28,28z"/>
+    
+    <!-- Pot/container - bigger -->
+    <path
+        android:fillColor="#8D6E63"
+        android:pathData="M20,36h8v4h-8z"/>
+    
+    <path
+        android:fillColor="#A1887F"
+        android:pathData="M18,40h12v2h-12z"/>
+    
+    <!-- Soil in pot -->
+    <path
+        android:fillColor="#5D4037"
+        android:pathData="M20,38h8v2h-8z"/>
+    
+    <!-- Pot rim detail -->
+    <path
+        android:fillColor="#6D4C41"
+        android:pathData="M18,40h12v1h-12z"/>
+</vector>

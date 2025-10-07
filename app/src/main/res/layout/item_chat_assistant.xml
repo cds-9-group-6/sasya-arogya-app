@@ -485,13 +485,157 @@
                         android:layout_marginStart="2dp"
                         android:drawablePadding="4dp" />
 
-                    <!-- 2-Column Grid Quick Actions -->
-                    <androidx.recyclerview.widget.RecyclerView
-                        android:id="@+id/quickActionsRecyclerView"
+                    <!-- Simple LinearLayout Quick Actions - More reliable across devices -->
+                    <LinearLayout
+                        android:id="@+id/quickActionsContainer"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:nestedScrollingEnabled="false"
-                        android:clipToPadding="false" />
+                        android:orientation="vertical"
+                        android:visibility="gone">
+                        
+                        <!-- Row 1 -->
+                        <LinearLayout
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:orientation="horizontal"
+                            android:layout_marginBottom="6dp">
+                            
+                            <TextView
+                                android:id="@+id/quickAction1"
+                                android:layout_width="0dp"
+                                android:layout_height="wrap_content"
+                                android:layout_weight="1"
+                                android:layout_marginEnd="3dp"
+                                android:minHeight="48dp"
+                                android:background="@drawable/quick_action_button_background"
+                                android:text="📸 Analyze Plant Photo"
+                                android:textSize="12sp"
+                                android:textStyle="bold"
+                                android:textColor="@color/followup_chip_text"
+                                android:gravity="center"
+                                android:padding="8dp"
+                                android:clickable="true"
+                                android:focusable="true"
+                                android:singleLine="false"
+                                android:maxLines="2"
+                                android:ellipsize="end" />
+                            
+                            <TextView
+                                android:id="@+id/quickAction2"
+                                android:layout_width="0dp"
+                                android:layout_height="wrap_content"
+                                android:layout_weight="1"
+                                android:layout_marginStart="3dp"
+                                android:minHeight="48dp"
+                                android:background="@drawable/quick_action_button_background"
+                                android:text="🛡️ Get Insurance Quote"
+                                android:textSize="12sp"
+                                android:textStyle="bold"
+                                android:textColor="@color/followup_chip_text"
+                                android:gravity="center"
+                                android:padding="8dp"
+                                android:clickable="true"
+                                android:focusable="true"
+                                android:singleLine="false"
+                                android:maxLines="2"
+                                android:ellipsize="end" />
+                        </LinearLayout>
+                        
+                        <!-- Row 2 -->
+                        <LinearLayout
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:orientation="horizontal"
+                            android:layout_marginBottom="6dp">
+                            
+                            <TextView
+                                android:id="@+id/quickAction3"
+                                android:layout_width="0dp"
+                                android:layout_height="wrap_content"
+                                android:layout_weight="1"
+                                android:layout_marginEnd="3dp"
+                                android:minHeight="48dp"
+                                android:background="@drawable/quick_action_button_background"
+                                android:text="🌱 Seasonal Care Tips"
+                                android:textSize="12sp"
+                                android:textStyle="bold"
+                                android:textColor="@color/followup_chip_text"
+                                android:gravity="center"
+                                android:padding="8dp"
+                                android:clickable="true"
+                                android:focusable="true"
+                                android:singleLine="false"
+                                android:maxLines="2"
+                                android:ellipsize="end" />
+                            
+                            <TextView
+                                android:id="@+id/quickAction4"
+                                android:layout_width="0dp"
+                                android:layout_height="wrap_content"
+                                android:layout_weight="1"
+                                android:layout_marginStart="3dp"
+                                android:minHeight="48dp"
+                                android:background="@drawable/quick_action_button_background"
+                                android:text="🌿 Plant Testing Guide"
+                                android:textSize="12sp"
+                                android:textStyle="bold"
+                                android:textColor="@color/followup_chip_text"
+                                android:gravity="center"
+                                android:padding="8dp"
+                                android:clickable="true"
+                                android:focusable="true"
+                                android:singleLine="false"
+                                android:maxLines="2"
+                                android:ellipsize="end" />
+                        </LinearLayout>
+                        
+                        <!-- Row 3 -->
+                        <LinearLayout
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:orientation="horizontal">
+                            
+                            <TextView
+                                android:id="@+id/quickAction5"
+                                android:layout_width="0dp"
+                                android:layout_height="wrap_content"
+                                android:layout_weight="1"
+                                android:layout_marginEnd="3dp"
+                                android:minHeight="48dp"
+                                android:background="@drawable/quick_action_button_background"
+                                android:text="💧 Watering Tips"
+                                android:textSize="12sp"
+                                android:textStyle="bold"
+                                android:textColor="@color/followup_chip_text"
+                                android:gravity="center"
+                                android:padding="8dp"
+                                android:clickable="true"
+                                android:focusable="true"
+                                android:singleLine="false"
+                                android:maxLines="2"
+                                android:ellipsize="end" />
+                            
+                            <TextView
+                                android:id="@+id/quickAction6"
+                                android:layout_width="0dp"
+                                android:layout_height="wrap_content"
+                                android:layout_weight="1"
+                                android:layout_marginStart="3dp"
+                                android:minHeight="48dp"
+                                android:background="@drawable/quick_action_button_background"
+                                android:text="🌾 Soil Testing Guide"
+                                android:textSize="12sp"
+                                android:textStyle="bold"
+                                android:textColor="@color/followup_chip_text"
+                                android:gravity="center"
+                                android:padding="8dp"
+                                android:clickable="true"
+                                android:focusable="true"
+                                android:singleLine="false"
+                                android:maxLines="2"
+                                android:ellipsize="end" />
+                        </LinearLayout>
+                    </LinearLayout>
 
                 </LinearLayout>
 

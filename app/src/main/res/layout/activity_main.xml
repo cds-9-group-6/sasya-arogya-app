@@ -25,19 +25,19 @@
 
             <!-- Enhanced App Icon with Glow -->
             <androidx.cardview.widget.CardView
-                android:layout_width="48dp"
-                android:layout_height="48dp"
-                app:cardCornerRadius="24dp"
-                app:cardElevation="4dp"
-                android:layout_marginEnd="16dp">
+                android:layout_width="64dp"
+                android:layout_height="64dp"
+                app:cardCornerRadius="32dp"
+                app:cardElevation="6dp"
+                android:layout_marginEnd="20dp">
                 
                 <ImageView
                     android:id="@+id/appIcon"
                     android:layout_width="match_parent"
                     android:layout_height="match_parent"
-                    android:src="@drawable/ic_local_florist"
+                    android:src="@drawable/ic_florist"
                     android:background="@drawable/icon_background_gradient"
-                    android:padding="10dp"
+                    android:padding="4dp"
                     android:scaleType="centerInside" />
             </androidx.cardview.widget.CardView>
 

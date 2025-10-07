@@ -111,9 +111,9 @@
                 android:gravity="center_vertical">
                 
                 <ImageView
-                    android:layout_width="24dp"
-                    android:layout_height="24dp"
-                    android:src="@drawable/ic_local_florist"
+                    android:layout_width="32dp"
+                    android:layout_height="32dp"
+                    android:src="@drawable/ic_florist"
                     android:layout_marginEnd="12dp"
                     android:tint="#4CAF50" />
                 

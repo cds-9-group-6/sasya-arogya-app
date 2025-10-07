@@ -205,7 +205,7 @@ class ChatAdapter(
         private val stateIndicator: TextView = itemView.findViewById(R.id.stateIndicator)
         private val processingSubtitle: TextView = itemView.findViewById(R.id.processingSubtitle)
         private val followUpContainer: LinearLayout = itemView.findViewById(R.id.followUpContainer)
-        private val quickActionsRecyclerView: RecyclerView = itemView.findViewById(R.id.quickActionsRecyclerView)
+        private val quickActionsContainer: LinearLayout = itemView.findViewById(R.id.quickActionsContainer)
         private val thumbsUpButton: ImageButton = itemView.findViewById(R.id.thumbsUpButton)
         private val thumbsDownButton: ImageButton = itemView.findViewById(R.id.thumbsDownButton)
         private val attentionOverlayContainer: LinearLayout = itemView.findViewById(R.id.attentionOverlayContainer)
@@ -422,7 +422,7 @@ class ChatAdapter(
             // Add follow-up buttons
             if (message.followUpItems != null && message.followUpItems.isNotEmpty()) {
                 followUpContainer.visibility = View.VISIBLE
-                setupQuickActionsRecyclerView(message.followUpItems)
+                setupQuickActionsContainer(message.followUpItems)
             } else {
                 followUpContainer.visibility = View.GONE
             }
@@ -1410,25 +1410,46 @@ class ChatAdapter(
         /**
          * Setup quick actions in a 2-column grid layout without horizontal scrolling
          */
-        private fun setupQuickActionsRecyclerView(quickActions: List<String>) {
+        private fun setupQuickActionsContainer(quickActions: List<String>) {
             try {
-                // Setup GridLayoutManager with 2 columns
-                val layoutManager = androidx.recyclerview.widget.GridLayoutManager(itemView.context, 2)
-                quickActionsRecyclerView.layoutManager = layoutManager
+                // Get the quick actions container
+                val quickActionsContainer = itemView.findViewById<LinearLayout>(R.id.quickActionsContainer)
                 
-                // Create adapter for quick actions
-                val adapter = QuickActionAdapter(quickActions) { action ->
-                    onFollowUpClick(action)
+                // Define the 6 quick action buttons
+                val actionButtons = listOf(
+                    R.id.quickAction1,
+                    R.id.quickAction2,
+                    R.id.quickAction3,
+                    R.id.quickAction4,
+                    R.id.quickAction5,
+                    R.id.quickAction6
+                )
+                
+                // Set up each button with click listeners
+                actionButtons.forEachIndexed { index, buttonId ->
+                    val button = itemView.findViewById<TextView>(buttonId)
+                    if (index < quickActions.size) {
+                        button.text = quickActions[index]
+                        button.visibility = View.VISIBLE
+                        button.setOnClickListener {
+                            // Visual feedback
+                            button.text = "✓ ${quickActions[index]}"
+                            button.isClickable = false
+                            
+                            // Trigger callback
+                            onFollowUpClick(quickActions[index])
+                        }
+                    } else {
+                        button.visibility = View.GONE
+                    }
                 }
-                quickActionsRecyclerView.adapter = adapter
                 
-                // Disable horizontal scrolling for better nested scrolling behavior
-                quickActionsRecyclerView.isNestedScrollingEnabled = false
-                // Note: setHasFixedSize(true) is not compatible with wrap_content height
+                // Show the container
+                quickActionsContainer.visibility = View.VISIBLE
                 
-                Log.d("ChatAdapter", "✅ Quick actions RecyclerView setup complete with ${quickActions.size} actions in 2-column grid")
+                Log.d("ChatAdapter", "✅ Quick actions LinearLayout setup complete with ${quickActions.size} actions")
             } catch (e: Exception) {
-                Log.e("ChatAdapter", "❌ Error setting up quick actions RecyclerView: ${e.message}", e)
+                Log.e("ChatAdapter", "❌ Error setting up quick actions LinearLayout: ${e.message}", e)
             }
         }
         
@@ -1450,37 +1471,3 @@ class ChatAdapter(
     }
 }
 
-/**
- * Adapter for 2-column grid quick action buttons
- */
-class QuickActionAdapter(
-    private val actions: List<String>,
-    private val onActionClick: (String) -> Unit
-) : RecyclerView.Adapter<QuickActionAdapter.QuickActionViewHolder>() {
-
-    class QuickActionViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
-        val actionButton: TextView = itemView.findViewById(R.id.quickActionText)
-    }
-
-    override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): QuickActionViewHolder {
-        val view = LayoutInflater.from(parent.context)
-            .inflate(R.layout.item_quick_action_button, parent, false)
-        return QuickActionViewHolder(view)
-    }
-
-    override fun onBindViewHolder(holder: QuickActionViewHolder, position: Int) {
-        val action = actions[position]
-        holder.actionButton.text = action
-        
-        holder.actionButton.setOnClickListener {
-            // Visual feedback
-            holder.actionButton.text = "✓ $action"
-            holder.actionButton.isClickable = false
-            
-            // Trigger callback
-            onActionClick(action)
-        }
-    }
-
-    override fun getItemCount(): Int = actions.size
-}

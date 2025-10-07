@@ -279,7 +279,7 @@
                     android:id="@+id/viewCertificateButton"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:text="📄 View Certificate PDF"
+                    android:text="📄 View Certificate"
                     android:textSize="16sp"
                     android:textStyle="bold"
                     android:textColor="@color/clean_white"
