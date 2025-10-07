@@ -1314,7 +1314,14 @@ class ChatAdapter(
                 // Set up button click handlers with null safety
                 applyInsuranceButton?.setOnClickListener {
                     try {
-                        onFollowUpClick("Help me apply for crop insurance with these premium details")
+                        // Include specific crop name and details in the apply message
+                        val cropName = insuranceDetails.crop
+                        val state = insuranceDetails.state
+                        val area = insuranceDetails.area
+                        val applyMessage = "Help me apply for crop insurance for my $cropName farm of ${String.format("%.1f", area)} hectares in $state with these premium details"
+                        
+                        Log.d("ChatAdapter", "🛡️ Apply for insurance clicked for crop: $cropName")
+                        onFollowUpClick(applyMessage)
                     } catch (e: Exception) {
                         Log.e("ChatAdapter", "Error in applyInsuranceButton click: ${e.message}")
                     }

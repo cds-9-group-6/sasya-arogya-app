@@ -604,6 +604,13 @@ class MainActivityFSM : ComponentActivity(), FSMStreamHandler.StreamCallback {
                 
                 val context = createEnrichedContext(userProfile)
                 
+                // Extract crop name from message for insurance-related requests
+                val cropName = extractCropNameFromMessage(message)
+                if (cropName.isNotEmpty()) {
+                    context["crop"] = cropName
+                    Log.d(TAG, "🌾 Extracted crop name from message: $cropName")
+                }
+                
                 // Debug: Log the context being sent to server
                 Log.d(TAG, "📤 Sending context to server: $context")
                 
@@ -749,6 +756,37 @@ class MainActivityFSM : ComponentActivity(), FSMStreamHandler.StreamCallback {
         }
         
         return context
+    }
+    
+    /**
+     * Extract crop name from user message for insurance context
+     */
+    private fun extractCropNameFromMessage(message: String): String {
+        val lowerMessage = message.lowercase()
+        
+        // Common crop patterns in insurance messages
+        val cropPatterns = listOf(
+            "for my (\\w+) farm",
+            "for (\\w+) farm",
+            "crop insurance for (\\w+)",
+            "insurance for (\\w+)",
+            "my (\\w+) crop",
+            "growing (\\w+)",
+            "planting (\\w+)"
+        )
+        
+        for (pattern in cropPatterns) {
+            val regex = Regex(pattern, RegexOption.IGNORE_CASE)
+            val match = regex.find(lowerMessage)
+            if (match != null && match.groupValues.size > 1) {
+                val crop = match.groupValues[1].trim()
+                if (crop.isNotEmpty() && crop.length > 2) {
+                    return crop.replaceFirstChar { if (it.isLowerCase()) it.titlecase() else it.toString() }
+                }
+            }
+        }
+        
+        return ""
     }
     
     /**
