@@ -49,12 +49,6 @@ android {
         }
     }
 
-    signingConfigs {
-        create("debug") {
-            // Use default debug keystore
-        }
-    }
-
     buildTypes {
         release {
             isMinifyEnabled = false
