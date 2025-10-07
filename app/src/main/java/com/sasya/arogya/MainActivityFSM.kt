@@ -602,7 +602,7 @@ class MainActivityFSM : ComponentActivity(), FSMStreamHandler.StreamCallback {
                 // Debug: Log what profile we got
                 Log.d(TAG, "🌾 User agricultural profile: $userProfile")
                 
-                val context = createEnrichedContext(userProfile)
+                val context = createEnrichedContext(userProfile).toMutableMap()
                 
                 // Extract crop name from message for insurance-related requests
                 val cropName = extractCropNameFromMessage(message)
