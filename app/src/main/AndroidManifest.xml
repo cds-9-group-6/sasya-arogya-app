@@ -22,18 +22,26 @@
         android:supportsRtl="true"
         android:theme="@style/Theme.Sasya_Arogya"
         android:networkSecurityConfig="@xml/network_security_config">
+        <!-- Landing Page Activity - First screen users see -->
         <activity
-            android:name=".MainActivityFSM"
+            android:name=".LandingPageActivity"
             android:exported="true"
             android:label="@string/app_name"
             android:theme="@style/Theme.Sasya_Arogya"
-            android:windowSoftInputMode="adjustResize">
+            android:screenOrientation="portrait">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
-
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
+        
+        <!-- Main Activity - After landing page -->
+        <activity
+            android:name=".MainActivityFSM"
+            android:exported="false"
+            android:label="@string/app_name"
+            android:theme="@style/Theme.Sasya_Arogya"
+            android:windowSoftInputMode="adjustResize" />
         
         <!-- Keep original MainActivity for backup/reference -->
         <activity

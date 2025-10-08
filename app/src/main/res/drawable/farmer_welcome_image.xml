@@ -1,0 +1,111 @@
+<?xml version="1.0" encoding="utf-8"?>
+<vector xmlns:android="http://schemas.android.com/apk/res/android"
+    android:width="200dp"
+    android:height="200dp"
+    android:viewportWidth="200"
+    android:viewportHeight="200">
+    
+    <!-- Background circle -->
+    <path
+        android:fillColor="#E8F5E8"
+        android:pathData="M100,100m-100,0a100,100 0,1 1,200,0a100,100 0,1 1,-200,0"/>
+    
+    <!-- Farmer character - larger and more detailed -->
+    <path
+        android:fillColor="#FFCDD2"
+        android:pathData="M100,40c-20,0 -35,15 -35,35s15,35 35,35s35,-15 35,-35S120,40 100,40z"/>
+    
+    <!-- Farmer's hat -->
+    <path
+        android:fillColor="#8D6E63"
+        android:pathData="M80,35c-10,0 -20,5 -20,10v5c0,5 5,10 10,10h60c5,0 10,-5 10,-10v-5c0,-5 -10,-10 -20,-10H80z"/>
+    
+    <!-- Hat brim -->
+    <path
+        android:fillColor="#5D4037"
+        android:pathData="M60,45h80v3H60z"/>
+    
+    <!-- Farmer's body -->
+    <path
+        android:fillColor="#4CAF50"
+        android:pathData="M85,80h30v40h-30z"/>
+    
+    <!-- Farmer's arms -->
+    <path
+        android:fillColor="#FFCDD2"
+        android:pathData="M70,85c-8,0 -15,7 -15,15v20c0,8 7,15 15,15s15,-7 15,-15v-20C85,92 78,85 70,85z"/>
+    
+    <path
+        android:fillColor="#FFCDD2"
+        android:pathData="M130,85c8,0 15,7 15,15v20c0,8 -7,15 -15,15s-15,-7 -15,-15v-20C115,92 122,85 130,85z"/>
+    
+    <!-- Farmer's legs -->
+    <path
+        android:fillColor="#2E7D32"
+        android:pathData="M90,120h20v20h-20z"/>
+    
+    <!-- Farmer's boots -->
+    <path
+        android:fillColor="#3E2723"
+        android:pathData="M85,140h30v8h-30z"/>
+    
+    <!-- Farmer's eyes -->
+    <path
+        android:fillColor="#000000"
+        android:pathData="M90,55c0,2 2,4 4,4s4,-2 4,-4s-2,-4 -4,-4S90,53 90,55z"/>
+    
+    <path
+        android:fillColor="#000000"
+        android:pathData="M110,55c0,2 2,4 4,4s4,-2 4,-4s-2,-4 -4,-4S110,53 110,55z"/>
+    
+    <!-- Farmer's smile -->
+    <path
+        android:fillColor="#000000"
+        android:pathData="M95,65c0,0 3,2 5,2s5,-2 5,-2"/>
+    
+    <!-- Plant in farmer's hands -->
+    <path
+        android:fillColor="#4CAF50"
+        android:pathData="M100,90c-5,0 -10,5 -10,10s5,10 10,10s10,-5 10,-10S105,90 100,90z"/>
+    
+    <!-- Plant stem -->
+    <path
+        android:fillColor="#2E7D32"
+        android:pathData="M100,85v10"/>
+    
+    <!-- Plant leaves -->
+    <path
+        android:fillColor="#66BB6A"
+        android:pathData="M90,80c-2,0 -4,2 -4,4s2,4 4,4s4,-2 4,-4S92,80 90,80z"/>
+    
+    <path
+        android:fillColor="#66BB6A"
+        android:pathData="M110,80c2,0 4,2 4,4s-2,4 -4,4s-4,-2 -4,-4S108,80 110,80z"/>
+    
+    <!-- Welcome gesture - waving hand -->
+    <path
+        android:fillColor="#FFCDD2"
+        android:pathData="M150,70c4,0 8,4 8,8s-4,8 -8,8s-8,-4 -8,-8S146,70 150,70z"/>
+    
+    <!-- Heart symbol for care -->
+    <path
+        android:fillColor="#E91E63"
+        android:pathData="M100,110c-3,0 -6,3 -6,6c0,3 3,6 6,6s6,-3 6,-6C106,113 103,110 100,110z"/>
+    
+    <!-- Decorative elements -->
+    <path
+        android:fillColor="#81C784"
+        android:pathData="M30,50c-2,0 -4,2 -4,4s2,4 4,4s4,-2 4,-4S32,50 30,50z"/>
+    
+    <path
+        android:fillColor="#81C784"
+        android:pathData="M170,50c2,0 4,2 4,4s-2,4 -4,4s-4,-2 -4,-4S168,50 170,50z"/>
+    
+    <path
+        android:fillColor="#81C784"
+        android:pathData="M30,130c-2,0 -4,2 -4,4s2,4 4,4s4,-2 4,-4S32,130 30,130z"/>
+    
+    <path
+        android:fillColor="#81C784"
+        android:pathData="M170,130c2,0 4,2 4,4s-2,4 -4,4s-4,-2 -4,-4S168,130 170,130z"/>
+</vector>

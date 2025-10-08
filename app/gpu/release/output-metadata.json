@@ -11,8 +11,8 @@
       "type": "SINGLE",
       "filters": [],
       "attributes": [],
-      "versionCode": 3,
-      "versionName": "1.1.1-gpu",
+      "versionCode": 4,
+      "versionName": "1.1.2-gpu",
       "outputFile": "app-gpu-release.apk"
     }
   ],
