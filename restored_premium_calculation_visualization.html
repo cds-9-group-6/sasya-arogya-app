@@ -1,0 +1,473 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Restored Premium Calculation Card</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            padding: 20px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 30px;
+        }
+
+        .header {
+            text-align: center;
+            color: white;
+            margin-bottom: 20px;
+        }
+
+        .header h1 {
+            font-size: 2.5rem;
+            margin-bottom: 10px;
+            text-shadow: 2px 2px 4px rgba(0,0,0,0.3);
+        }
+
+        .header p {
+            font-size: 1.2rem;
+            opacity: 0.9;
+        }
+
+        .insurance-card {
+            background: white;
+            border-radius: 16px;
+            box-shadow: 0 20px 40px rgba(0,0,0,0.1);
+            max-width: 400px;
+            width: 100%;
+            overflow: hidden;
+            margin: 20px 0;
+        }
+
+        .card-header {
+            background: linear-gradient(135deg, #2E7D32 0%, #1B5E20 100%);
+            color: white;
+            padding: 20px;
+            display: flex;
+            align-items: center;
+            gap: 16px;
+        }
+
+        .card-icon {
+            width: 40px;
+            height: 40px;
+            background: rgba(255,255,255,0.2);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 20px;
+        }
+
+        .card-title {
+            flex: 1;
+        }
+
+        .card-title h2 {
+            font-size: 15px;
+            font-weight: bold;
+            letter-spacing: 0.02em;
+            margin-bottom: 2px;
+        }
+
+        .card-title p {
+            font-size: 13px;
+            opacity: 0.8;
+        }
+
+        .card-content {
+            padding: 20px;
+        }
+
+        .sum-insured-section {
+            background: linear-gradient(135deg, #4CAF50 0%, #388E3C 100%);
+            color: white;
+            padding: 16px;
+            border-radius: 12px;
+            margin-bottom: 16px;
+        }
+
+        .sum-insured-header {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            margin-bottom: 8px;
+        }
+
+        .sum-insured-icon {
+            font-size: 16px;
+        }
+
+        .sum-insured-label {
+            font-size: 16px;
+            font-weight: bold;
+        }
+
+        .sum-insured-amount {
+            font-size: 24px;
+            font-weight: bold;
+            margin-bottom: 4px;
+        }
+
+        .sum-insured-description {
+            font-size: 12px;
+            opacity: 0.8;
+        }
+
+        .premium-breakdown {
+            background: #F8F9FA;
+            padding: 20px;
+            border-radius: 8px;
+            margin-bottom: 16px;
+        }
+
+        .breakdown-title {
+            font-size: 18px;
+            font-weight: bold;
+            color: #333;
+            margin-bottom: 16px;
+        }
+
+        .breakdown-card {
+            background: white;
+            padding: 16px;
+            border-radius: 8px;
+            margin-bottom: 12px;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.05);
+        }
+
+        .breakdown-card-header {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            margin-bottom: 8px;
+        }
+
+        .breakdown-icon {
+            font-size: 16px;
+        }
+
+        .breakdown-label {
+            font-size: 16px;
+            color: #333;
+        }
+
+        .breakdown-value {
+            font-size: 18px;
+            font-weight: bold;
+            padding: 8px 12px;
+            border-radius: 12px;
+            text-align: center;
+            margin-top: 8px;
+        }
+
+        .total-premium {
+            color: #1976D2;
+            background: linear-gradient(135deg, #E3F2FD 0%, #BBDEFB 100%);
+            border: 1px solid #1976D2;
+        }
+
+        .government-subsidy {
+            color: #4CAF50;
+            background: linear-gradient(135deg, #E8F5E8 0%, #C8E6C9 100%);
+            border: 1px solid #4CAF50;
+        }
+
+        .farmer-contribution {
+            color: #FF5722;
+            background: linear-gradient(135deg, #FFEBEE 0%, #FFCDD2 100%);
+            border: 1px solid #FF5722;
+        }
+
+        .additional-info {
+            background: #F8F9FA;
+            padding: 20px;
+            border-radius: 8px;
+            margin-bottom: 16px;
+        }
+
+        .additional-title {
+            font-size: 18px;
+            font-weight: bold;
+            color: #333;
+            margin-bottom: 16px;
+        }
+
+        .info-card {
+            background: white;
+            padding: 16px;
+            border-radius: 8px;
+            margin-bottom: 12px;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.05);
+        }
+
+        .info-card-header {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            margin-bottom: 8px;
+        }
+
+        .info-icon {
+            font-size: 16px;
+        }
+
+        .info-label {
+            font-size: 16px;
+            color: #333;
+        }
+
+        .info-value {
+            font-size: 18px;
+            font-weight: bold;
+            padding: 8px 12px;
+            border-radius: 12px;
+            text-align: center;
+            margin-top: 8px;
+        }
+
+        .area-info {
+            color: #1976D2;
+            background: linear-gradient(135deg, #E3F2FD 0%, #BBDEFB 100%);
+            border: 1px solid #1976D2;
+        }
+
+        .rate-info {
+            color: #4CAF50;
+            background: linear-gradient(135deg, #E8F5E8 0%, #C8E6C9 100%);
+            border: 1px solid #4CAF50;
+        }
+
+        .company-info {
+            color: #FF5722;
+            background: linear-gradient(135deg, #FFEBEE 0%, #FFCDD2 100%);
+            border: 1px solid #FF5722;
+        }
+
+        .action-button {
+            background: linear-gradient(135deg, #2E7D32 0%, #1B5E20 100%);
+            color: white;
+            border: none;
+            padding: 16px;
+            border-radius: 25px;
+            font-size: 16px;
+            font-weight: bold;
+            cursor: pointer;
+            width: 100%;
+            box-shadow: 0 4px 8px rgba(0,0,0,0.1);
+            transition: transform 0.2s;
+        }
+
+        .action-button:hover {
+            transform: translateY(-2px);
+        }
+
+        .features-section {
+            display: flex;
+            gap: 20px;
+            max-width: 800px;
+            width: 100%;
+        }
+
+        .feature-card {
+            flex: 1;
+            background: white;
+            border-radius: 12px;
+            padding: 20px;
+            box-shadow: 0 10px 20px rgba(0,0,0,0.1);
+        }
+
+        .feature-title {
+            font-size: 18px;
+            font-weight: bold;
+            color: #333;
+            margin-bottom: 15px;
+            text-align: center;
+        }
+
+        .restored-features {
+            border-left: 4px solid #4CAF50;
+        }
+
+        .restored-features .feature-title {
+            color: #4CAF50;
+        }
+
+        .feature-list {
+            list-style: none;
+            padding: 0;
+        }
+
+        .feature-list li {
+            padding: 8px 0;
+            border-bottom: 1px solid #eee;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .feature-list li:last-child {
+            border-bottom: none;
+        }
+
+        .feature-icon {
+            font-size: 16px;
+            color: #4CAF50;
+        }
+
+        @media (max-width: 768px) {
+            .features-section {
+                flex-direction: column;
+            }
+            
+            .header h1 {
+                font-size: 2rem;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="header">
+        <h1>🛡️ Restored Premium Calculation Card</h1>
+        <p>Complete Information with Card-Based Layout</p>
+    </div>
+
+    <div class="insurance-card">
+        <!-- Card Header -->
+        <div class="card-header">
+            <div class="card-icon">🛡️</div>
+            <div class="card-title">
+                <h2>🛡️ INSURANCE PREMIUM</h2>
+                <p>Policy ID: POL-70001294</p>
+            </div>
+        </div>
+
+        <div class="card-content">
+            <!-- Sum Insured Section -->
+            <div class="sum-insured-section">
+                <div class="sum-insured-header">
+                    <div class="sum-insured-icon">💰</div>
+                    <div class="sum-insured-label">Sum Insured</div>
+                </div>
+                <div class="sum-insured-amount">₹42,085.60</div>
+                <div class="sum-insured-description">Total coverage amount for your crop</div>
+            </div>
+
+            <!-- Premium Breakdown Section -->
+            <div class="premium-breakdown">
+                <div class="breakdown-title">📊 Premium Breakdown</div>
+
+                <!-- Total Premium Card -->
+                <div class="breakdown-card">
+                    <div class="breakdown-card-header">
+                        <div class="breakdown-icon">💳</div>
+                        <div class="breakdown-label">Total Premium</div>
+                    </div>
+                    <div class="breakdown-value total-premium">₹7,690.93</div>
+                </div>
+
+                <!-- Government Subsidy Card -->
+                <div class="breakdown-card">
+                    <div class="breakdown-card-header">
+                        <div class="breakdown-icon">🏛️</div>
+                        <div class="breakdown-label">Government Subsidy</div>
+                    </div>
+                    <div class="breakdown-value government-subsidy">₹7,248.50</div>
+                </div>
+
+                <!-- Your Contribution Card -->
+                <div class="breakdown-card">
+                    <div class="breakdown-card-header">
+                        <div class="breakdown-icon">👨‍🌾</div>
+                        <div class="breakdown-label">Your Contribution</div>
+                    </div>
+                    <div class="breakdown-value farmer-contribution">₹442.44</div>
+                </div>
+            </div>
+
+            <!-- Additional Information Section -->
+            <div class="additional-info">
+                <div class="additional-title">📋 Additional Information</div>
+
+                <!-- Area Information Card -->
+                <div class="info-card">
+                    <div class="info-card-header">
+                        <div class="info-icon">📏</div>
+                        <div class="info-label">Coverage Area</div>
+                    </div>
+                    <div class="info-value area-info">0.4 hectares</div>
+                </div>
+
+                <!-- Premium per hectare Card -->
+                <div class="info-card">
+                    <div class="info-card-header">
+                        <div class="info-icon">💰</div>
+                        <div class="info-label">Rate per Hectare</div>
+                    </div>
+                    <div class="info-value rate-info">₹19,227.33 per hectare</div>
+                </div>
+
+                <!-- Insurance Company Card -->
+                <div class="info-card">
+                    <div class="info-card-header">
+                        <div class="info-icon">🏢</div>
+                        <div class="info-label">Insurance Provider</div>
+                    </div>
+                    <div class="info-value company-info">SBI GENERAL INSURANCE</div>
+                </div>
+            </div>
+
+            <!-- Action Button -->
+            <button class="action-button">
+                🛡️ Apply for Insurance
+            </button>
+        </div>
+    </div>
+
+    <!-- Features Section -->
+    <div class="features-section">
+        <div class="feature-card restored-features">
+            <div class="feature-title">✅ Restored Features</div>
+            <ul class="feature-list">
+                <li><span class="feature-icon">✅</span> Coverage Area (hectares)</li>
+                <li><span class="feature-icon">✅</span> Premium Rate per Hectare</li>
+                <li><span class="feature-icon">✅</span> Insurance Company Name</li>
+                <li><span class="feature-icon">✅</span> Disease Context (if applicable)</li>
+                <li><span class="feature-icon">✅</span> Apply for Insurance Button</li>
+                <li><span class="feature-icon">✅</span> Card-Based Layout (No Text Warping)</li>
+                <li><span class="feature-icon">✅</span> Professional Visual Design</li>
+                <li><span class="feature-icon">✅</span> Responsive Layout</li>
+            </ul>
+        </div>
+    </div>
+
+    <script>
+        // Add some interactive effects
+        document.querySelectorAll('.breakdown-card, .info-card').forEach(card => {
+            card.addEventListener('mouseenter', function() {
+                this.style.transform = 'translateY(-2px)';
+                this.style.boxShadow = '0 4px 8px rgba(0,0,0,0.1)';
+            });
+            
+            card.addEventListener('mouseleave', function() {
+                this.style.transform = 'translateY(0)';
+                this.style.boxShadow = '0 2px 4px rgba(0,0,0,0.05)';
+            });
+        });
+
+        document.querySelector('.action-button').addEventListener('click', function() {
+            alert('🛡️ Apply for Insurance clicked!\n\nThis would open the insurance application flow.');
+        });
+    </script>
+</body>
+</html>

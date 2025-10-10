@@ -1,0 +1,445 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Insurance Card Redesign Visualization</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            padding: 20px;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+        }
+
+        .container {
+            max-width: 400px;
+            width: 100%;
+        }
+
+        .insurance-card {
+            background: white;
+            border-radius: 16px;
+            box-shadow: 0 8px 32px rgba(0, 0, 0, 0.1);
+            overflow: hidden;
+            margin-bottom: 20px;
+        }
+
+        .card-header {
+            padding: 20px;
+            border-bottom: 1px solid #f0f0f0;
+        }
+
+        .header-content {
+            display: flex;
+            align-items: center;
+            margin-bottom: 8px;
+        }
+
+        .shield-icon {
+            width: 40px;
+            height: 40px;
+            background: linear-gradient(135deg, #1976D2, #1565C0);
+            border-radius: 8px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin-right: 16px;
+            font-size: 20px;
+        }
+
+        .header-text {
+            flex: 1;
+        }
+
+        .card-title {
+            font-size: 16px;
+            font-weight: bold;
+            color: #333;
+            letter-spacing: 0.5px;
+            margin-bottom: 4px;
+        }
+
+        .crop-info {
+            font-size: 13px;
+            color: #666;
+        }
+
+        .sum-insured-card {
+            background: linear-gradient(135deg, #4CAF50, #388E3C);
+            margin: 20px;
+            padding: 16px;
+            border-radius: 12px;
+            color: white;
+        }
+
+        .sum-insured-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 8px;
+        }
+
+        .sum-insured-label {
+            font-size: 16px;
+            font-weight: bold;
+        }
+
+        .sum-insured-amount {
+            font-size: 24px;
+            font-weight: bold;
+        }
+
+        .sum-insured-description {
+            font-size: 12px;
+            opacity: 0.8;
+        }
+
+        .financial-breakdown {
+            background: #FAFAFA;
+            margin: 20px;
+            padding: 16px;
+            border-radius: 12px;
+            border: 1px solid #E0E0E0;
+        }
+
+        .breakdown-row {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 12px;
+        }
+
+        .breakdown-row:last-child {
+            margin-bottom: 0;
+        }
+
+        .breakdown-label {
+            display: flex;
+            align-items: center;
+            flex: 1;
+        }
+
+        .breakdown-icon {
+            width: 24px;
+            height: 24px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin-right: 8px;
+            font-size: 16px;
+        }
+
+        .breakdown-text {
+            font-size: 16px;
+            font-weight: bold;
+            color: #333;
+        }
+
+        .amount-badge {
+            padding: 6px 12px;
+            border-radius: 16px;
+            font-size: 16px;
+            font-weight: bold;
+        }
+
+        .amount-badge.premium {
+            background: #E3F2FD;
+            color: #1976D2;
+            border: 1px solid #1976D2;
+        }
+
+        .amount-badge.subsidy {
+            background: #E8F5E8;
+            color: #4CAF50;
+            border: 1px solid #4CAF50;
+        }
+
+        .amount-badge.contribution {
+            background: #FFE0B2;
+            color: #FF5722;
+            border: 1px solid #FF5722;
+        }
+
+        .farmer-highlight {
+            background: #FFF3E0;
+            padding: 12px;
+            border-radius: 8px;
+            border: 1px solid #FF9800;
+        }
+
+        .detailed-breakdown {
+            background: #F8F9FA;
+            margin: 20px;
+            padding: 16px;
+            border-radius: 12px;
+            border: 1px solid #E9ECEF;
+        }
+
+        .breakdown-header {
+            display: flex;
+            align-items: center;
+            margin-bottom: 16px;
+        }
+
+        .breakdown-header-icon {
+            width: 24px;
+            height: 24px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin-right: 8px;
+            font-size: 16px;
+        }
+
+        .breakdown-header-text {
+            font-size: 16px;
+            font-weight: bold;
+            color: #333;
+        }
+
+        .breakdown-item {
+            background: white;
+            padding: 12px;
+            border-radius: 8px;
+            border: 1px solid #E0E0E0;
+            margin-bottom: 8px;
+            display: flex;
+            align-items: center;
+        }
+
+        .breakdown-item:last-child {
+            margin-bottom: 0;
+        }
+
+        .item-icon {
+            width: 24px;
+            height: 24px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin-right: 12px;
+            font-size: 14px;
+        }
+
+        .item-content {
+            flex: 1;
+        }
+
+        .item-label {
+            font-size: 12px;
+            color: #666;
+            margin-bottom: 2px;
+        }
+
+        .item-value {
+            font-size: 14px;
+            font-weight: bold;
+            color: #333;
+        }
+
+        .disease-item {
+            background: #FFEBEE;
+            border: 1px solid #FFCDD2;
+        }
+
+        .disease-value {
+            color: #FF5722;
+        }
+
+        .action-button {
+            margin: 20px;
+            background: linear-gradient(135deg, #1976D2, #1565C0);
+            color: white;
+            border: none;
+            padding: 16px;
+            border-radius: 25px;
+            font-size: 16px;
+            font-weight: bold;
+            cursor: pointer;
+            box-shadow: 0 4px 16px rgba(25, 118, 210, 0.3);
+            transition: transform 0.2s;
+        }
+
+        .action-button:hover {
+            transform: translateY(-2px);
+        }
+
+        .comparison-section {
+            background: white;
+            border-radius: 16px;
+            padding: 20px;
+            box-shadow: 0 8px 32px rgba(0, 0, 0, 0.1);
+        }
+
+        .comparison-title {
+            font-size: 18px;
+            font-weight: bold;
+            color: #333;
+            margin-bottom: 16px;
+            text-align: center;
+        }
+
+        .comparison-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 16px;
+        }
+
+        .comparison-item {
+            text-align: center;
+            padding: 12px;
+            border-radius: 8px;
+        }
+
+        .comparison-item.old {
+            background: #FFEBEE;
+            border: 1px solid #FFCDD2;
+        }
+
+        .comparison-item.new {
+            background: #E8F5E8;
+            border: 1px solid #C8E6C9;
+        }
+
+        .comparison-label {
+            font-size: 14px;
+            font-weight: bold;
+            margin-bottom: 8px;
+        }
+
+        .comparison-description {
+            font-size: 12px;
+            color: #666;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <!-- New Redesigned Insurance Card -->
+        <div class="insurance-card">
+            <!-- Header -->
+            <div class="card-header">
+                <div class="header-content">
+                    <div class="shield-icon">🛡️</div>
+                    <div class="header-text">
+                        <div class="card-title">💰 CROP INSURANCE</div>
+                        <div class="crop-info">Tomato • Karnataka • 0.4 hectares</div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Sum Insured Card (Most Important) -->
+            <div class="sum-insured-card">
+                <div class="sum-insured-header">
+                    <div class="sum-insured-label">💰 Sum Insured</div>
+                    <div class="sum-insured-amount">₹42,085.60</div>
+                </div>
+                <div class="sum-insured-description">Total coverage amount for your crop</div>
+            </div>
+
+            <!-- Financial Breakdown -->
+            <div class="financial-breakdown">
+                <!-- Total Premium Row -->
+                <div class="breakdown-row">
+                    <div class="breakdown-label">
+                        <div class="breakdown-icon">💳</div>
+                        <div class="breakdown-text">Total Premium</div>
+                    </div>
+                    <div class="amount-badge premium">₹7,690.93</div>
+                </div>
+
+                <!-- Government Subsidy Row -->
+                <div class="breakdown-row">
+                    <div class="breakdown-label">
+                        <div class="breakdown-icon">🏛️</div>
+                        <div class="breakdown-text">Government Subsidy</div>
+                    </div>
+                    <div class="amount-badge subsidy">₹7,248.50</div>
+                </div>
+
+                <!-- Farmer Contribution Row (Highlighted) -->
+                <div class="breakdown-row farmer-highlight">
+                    <div class="breakdown-label">
+                        <div class="breakdown-icon">👨‍🌾</div>
+                        <div class="breakdown-text">Your Contribution</div>
+                    </div>
+                    <div class="amount-badge contribution">₹442.44</div>
+                </div>
+            </div>
+
+            <!-- Detailed Breakdown -->
+            <div class="detailed-breakdown">
+                <div class="breakdown-header">
+                    <div class="breakdown-header-icon">📊</div>
+                    <div class="breakdown-header-text">Premium Breakdown</div>
+                </div>
+
+                <!-- Area Information -->
+                <div class="breakdown-item">
+                    <div class="item-icon">📏</div>
+                    <div class="item-content">
+                        <div class="item-label">Coverage Area</div>
+                        <div class="item-value">0.4 hectares</div>
+                    </div>
+                </div>
+
+                <!-- Premium per hectare -->
+                <div class="breakdown-item">
+                    <div class="item-icon">💰</div>
+                    <div class="item-content">
+                        <div class="item-label">Rate per Hectare</div>
+                        <div class="item-value">₹19,227.33 per hectare</div>
+                    </div>
+                </div>
+
+                <!-- Insurance Company -->
+                <div class="breakdown-item">
+                    <div class="item-icon">🏢</div>
+                    <div class="item-content">
+                        <div class="item-label">Insurance Provider</div>
+                        <div class="item-value">SBI GENERAL INSURANCE</div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Action Button -->
+            <button class="action-button">🛡️ Apply for Insurance</button>
+        </div>
+
+        <!-- Design Improvements Comparison -->
+        <div class="comparison-section">
+            <div class="comparison-title">🎨 Design Improvements</div>
+            <div class="comparison-grid">
+                <div class="comparison-item old">
+                    <div class="comparison-label">❌ Before</div>
+                    <div class="comparison-description">
+                        • Inconsistent highlighting<br>
+                        • Poor visual hierarchy<br>
+                        • Basic styling<br>
+                        • Cramped spacing
+                    </div>
+                </div>
+                <div class="comparison-item new">
+                    <div class="comparison-label">✅ After</div>
+                    <div class="comparison-description">
+                        • Professional gradient cards<br>
+                        • Clear visual hierarchy<br>
+                        • Consistent badge styling<br>
+                        • Proper spacing & typography
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</body>
+</html>

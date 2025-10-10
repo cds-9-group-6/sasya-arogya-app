@@ -1,0 +1,630 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Insurance Certificate - Premium Breakdown Updated</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            padding: 20px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 30px;
+        }
+
+        .header {
+            text-align: center;
+            color: white;
+            margin-bottom: 20px;
+        }
+
+        .header h1 {
+            font-size: 2.5rem;
+            margin-bottom: 10px;
+            text-shadow: 2px 2px 4px rgba(0,0,0,0.3);
+        }
+
+        .header p {
+            font-size: 1.2rem;
+            opacity: 0.9;
+        }
+
+        .insurance-card {
+            background: white;
+            border-radius: 16px;
+            box-shadow: 0 20px 40px rgba(0,0,0,0.1);
+            max-width: 400px;
+            width: 100%;
+            overflow: hidden;
+            margin: 20px 0;
+        }
+
+        .card-header {
+            background: linear-gradient(135deg, #2E7D32 0%, #1B5E20 100%);
+            color: white;
+            padding: 20px;
+            display: flex;
+            align-items: center;
+            gap: 16px;
+        }
+
+        .card-icon {
+            width: 40px;
+            height: 40px;
+            background: rgba(255,255,255,0.2);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 20px;
+        }
+
+        .card-title {
+            flex: 1;
+        }
+
+        .card-title h2 {
+            font-size: 15px;
+            font-weight: bold;
+            letter-spacing: 0.02em;
+            margin-bottom: 2px;
+        }
+
+        .card-title p {
+            font-size: 13px;
+            opacity: 0.8;
+        }
+
+        .card-content {
+            padding: 20px;
+        }
+
+        .sum-insured-section {
+            background: linear-gradient(135deg, #4CAF50 0%, #388E3C 100%);
+            color: white;
+            padding: 16px;
+            border-radius: 12px;
+            margin-bottom: 16px;
+        }
+
+        .sum-insured-header {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            margin-bottom: 8px;
+        }
+
+        .sum-insured-icon {
+            font-size: 16px;
+        }
+
+        .sum-insured-label {
+            font-size: 16px;
+            font-weight: bold;
+        }
+
+        .sum-insured-amount {
+            font-size: 24px;
+            font-weight: bold;
+            margin-bottom: 4px;
+        }
+
+        .sum-insured-description {
+            font-size: 12px;
+            opacity: 0.8;
+        }
+
+        .premium-breakdown {
+            background: #F8F9FA;
+            padding: 20px;
+            border-radius: 8px;
+            margin-bottom: 16px;
+        }
+
+        .breakdown-title {
+            font-size: 18px;
+            font-weight: bold;
+            color: #333;
+            margin-bottom: 16px;
+        }
+
+        .breakdown-card {
+            background: white;
+            padding: 16px;
+            border-radius: 8px;
+            margin-bottom: 12px;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.05);
+        }
+
+        .breakdown-card-header {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            margin-bottom: 8px;
+        }
+
+        .breakdown-icon {
+            font-size: 16px;
+        }
+
+        .breakdown-label {
+            font-size: 16px;
+            color: #333;
+        }
+
+        .breakdown-value {
+            font-size: 18px;
+            font-weight: bold;
+            padding: 8px 12px;
+            border-radius: 12px;
+            text-align: center;
+            margin-top: 8px;
+        }
+
+        .total-premium {
+            color: #1976D2;
+            background: linear-gradient(135deg, #E3F2FD 0%, #BBDEFB 100%);
+            border: 1px solid #1976D2;
+        }
+
+        .government-subsidy {
+            color: #4CAF50;
+            background: linear-gradient(135deg, #E8F5E8 0%, #C8E6C9 100%);
+            border: 1px solid #4CAF50;
+        }
+
+        .farmer-contribution {
+            color: #FF5722;
+            background: linear-gradient(135deg, #FFEBEE 0%, #FFCDD2 100%);
+            border: 1px solid #FF5722;
+        }
+
+        .policy-details {
+            background: #F8F9FA;
+            padding: 20px;
+            border-radius: 8px;
+            margin-bottom: 16px;
+        }
+
+        .policy-title {
+            font-size: 18px;
+            font-weight: bold;
+            color: #333;
+            margin-bottom: 16px;
+        }
+
+        .policy-card {
+            background: white;
+            padding: 16px;
+            border-radius: 8px;
+            margin-bottom: 12px;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.05);
+        }
+
+        .policy-card-header {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            margin-bottom: 8px;
+        }
+
+        .policy-icon {
+            font-size: 16px;
+        }
+
+        .policy-label {
+            font-size: 16px;
+            color: #333;
+        }
+
+        .policy-value {
+            font-size: 18px;
+            font-weight: bold;
+            padding: 8px 12px;
+            border-radius: 12px;
+            text-align: center;
+            margin-top: 8px;
+        }
+
+        .policy-id {
+            color: #1976D2;
+            background: linear-gradient(135deg, #E3F2FD 0%, #BBDEFB 100%);
+            border: 1px solid #1976D2;
+        }
+
+        .company-name {
+            color: #4CAF50;
+            background: linear-gradient(135deg, #E8F5E8 0%, #C8E6C9 100%);
+            border: 1px solid #4CAF50;
+        }
+
+        .farmer-name {
+            color: #FF5722;
+            background: linear-gradient(135deg, #FFEBEE 0%, #FFCDD2 100%);
+            border: 1px solid #FF5722;
+        }
+
+        .crop-info {
+            color: #9C27B0;
+            background: linear-gradient(135deg, #F3E5F5 0%, #E1BEE7 100%);
+            border: 1px solid #9C27B0;
+        }
+
+        .pdf-section {
+            background: #F8F9FA;
+            padding: 20px;
+            border-radius: 8px;
+            margin-bottom: 16px;
+        }
+
+        .pdf-title {
+            font-size: 18px;
+            font-weight: bold;
+            color: #333;
+            margin-bottom: 16px;
+        }
+
+        .pdf-preview {
+            background: white;
+            padding: 16px;
+            border-radius: 8px;
+            margin-bottom: 12px;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.05);
+            cursor: pointer;
+        }
+
+        .pdf-preview-header {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            margin-bottom: 12px;
+        }
+
+        .pdf-preview-title {
+            font-size: 16px;
+            font-weight: bold;
+            color: #333;
+        }
+
+        .pdf-tooltip {
+            background: #E0F2F1;
+            color: #00695C;
+            padding: 4px 8px;
+            border-radius: 4px;
+            font-size: 12px;
+        }
+
+        .pdf-content {
+            display: flex;
+            flex-direction: column;
+            gap: 8px;
+        }
+
+        .pdf-item {
+            display: flex;
+            justify-content: space-between;
+            padding: 8px;
+            background: #f5f5f5;
+            border-radius: 4px;
+        }
+
+        .pdf-item-label {
+            font-size: 14px;
+            color: #666;
+        }
+
+        .pdf-item-value {
+            font-size: 14px;
+            font-weight: bold;
+            color: #333;
+        }
+
+        .pdf-buttons {
+            display: flex;
+            gap: 12px;
+        }
+
+        .pdf-button {
+            flex: 1;
+            padding: 12px;
+            border: none;
+            border-radius: 8px;
+            font-size: 14px;
+            font-weight: bold;
+            cursor: pointer;
+            transition: transform 0.2s;
+        }
+
+        .pdf-button:hover {
+            transform: translateY(-2px);
+        }
+
+        .view-button {
+            background: linear-gradient(135deg, #2E7D32 0%, #1B5E20 100%);
+            color: white;
+        }
+
+        .download-button {
+            background: linear-gradient(135deg, #1976D2 0%, #1565C0 100%);
+            color: white;
+        }
+
+        .comparison-section {
+            display: flex;
+            gap: 20px;
+            max-width: 800px;
+            width: 100%;
+        }
+
+        .comparison-card {
+            flex: 1;
+            background: white;
+            border-radius: 12px;
+            padding: 20px;
+            box-shadow: 0 10px 20px rgba(0,0,0,0.1);
+        }
+
+        .comparison-title {
+            font-size: 18px;
+            font-weight: bold;
+            color: #333;
+            margin-bottom: 15px;
+            text-align: center;
+        }
+
+        .old-layout {
+            border-left: 4px solid #FF5722;
+        }
+
+        .new-layout {
+            border-left: 4px solid #4CAF50;
+        }
+
+        .old-layout .comparison-title {
+            color: #FF5722;
+        }
+
+        .new-layout .comparison-title {
+            color: #4CAF50;
+        }
+
+        .feature-list {
+            list-style: none;
+            padding: 0;
+        }
+
+        .feature-list li {
+            padding: 8px 0;
+            border-bottom: 1px solid #eee;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .feature-list li:last-child {
+            border-bottom: none;
+        }
+
+        .feature-icon {
+            font-size: 16px;
+        }
+
+        .old-feature {
+            color: #FF5722;
+        }
+
+        .new-feature {
+            color: #4CAF50;
+        }
+
+        @media (max-width: 768px) {
+            .comparison-section {
+                flex-direction: column;
+            }
+            
+            .header h1 {
+                font-size: 2rem;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="header">
+        <h1>📄 Insurance Certificate - Premium Breakdown Updated</h1>
+        <p>Matching Card-Based Layout with Crop Premium</p>
+    </div>
+
+    <div class="insurance-card">
+        <!-- Card Header -->
+        <div class="card-header">
+            <div class="card-icon">📄</div>
+            <div class="card-title">
+                <h2>📄 INSURANCE CERTIFICATE</h2>
+                <p>Certificate ID: CERT-70001294</p>
+            </div>
+        </div>
+
+        <div class="card-content">
+            <!-- Sum Insured Section -->
+            <div class="sum-insured-section">
+                <div class="sum-insured-header">
+                    <div class="sum-insured-icon">💰</div>
+                    <div class="sum-insured-label">Sum Insured</div>
+                </div>
+                <div class="sum-insured-amount">₹16,834.24</div>
+                <div class="sum-insured-description">Total coverage amount for your crop</div>
+            </div>
+
+            <!-- Premium Breakdown Section (Updated) -->
+            <div class="premium-breakdown">
+                <div class="breakdown-title">📊 Premium Breakdown</div>
+
+                <!-- Total Premium Card -->
+                <div class="breakdown-card">
+                    <div class="breakdown-card-header">
+                        <div class="breakdown-icon">💳</div>
+                        <div class="breakdown-label">Total Premium</div>
+                    </div>
+                    <div class="breakdown-value total-premium">₹7,690.93</div>
+                </div>
+
+                <!-- Government Subsidy Card -->
+                <div class="breakdown-card">
+                    <div class="breakdown-card-header">
+                        <div class="breakdown-icon">🏛️</div>
+                        <div class="breakdown-label">Government Subsidy</div>
+                    </div>
+                    <div class="breakdown-value government-subsidy">₹7,248.50</div>
+                </div>
+
+                <!-- Your Contribution Card -->
+                <div class="breakdown-card">
+                    <div class="breakdown-card-header">
+                        <div class="breakdown-icon">👨‍🌾</div>
+                        <div class="breakdown-label">Your Contribution</div>
+                    </div>
+                    <div class="breakdown-value farmer-contribution">₹442.44</div>
+                </div>
+            </div>
+
+            <!-- Policy Details Section -->
+            <div class="policy-details">
+                <div class="policy-title">📋 Policy Details</div>
+
+                <!-- Policy ID Card -->
+                <div class="policy-card">
+                    <div class="policy-card-header">
+                        <div class="policy-icon">🆔</div>
+                        <div class="policy-label">Policy ID</div>
+                    </div>
+                    <div class="policy-value policy-id">POL-70001294</div>
+                </div>
+
+                <!-- Insurance Company Card -->
+                <div class="policy-card">
+                    <div class="policy-card-header">
+                        <div class="policy-icon">🏢</div>
+                        <div class="policy-label">Insurance Company</div>
+                    </div>
+                    <div class="policy-value company-name">SBI GENERAL INSURANCE</div>
+                </div>
+
+                <!-- Farmer Name Card -->
+                <div class="policy-card">
+                    <div class="policy-card-header">
+                        <div class="policy-icon">👤</div>
+                        <div class="policy-label">Farmer Name</div>
+                    </div>
+                    <div class="policy-value farmer-name">Farmer</div>
+                </div>
+
+                <!-- Crop Info Card -->
+                <div class="policy-card">
+                    <div class="policy-card-header">
+                        <div class="policy-icon">🌾</div>
+                        <div class="policy-label">Crop and Location</div>
+                    </div>
+                    <div class="policy-value crop-info">Tomato, Karnataka</div>
+                </div>
+            </div>
+
+            <!-- PDF Certificate Section -->
+            <div class="pdf-section">
+                <div class="pdf-title">📄 PDF Certificate</div>
+                
+                <div class="pdf-preview">
+                    <div class="pdf-preview-header">
+                        <div class="pdf-preview-title">Certificate Preview</div>
+                        <div class="pdf-tooltip">ℹ️</div>
+                    </div>
+                    <div class="pdf-content">
+                        <div class="pdf-item">
+                            <span class="pdf-item-label">Policy ID:</span>
+                            <span class="pdf-item-value">POL-70001294</span>
+                        </div>
+                        <div class="pdf-item">
+                            <span class="pdf-item-label">Sum Insured:</span>
+                            <span class="pdf-item-value">₹16,834.24</span>
+                        </div>
+                        <div class="pdf-item">
+                            <span class="pdf-item-label">Your Contribution:</span>
+                            <span class="pdf-item-value">₹442.44</span>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="pdf-buttons">
+                    <button class="pdf-button view-button">View</button>
+                    <button class="pdf-button download-button">Download</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Comparison Section -->
+    <div class="comparison-section">
+        <div class="comparison-card old-layout">
+            <div class="comparison-title">❌ Old Layout Issues</div>
+            <ul class="feature-list">
+                <li><span class="feature-icon old-feature">❌</span> Horizontal layout with labels and values side-by-side</li>
+                <li><span class="feature-icon old-feature">❌</span> Complex weight distribution causing text warping</li>
+                <li><span class="feature-icon old-feature">❌</span> Inconsistent with crop premium breakdown design</li>
+                <li><span class="feature-icon old-feature">❌</span> Different visual hierarchy and spacing</li>
+                <li><span class="feature-icon old-feature">❌</span> Text competing for horizontal space</li>
+                <li><span class="feature-icon old-feature">❌</span> Fragile layout that breaks on different screen sizes</li>
+            </ul>
+        </div>
+
+        <div class="comparison-card new-layout">
+            <div class="comparison-title">✅ Updated Card-Based Layout</div>
+            <ul class="feature-list">
+                <li><span class="feature-icon new-feature">✅</span> Vertical card-based layout for each premium item</li>
+                <li><span class="feature-icon new-feature">✅</span> Labels and values stacked vertically</li>
+                <li><span class="feature-icon new-feature">✅</span> Matches crop premium breakdown design exactly</li>
+                <li><span class="feature-icon new-feature">✅</span> Consistent visual hierarchy and spacing</li>
+                <li><span class="feature-icon new-feature">✅</span> Values span full width of their cards</li>
+                <li><span class="feature-icon new-feature">✅</span> No horizontal space competition</li>
+                <li><span class="feature-icon new-feature">✅</span> Robust layout that works on all screen sizes</li>
+                <li><span class="feature-icon new-feature">✅</span> Completely immune to text warping</li>
+            </ul>
+        </div>
+    </div>
+
+    <script>
+        // Add some interactive effects
+        document.querySelectorAll('.breakdown-card, .policy-card').forEach(card => {
+            card.addEventListener('mouseenter', function() {
+                this.style.transform = 'translateY(-2px)';
+                this.style.boxShadow = '0 4px 8px rgba(0,0,0,0.1)';
+            });
+            
+            card.addEventListener('mouseleave', function() {
+                this.style.transform = 'translateY(0)';
+                this.style.boxShadow = '0 2px 4px rgba(0,0,0,0.05)';
+            });
+        });
+
+        document.querySelector('.pdf-preview').addEventListener('click', function() {
+            alert('📄 PDF Preview clicked!\n\nThis would open the full PDF certificate.');
+        });
+
+        document.querySelector('.view-button').addEventListener('click', function() {
+            alert('👁️ View PDF clicked!\n\nThis would open the PDF in a viewer.');
+        });
+
+        document.querySelector('.download-button').addEventListener('click', function() {
+            alert('📥 Download PDF clicked!\n\nThis would download the PDF certificate.');
+        });
+    </script>
+</body>
+</html>

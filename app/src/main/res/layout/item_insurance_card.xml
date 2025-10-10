@@ -128,394 +128,399 @@
                     android:alpha="0.8" />
             </LinearLayout>
 
-            <!-- Financial Breakdown Grid -->
-            <LinearLayout
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:orientation="vertical"
-                android:background="@drawable/financial_breakdown_background"
-                android:padding="16dp">
-
-                <!-- Total Premium Row -->
-                <LinearLayout
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:orientation="horizontal"
-                    android:gravity="center_vertical"
-                    android:layout_marginBottom="12dp">
-
-                    <LinearLayout
-                        android:layout_width="0dp"
-                        android:layout_weight="1"
-                        android:layout_height="wrap_content"
-                        android:orientation="horizontal"
-                        android:gravity="center_vertical">
-
-                        <TextView
-                            android:layout_width="24dp"
-                            android:layout_height="24dp"
-                            android:text="💳"
-                            android:textSize="16sp"
-                            android:gravity="center" />
-
-                        <TextView
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:text="Total Premium"
-                            android:textSize="16sp"
-                            android:textStyle="bold"
-                            android:textColor="@color/earth_text_primary"
-                            android:layout_marginStart="8dp" />
-                    </LinearLayout>
-
-                    <TextView
-                        android:id="@+id/totalPremiumAmount"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:text="₹7,690.93"
-                        android:textSize="18sp"
-                        android:textStyle="bold"
-                        android:textColor="#1976D2"
-                        android:background="@drawable/amount_badge_background"
-                        android:paddingHorizontal="12dp"
-                        android:paddingVertical="6dp" />
-                </LinearLayout>
-
-                <!-- Government Subsidy Row -->
-                <LinearLayout
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:orientation="horizontal"
-                    android:gravity="center_vertical"
-                    android:layout_marginBottom="12dp">
-
-                    <LinearLayout
-                        android:layout_width="0dp"
-                        android:layout_weight="1"
-                        android:layout_height="wrap_content"
-                        android:orientation="horizontal"
-                        android:gravity="center_vertical">
-
-                        <TextView
-                            android:layout_width="24dp"
-                            android:layout_height="24dp"
-                            android:text="🏛️"
-                            android:textSize="16sp"
-                            android:gravity="center" />
-
-                        <TextView
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:text="Government Subsidy"
-                            android:textSize="16sp"
-                            android:textColor="@color/earth_text_primary"
-                            android:layout_marginStart="8dp" />
-                    </LinearLayout>
-
-                    <TextView
-                        android:id="@+id/subsidyAmount"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:text="₹7,248.50"
-                        android:textSize="16sp"
-                        android:textStyle="bold"
-                        android:textColor="#4CAF50"
-                        android:background="@drawable/subsidy_badge_background"
-                        android:paddingHorizontal="12dp"
-                        android:paddingVertical="6dp" />
-                </LinearLayout>
-
-                <!-- Farmer Contribution Row (Highlighted) -->
-                <LinearLayout
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:orientation="horizontal"
-                    android:gravity="center_vertical"
-                    android:background="@drawable/farmer_contribution_highlight_background"
-                    android:padding="12dp">
-
-                    <LinearLayout
-                        android:layout_width="0dp"
-                        android:layout_weight="1"
-                        android:layout_height="wrap_content"
-                        android:orientation="horizontal"
-                        android:gravity="center_vertical">
-
-                        <TextView
-                            android:layout_width="24dp"
-                            android:layout_height="24dp"
-                            android:text="👨‍🌾"
-                            android:textSize="16sp"
-                            android:gravity="center" />
-
-                        <TextView
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:text="Your Contribution"
-                            android:textSize="16sp"
-                            android:textStyle="bold"
-                            android:textColor="@color/earth_text_primary"
-                            android:layout_marginStart="8dp" />
-                    </LinearLayout>
-
-                    <TextView
-                        android:id="@+id/farmerContributionAmount"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:text="₹442.44"
-                        android:textSize="18sp"
-                        android:textStyle="bold"
-                        android:textColor="#FF5722"
-                        android:background="@drawable/farmer_amount_badge_background"
-                        android:paddingHorizontal="12dp"
-                        android:paddingVertical="6dp" />
-                </LinearLayout>
-            </LinearLayout>
         </LinearLayout>
 
-        <!-- Detailed Breakdown -->
+        <!-- Premium Breakdown Section -->
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:orientation="vertical"
             android:background="@drawable/detailed_breakdown_background"
-            android:padding="16dp"
-            android:layout_marginBottom="16dp">
+            android:padding="20dp">
 
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="📊 Premium Breakdown"
+                android:textSize="18sp"
+                android:textStyle="bold"
+                android:textColor="@color/earth_text_primary"
+                android:layout_marginBottom="16dp" />
+
+            <!-- Total Premium Card -->
             <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:orientation="horizontal"
-                android:gravity="center_vertical"
-                android:layout_marginBottom="16dp">
+                android:orientation="vertical"
+                android:background="@drawable/breakdown_item_background"
+                android:padding="16dp"
+                android:layout_marginBottom="12dp">
 
-                <TextView
-                    android:layout_width="24dp"
-                    android:layout_height="24dp"
-                    android:text="📊"
-                    android:textSize="16sp"
-                    android:gravity="center" />
-
-                <TextView
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:text="Premium Breakdown"
-                    android:textSize="16sp"
-                    android:textStyle="bold"
-                    android:textColor="@color/earth_text_primary"
-                    android:layout_marginStart="8dp" />
-            </LinearLayout>
-
-            <!-- Breakdown Items Grid -->
-            <LinearLayout
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:orientation="vertical">
-
-                <!-- Area Information -->
                 <LinearLayout
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:orientation="horizontal"
                     android:gravity="center_vertical"
-                    android:background="@drawable/breakdown_item_background"
-                    android:padding="12dp"
                     android:layout_marginBottom="8dp">
 
                     <TextView
                         android:layout_width="24dp"
                         android:layout_height="24dp"
-                        android:text="📏"
-                        android:textSize="14sp"
+                        android:text="💳"
+                        android:textSize="16sp"
                         android:gravity="center" />
 
-                    <LinearLayout
-                        android:layout_width="0dp"
-                        android:layout_weight="1"
+                    <TextView
+                        android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:orientation="vertical"
-                        android:layout_marginStart="12dp">
+                        android:text="Total Premium"
+                        android:textSize="16sp"
+                        android:textColor="@color/earth_text_primary"
+                        android:layout_marginStart="8dp" />
+                </LinearLayout>
+
+                <TextView
+                    android:id="@+id/totalPremiumAmount"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:text="₹7,690.93"
+                    android:textSize="18sp"
+                    android:textStyle="bold"
+                    android:textColor="#1976D2"
+                    android:background="@drawable/policy_id_badge_background"
+                    android:paddingHorizontal="12dp"
+                    android:paddingVertical="8dp"
+                    android:gravity="center" />
+            </LinearLayout>
+
+            <!-- Government Subsidy Card -->
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="vertical"
+                android:background="@drawable/breakdown_item_background"
+                android:padding="16dp"
+                android:layout_marginBottom="12dp">
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="horizontal"
+                    android:gravity="center_vertical"
+                    android:layout_marginBottom="8dp">
+
+                    <TextView
+                        android:layout_width="24dp"
+                        android:layout_height="24dp"
+                        android:text="🏛️"
+                        android:textSize="16sp"
+                        android:gravity="center" />
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="Government Subsidy"
+                        android:textSize="16sp"
+                        android:textColor="@color/earth_text_primary"
+                        android:layout_marginStart="8dp" />
+                </LinearLayout>
+
+                <TextView
+                    android:id="@+id/subsidyAmount"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:text="₹7,248.50"
+                    android:textSize="18sp"
+                    android:textStyle="bold"
+                    android:textColor="#4CAF50"
+                    android:background="@drawable/company_name_background"
+                    android:paddingHorizontal="12dp"
+                    android:paddingVertical="8dp"
+                    android:gravity="center" />
+            </LinearLayout>
+
+            <!-- Your Contribution Card -->
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="vertical"
+                android:background="@drawable/breakdown_item_background"
+                android:padding="16dp">
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="horizontal"
+                    android:gravity="center_vertical"
+                    android:layout_marginBottom="8dp">
+
+                    <TextView
+                        android:layout_width="24dp"
+                        android:layout_height="24dp"
+                        android:text="👨‍🌾"
+                        android:textSize="16sp"
+                        android:gravity="center" />
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="Your Contribution"
+                        android:textSize="16sp"
+                        android:textStyle="bold"
+                        android:textColor="@color/earth_text_primary"
+                        android:layout_marginStart="8dp" />
+                </LinearLayout>
+
+                <TextView
+                    android:id="@+id/farmerContributionAmount"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:text="₹442.44"
+                    android:textSize="18sp"
+                    android:textStyle="bold"
+                    android:textColor="#FF5722"
+                    android:background="@drawable/farmer_name_background"
+                    android:paddingHorizontal="12dp"
+                    android:paddingVertical="8dp"
+                    android:gravity="center" />
+            </LinearLayout>
+
+            <!-- Additional Information Section -->
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="vertical"
+                android:background="@drawable/detailed_breakdown_background"
+                android:padding="20dp"
+                android:layout_marginTop="16dp">
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="📋 Additional Information"
+                    android:textSize="18sp"
+                    android:textStyle="bold"
+                    android:textColor="@color/earth_text_primary"
+                    android:layout_marginBottom="16dp" />
+
+                <!-- Area Information Card -->
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="vertical"
+                    android:background="@drawable/breakdown_item_background"
+                    android:padding="16dp"
+                    android:layout_marginBottom="12dp">
+
+                    <LinearLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:orientation="horizontal"
+                        android:gravity="center_vertical"
+                        android:layout_marginBottom="8dp">
+
+                        <TextView
+                            android:layout_width="24dp"
+                            android:layout_height="24dp"
+                            android:text="📏"
+                            android:textSize="16sp"
+                            android:gravity="center" />
 
                         <TextView
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
                             android:text="Coverage Area"
-                            android:textSize="12sp"
-                            android:textColor="@color/earth_text_secondary" />
-
-                        <TextView
-                            android:id="@+id/areaDetails"
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:text="0.4 hectares"
-                            android:textSize="14sp"
-                            android:textStyle="bold"
-                            android:textColor="@color/earth_text_primary" />
+                            android:textSize="16sp"
+                            android:textColor="@color/earth_text_primary"
+                            android:layout_marginStart="8dp" />
                     </LinearLayout>
+
+                    <TextView
+                        android:id="@+id/areaDetails"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:text="0.4 hectares"
+                        android:textSize="18sp"
+                        android:textStyle="bold"
+                        android:textColor="#1976D2"
+                        android:background="@drawable/policy_id_badge_background"
+                        android:paddingHorizontal="12dp"
+                        android:paddingVertical="8dp"
+                        android:gravity="center" />
                 </LinearLayout>
 
-                <!-- Premium per hectare -->
+                <!-- Premium per hectare Card -->
                 <LinearLayout
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:orientation="horizontal"
-                    android:gravity="center_vertical"
+                    android:orientation="vertical"
                     android:background="@drawable/breakdown_item_background"
-                    android:padding="12dp"
-                    android:layout_marginBottom="8dp">
-
-                    <TextView
-                        android:layout_width="24dp"
-                        android:layout_height="24dp"
-                        android:text="💰"
-                        android:textSize="14sp"
-                        android:gravity="center" />
+                    android:padding="16dp"
+                    android:layout_marginBottom="12dp">
 
                     <LinearLayout
-                        android:layout_width="0dp"
-                        android:layout_weight="1"
+                        android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:orientation="vertical"
-                        android:layout_marginStart="12dp">
+                        android:orientation="horizontal"
+                        android:gravity="center_vertical"
+                        android:layout_marginBottom="8dp">
+
+                        <TextView
+                            android:layout_width="24dp"
+                            android:layout_height="24dp"
+                            android:text="💰"
+                            android:textSize="16sp"
+                            android:gravity="center" />
 
                         <TextView
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
                             android:text="Rate per Hectare"
-                            android:textSize="12sp"
-                            android:textColor="@color/earth_text_secondary" />
-
-                        <TextView
-                            android:id="@+id/premiumPerHectare"
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:text="₹19,227.33 per hectare"
-                            android:textSize="14sp"
-                            android:textStyle="bold"
-                            android:textColor="@color/earth_text_primary" />
+                            android:textSize="16sp"
+                            android:textColor="@color/earth_text_primary"
+                            android:layout_marginStart="8dp" />
                     </LinearLayout>
+
+                    <TextView
+                        android:id="@+id/premiumPerHectare"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:text="₹19,227.33 per hectare"
+                        android:textSize="18sp"
+                        android:textStyle="bold"
+                        android:textColor="#4CAF50"
+                        android:background="@drawable/company_name_background"
+                        android:paddingHorizontal="12dp"
+                        android:paddingVertical="8dp"
+                        android:gravity="center" />
                 </LinearLayout>
 
-                <!-- Insurance Company -->
+                <!-- Insurance Company Card -->
                 <LinearLayout
                     android:id="@+id/companyInfoContainer"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:orientation="horizontal"
-                    android:gravity="center_vertical"
+                    android:orientation="vertical"
                     android:background="@drawable/breakdown_item_background"
-                    android:padding="12dp"
-                    android:layout_marginBottom="8dp"
+                    android:padding="16dp"
+                    android:layout_marginBottom="12dp"
                     android:visibility="gone">
 
-                    <TextView
-                        android:layout_width="24dp"
-                        android:layout_height="24dp"
-                        android:text="🏢"
-                        android:textSize="14sp"
-                        android:gravity="center" />
-
                     <LinearLayout
-                        android:layout_width="0dp"
-                        android:layout_weight="1"
+                        android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:orientation="vertical"
-                        android:layout_marginStart="12dp">
+                        android:orientation="horizontal"
+                        android:gravity="center_vertical"
+                        android:layout_marginBottom="8dp">
+
+                        <TextView
+                            android:layout_width="24dp"
+                            android:layout_height="24dp"
+                            android:text="🏢"
+                            android:textSize="16sp"
+                            android:gravity="center" />
 
                         <TextView
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
                             android:text="Insurance Provider"
-                            android:textSize="12sp"
-                            android:textColor="@color/earth_text_secondary" />
-
-                        <TextView
-                            android:id="@+id/insuranceCompanyName"
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:text="SBI GENERAL INSURANCE"
-                            android:textSize="14sp"
-                            android:textStyle="bold"
-                            android:textColor="@color/earth_text_primary" />
+                            android:textSize="16sp"
+                            android:textColor="@color/earth_text_primary"
+                            android:layout_marginStart="8dp" />
                     </LinearLayout>
+
+                    <TextView
+                        android:id="@+id/insuranceCompanyName"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:text="SBI GENERAL INSURANCE"
+                        android:textSize="18sp"
+                        android:textStyle="bold"
+                        android:textColor="#FF5722"
+                        android:background="@drawable/farmer_name_background"
+                        android:paddingHorizontal="12dp"
+                        android:paddingVertical="8dp"
+                        android:gravity="center" />
                 </LinearLayout>
 
-                <!-- Disease Context -->
+                <!-- Disease Context Card -->
                 <LinearLayout
                     android:id="@+id/diseaseInfoContainer"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:orientation="horizontal"
-                    android:gravity="center_vertical"
+                    android:orientation="vertical"
                     android:background="@drawable/disease_breakdown_item_background"
-                    android:padding="12dp"
+                    android:padding="16dp"
                     android:visibility="gone">
 
-                    <TextView
-                        android:layout_width="24dp"
-                        android:layout_height="24dp"
-                        android:text="🦠"
-                        android:textSize="14sp"
-                        android:gravity="center" />
-
                     <LinearLayout
-                        android:layout_width="0dp"
-                        android:layout_weight="1"
+                        android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:orientation="vertical"
-                        android:layout_marginStart="12dp">
+                        android:orientation="horizontal"
+                        android:gravity="center_vertical"
+                        android:layout_marginBottom="8dp">
+
+                        <TextView
+                            android:layout_width="24dp"
+                            android:layout_height="24dp"
+                            android:text="🦠"
+                            android:textSize="16sp"
+                            android:gravity="center" />
 
                         <TextView
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
                             android:text="Disease Detected"
-                            android:textSize="12sp"
-                            android:textColor="@color/earth_text_secondary" />
-
-                        <TextView
-                            android:id="@+id/diseaseContext"
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:text="Mosaic Virus"
-                            android:textSize="14sp"
-                            android:textStyle="bold"
-                            android:textColor="#FF5722" />
+                            android:textSize="16sp"
+                            android:textColor="@color/earth_text_primary"
+                            android:layout_marginStart="8dp" />
                     </LinearLayout>
+
+                    <TextView
+                        android:id="@+id/diseaseContext"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:text="Mosaic Virus"
+                        android:textSize="18sp"
+                        android:textStyle="bold"
+                        android:textColor="#FF5722"
+                        android:background="@drawable/farmer_name_background"
+                        android:paddingHorizontal="12dp"
+                        android:paddingVertical="8dp"
+                        android:gravity="center" />
                 </LinearLayout>
             </LinearLayout>
-        </LinearLayout>
 
-        <!-- Action Button -->
-        <LinearLayout
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:orientation="horizontal"
-            android:gravity="center"
-            android:layout_marginTop="8dp"
-            android:layout_marginBottom="16dp">
-
-            <androidx.cardview.widget.CardView
+            <!-- Action Button -->
+            <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                app:cardCornerRadius="25dp"
-                app:cardElevation="4dp">
+                android:orientation="horizontal"
+                android:gravity="center"
+                android:layout_marginTop="16dp"
+                android:layout_marginBottom="16dp">
 
-                <TextView
-                    android:id="@+id/applyInsuranceButton"
+                <androidx.cardview.widget.CardView
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:text="🛡️ Apply for Insurance"
-                    android:textSize="16sp"
-                    android:textStyle="bold"
-                    android:textColor="@color/clean_white"
-                    android:background="@drawable/primary_button_background"
-                    android:padding="16dp"
-                    android:gravity="center"
-                    android:clickable="true"
-                    android:focusable="true" />
-            </androidx.cardview.widget.CardView>
+                    app:cardCornerRadius="25dp"
+                    app:cardElevation="4dp">
+
+                    <TextView
+                        android:id="@+id/applyInsuranceButton"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:text="🛡️ Apply for Insurance"
+                        android:textSize="16sp"
+                        android:textStyle="bold"
+                        android:textColor="@color/clean_white"
+                        android:background="@drawable/primary_button_background"
+                        android:padding="16dp"
+                        android:gravity="center"
+                        android:clickable="true"
+                        android:focusable="true" />
+                </androidx.cardview.widget.CardView>
+            </LinearLayout>
         </LinearLayout>
-
     </LinearLayout>
-
 </androidx.cardview.widget.CardView>

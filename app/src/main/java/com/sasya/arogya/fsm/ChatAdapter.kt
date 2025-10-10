@@ -240,13 +240,13 @@ class ChatAdapter(
         private val totalPremiumAmount: TextView? = try { itemView.findViewById(R.id.totalPremiumAmount) } catch (e: Exception) { null }
         private val subsidyAmount: TextView? = try { itemView.findViewById(R.id.subsidyAmount) } catch (e: Exception) { null }
         private val farmerContributionAmount: TextView? = try { itemView.findViewById(R.id.farmerContributionAmount) } catch (e: Exception) { null }
+        private val sumInsuredAmount: TextView? = try { itemView.findViewById(R.id.sumInsuredAmount) } catch (e: Exception) { null }
+        private val sumInsuredContainer: LinearLayout? = try { itemView.findViewById(R.id.sumInsuredContainer) } catch (e: Exception) { null }
         private val areaDetails: TextView? = try { itemView.findViewById(R.id.areaDetails) } catch (e: Exception) { null }
         private val premiumPerHectare: TextView? = try { itemView.findViewById(R.id.premiumPerHectare) } catch (e: Exception) { null }
         private val diseaseContext: TextView? = try { itemView.findViewById(R.id.diseaseContext) } catch (e: Exception) { null }
         private val insuranceCompanyName: TextView? = try { itemView.findViewById(R.id.insuranceCompanyName) } catch (e: Exception) { null }
         private val companyInfoContainer: LinearLayout? = try { itemView.findViewById(R.id.companyInfoContainer) } catch (e: Exception) { null }
-        private val sumInsuredAmount: TextView? = try { itemView.findViewById(R.id.sumInsuredAmount) } catch (e: Exception) { null }
-        private val sumInsuredContainer: LinearLayout? = try { itemView.findViewById(R.id.sumInsuredContainer) } catch (e: Exception) { null }
         private val diseaseInfoContainer: LinearLayout? = try { itemView.findViewById(R.id.diseaseInfoContainer) } catch (e: Exception) { null }
         private val applyInsuranceButton: TextView? = try { itemView.findViewById(R.id.applyInsuranceButton) } catch (e: Exception) { null }
         
@@ -1540,6 +1540,14 @@ class ChatAdapter(
                 // Format farmer contribution (highlighted as what farmer pays)
                 farmerContributionAmount?.text = "₹${formatCurrencyAmount(insuranceDetails.farmerContribution)}"
                 
+                // Handle sum insured if present
+                if (insuranceDetails.sumInsured > 0) {
+                    sumInsuredContainer?.visibility = View.VISIBLE
+                    sumInsuredAmount?.text = "₹${formatCurrencyAmount(insuranceDetails.sumInsured)}"
+                } else {
+                    sumInsuredContainer?.visibility = View.GONE
+                }
+
                 // Format area details
                 areaDetails?.text = "${String.format("%.1f", insuranceDetails.area)} hectares"
                 

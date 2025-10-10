@@ -1,0 +1,561 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Policy Details Redesign - Sasya Arogya</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            padding: 20px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 30px;
+        }
+
+        .header {
+            text-align: center;
+            color: white;
+            margin-bottom: 20px;
+        }
+
+        .header h1 {
+            font-size: 2.5rem;
+            margin-bottom: 10px;
+            text-shadow: 2px 2px 4px rgba(0,0,0,0.3);
+        }
+
+        .header p {
+            font-size: 1.2rem;
+            opacity: 0.9;
+        }
+
+        .certificate-card {
+            background: white;
+            border-radius: 16px;
+            box-shadow: 0 20px 40px rgba(0,0,0,0.1);
+            max-width: 400px;
+            width: 100%;
+            overflow: hidden;
+            margin: 20px 0;
+        }
+
+        .certificate-header {
+            background: linear-gradient(135deg, #2E7D32 0%, #1B5E20 100%);
+            color: white;
+            padding: 20px;
+            display: flex;
+            align-items: center;
+            gap: 16px;
+        }
+
+        .certificate-icon {
+            width: 40px;
+            height: 40px;
+            background: rgba(255,255,255,0.2);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 20px;
+        }
+
+        .certificate-title {
+            flex: 1;
+        }
+
+        .certificate-title h2 {
+            font-size: 15px;
+            font-weight: bold;
+            letter-spacing: 0.02em;
+            margin-bottom: 2px;
+        }
+
+        .certificate-title p {
+            font-size: 13px;
+            opacity: 0.8;
+        }
+
+        .certificate-content {
+            padding: 20px;
+        }
+
+        .sum-insured-section {
+            background: linear-gradient(135deg, #4CAF50 0%, #388E3C 100%);
+            color: white;
+            padding: 16px;
+            border-radius: 12px;
+            margin-bottom: 16px;
+        }
+
+        .sum-insured-header {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            margin-bottom: 8px;
+        }
+
+        .sum-insured-icon {
+            font-size: 16px;
+        }
+
+        .sum-insured-label {
+            font-size: 16px;
+            font-weight: bold;
+        }
+
+        .sum-insured-amount {
+            font-size: 24px;
+            font-weight: bold;
+            margin-bottom: 4px;
+        }
+
+        .sum-insured-description {
+            font-size: 12px;
+            opacity: 0.8;
+        }
+
+        .financial-breakdown {
+            background: #F8F9FA;
+            padding: 16px;
+            border-radius: 8px;
+            margin-bottom: 16px;
+        }
+
+        .breakdown-title {
+            font-size: 16px;
+            font-weight: bold;
+            color: #333;
+            margin-bottom: 12px;
+        }
+
+        .breakdown-item {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            margin-bottom: 8px;
+        }
+
+        .breakdown-label {
+            font-size: 14px;
+            color: #333;
+        }
+
+        .breakdown-amount {
+            font-size: 16px;
+            font-weight: bold;
+            padding: 4px 8px;
+            border-radius: 8px;
+        }
+
+        .total-premium {
+            color: #1976D2;
+            background: #E3F2FD;
+        }
+
+        .government-subsidy {
+            color: #4CAF50;
+            background: #E8F5E8;
+        }
+
+        .farmer-contribution {
+            color: #FF5722;
+            background: #FFEBEE;
+        }
+
+        .policy-details {
+            background: #F8F9FA;
+            padding: 20px;
+            border-radius: 8px;
+        }
+
+        .policy-title {
+            font-size: 18px;
+            font-weight: bold;
+            color: #333;
+            margin-bottom: 16px;
+        }
+
+        .policy-card {
+            background: white;
+            padding: 16px;
+            border-radius: 8px;
+            margin-bottom: 12px;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.05);
+        }
+
+        .policy-card-header {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            margin-bottom: 8px;
+        }
+
+        .policy-icon {
+            font-size: 16px;
+        }
+
+        .policy-label {
+            font-size: 16px;
+            color: #333;
+        }
+
+        .policy-value {
+            font-size: 16px;
+            font-weight: bold;
+            color: #333;
+            background: #F5F5F5;
+            padding: 8px 12px;
+            border-radius: 12px;
+            text-align: center;
+            margin-top: 8px;
+        }
+
+        .policy-id-value {
+            color: #1976D2;
+            background: linear-gradient(135deg, #E3F2FD 0%, #BBDEFB 100%);
+            border: 1px solid #1976D2;
+        }
+
+        .company-name-value {
+            color: #7B1FA2;
+            background: linear-gradient(135deg, #F3E5F5 0%, #E1BEE7 100%);
+            border: 1px solid #7B1FA2;
+        }
+
+        .farmer-name-value {
+            color: #4CAF50;
+            background: linear-gradient(135deg, #E8F5E8 0%, #C8E6C9 100%);
+            border: 1px solid #4CAF50;
+        }
+
+        .crop-info-value {
+            color: #FF9800;
+            background: linear-gradient(135deg, #FFF3E0 0%, #FFE0B2 100%);
+            border: 1px solid #FF9800;
+        }
+
+        .pdf-section {
+            background: linear-gradient(135deg, #FFF3E0 0%, #FFE0B2 100%);
+            padding: 20px;
+            border-radius: 12px;
+            border: 1px solid #FFCC02;
+            margin-top: 20px;
+        }
+
+        .pdf-header {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            margin-bottom: 16px;
+        }
+
+        .pdf-icon {
+            font-size: 20px;
+        }
+
+        .pdf-title {
+            font-size: 18px;
+            font-weight: bold;
+            color: #333;
+        }
+
+        .pdf-description {
+            font-size: 14px;
+            color: #666;
+            line-height: 1.5;
+            margin-bottom: 16px;
+        }
+
+        .action-buttons {
+            display: flex;
+            gap: 8px;
+        }
+
+        .action-button {
+            flex: 1;
+            padding: 14px;
+            border-radius: 25px;
+            border: none;
+            font-size: 14px;
+            font-weight: bold;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .primary-button {
+            background: linear-gradient(135deg, #2E7D32 0%, #1B5E20 100%);
+            color: white;
+            box-shadow: 0 4px 12px rgba(46, 125, 50, 0.3);
+        }
+
+        .primary-button:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 6px 16px rgba(46, 125, 50, 0.4);
+        }
+
+        .secondary-button {
+            background: linear-gradient(135deg, #FF9800 0%, #F57C00 100%);
+            color: white;
+            box-shadow: 0 4px 12px rgba(255, 152, 0, 0.3);
+        }
+
+        .secondary-button:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 6px 16px rgba(255, 152, 0, 0.4);
+        }
+
+        .comparison-section {
+            display: flex;
+            gap: 20px;
+            max-width: 800px;
+            width: 100%;
+        }
+
+        .comparison-card {
+            flex: 1;
+            background: white;
+            border-radius: 12px;
+            padding: 20px;
+            box-shadow: 0 10px 20px rgba(0,0,0,0.1);
+        }
+
+        .comparison-title {
+            font-size: 18px;
+            font-weight: bold;
+            color: #333;
+            margin-bottom: 15px;
+            text-align: center;
+        }
+
+        .old-design {
+            border-left: 4px solid #FF5722;
+        }
+
+        .new-design {
+            border-left: 4px solid #4CAF50;
+        }
+
+        .old-design .comparison-title {
+            color: #FF5722;
+        }
+
+        .new-design .comparison-title {
+            color: #4CAF50;
+        }
+
+        .feature-list {
+            list-style: none;
+            padding: 0;
+        }
+
+        .feature-list li {
+            padding: 8px 0;
+            border-bottom: 1px solid #eee;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .feature-list li:last-child {
+            border-bottom: none;
+        }
+
+        .feature-icon {
+            font-size: 16px;
+        }
+
+        .old-feature {
+            color: #FF5722;
+        }
+
+        .new-feature {
+            color: #4CAF50;
+        }
+
+        @media (max-width: 768px) {
+            .comparison-section {
+                flex-direction: column;
+            }
+            
+            .header h1 {
+                font-size: 2rem;
+            }
+            
+            .action-buttons {
+                flex-direction: column;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="header">
+        <h1>📋 Policy Details Redesign</h1>
+        <p>Professional, Card-Based Information Display</p>
+    </div>
+
+    <div class="certificate-card">
+        <!-- Certificate Header -->
+        <div class="certificate-header">
+            <div class="certificate-icon">📄</div>
+            <div class="certificate-title">
+                <h2>📋 INSURANCE CERTIFICATE</h2>
+                <p>Policy ID: POL-69273308</p>
+            </div>
+        </div>
+
+        <div class="certificate-content">
+            <!-- Sum Insured Section -->
+            <div class="sum-insured-section">
+                <div class="sum-insured-header">
+                    <div class="sum-insured-icon">💰</div>
+                    <div class="sum-insured-label">Sum Insured</div>
+                </div>
+                <div class="sum-insured-amount">₹16,834.24</div>
+                <div class="sum-insured-description">Total coverage amount for your crop</div>
+            </div>
+
+            <!-- Financial Breakdown -->
+            <div class="financial-breakdown">
+                <div class="breakdown-title">📊 Premium Breakdown</div>
+                
+                <div class="breakdown-item">
+                    <div class="breakdown-label">Total Premium</div>
+                    <div class="breakdown-amount total-premium">₹7,690.93</div>
+                </div>
+                
+                <div class="breakdown-item">
+                    <div class="breakdown-label">Government Subsidy</div>
+                    <div class="breakdown-amount government-subsidy">₹7,248.50</div>
+                </div>
+                
+                <div class="breakdown-item">
+                    <div class="breakdown-label">Your Contribution</div>
+                    <div class="breakdown-amount farmer-contribution">₹442.44</div>
+                </div>
+            </div>
+
+            <!-- Policy Details Section -->
+            <div class="policy-details">
+                <div class="policy-title">📋 Policy Details</div>
+
+                <!-- Policy ID Card -->
+                <div class="policy-card">
+                    <div class="policy-card-header">
+                        <div class="policy-icon">🆔</div>
+                        <div class="policy-label">Policy ID</div>
+                    </div>
+                    <div class="policy-value policy-id-value">POL-69273308</div>
+                </div>
+
+                <!-- Insurance Company Card -->
+                <div class="policy-card">
+                    <div class="policy-card-header">
+                        <div class="policy-icon">🏢</div>
+                        <div class="policy-label">Insurance Company</div>
+                    </div>
+                    <div class="policy-value company-name-value">SBI GENERAL INSURANCE</div>
+                </div>
+
+                <!-- Farmer Name Card -->
+                <div class="policy-card">
+                    <div class="policy-card-header">
+                        <div class="policy-icon">👤</div>
+                        <div class="policy-label">Farmer Name</div>
+                    </div>
+                    <div class="policy-value farmer-name-value">Farmer</div>
+                </div>
+
+                <!-- Crop Information Card -->
+                <div class="policy-card">
+                    <div class="policy-card-header">
+                        <div class="policy-icon">🌾</div>
+                        <div class="policy-label">Crop and Location</div>
+                    </div>
+                    <div class="policy-value crop-info-value">Tomato • Karnataka • 0.4 hectares</div>
+                </div>
+            </div>
+
+            <!-- PDF Certificate Section -->
+            <div class="pdf-section">
+                <div class="pdf-header">
+                    <div class="pdf-icon">📄</div>
+                    <div class="pdf-title">Official Certificate</div>
+                </div>
+
+                <div class="pdf-description">
+                    Your official insurance certificate is ready for download. This PDF contains all policy details and can be used for claims and verification.
+                </div>
+
+                <div class="action-buttons">
+                    <button class="action-button primary-button">📄 View</button>
+                    <button class="action-button secondary-button">⬇️ Download</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Comparison Section -->
+    <div class="comparison-section">
+        <div class="comparison-card old-design">
+            <div class="comparison-title">❌ Old Design Issues</div>
+            <ul class="feature-list">
+                <li><span class="feature-icon old-feature">❌</span> Text wrapping and truncation issues</li>
+                <li><span class="feature-icon old-feature">❌</span> Poor alignment and spacing</li>
+                <li><span class="feature-icon old-feature">❌</span> Inconsistent visual hierarchy</li>
+                <li><span class="feature-icon old-feature">❌</span> No visual highlighting of important info</li>
+                <li><span class="feature-icon old-feature">❌</span> Unprofessional appearance</li>
+                <li><span class="feature-icon old-feature">❌</span> Hard to read and scan</li>
+            </ul>
+        </div>
+
+        <div class="comparison-card new-design">
+            <div class="comparison-title">✅ New Design Features</div>
+            <ul class="feature-list">
+                <li><span class="feature-icon new-feature">✅</span> Card-based layout with individual sections</li>
+                <li><span class="feature-icon new-feature">✅</span> No text truncation or wrapping issues</li>
+                <li><span class="feature-icon new-feature">✅</span> Color-coded information categories</li>
+                <li><span class="feature-icon new-feature">✅</span> Professional gradient backgrounds</li>
+                <li><span class="feature-icon new-feature">✅</span> Clear visual hierarchy with icons</li>
+                <li><span class="feature-icon new-feature">✅</span> Easy to scan and read</li>
+                <li><span class="feature-icon new-feature">✅</span> Consistent with premium card design</li>
+                <li><span class="feature-icon new-feature">✅</span> Proper highlighting of important details</li>
+            </ul>
+        </div>
+    </div>
+
+    <script>
+        // Add some interactive effects
+        document.querySelectorAll('.action-button').forEach(button => {
+            button.addEventListener('click', function() {
+                this.style.transform = 'scale(0.95)';
+                setTimeout(() => {
+                    this.style.transform = '';
+                }, 150);
+            });
+        });
+
+        // Add hover effects to policy cards
+        document.querySelectorAll('.policy-card').forEach(card => {
+            card.addEventListener('mouseenter', function() {
+                this.style.transform = 'translateY(-2px)';
+                this.style.boxShadow = '0 4px 8px rgba(0,0,0,0.1)';
+            });
+            
+            card.addEventListener('mouseleave', function() {
+                this.style.transform = 'translateY(0)';
+                this.style.boxShadow = '0 2px 4px rgba(0,0,0,0.05)';
+            });
+        });
+    </script>
+</body>
+</html>

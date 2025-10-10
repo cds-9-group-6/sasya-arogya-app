@@ -137,111 +137,160 @@
                     android:layout_marginTop="2dp" />
             </LinearLayout>
 
-            <!-- Financial Breakdown -->
+            <!-- Premium Breakdown Section -->
             <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:orientation="vertical"
-                android:background="@drawable/financial_breakdown_background"
-                android:padding="16dp"
+                android:background="@drawable/detailed_breakdown_background"
+                android:padding="20dp"
                 android:layout_marginBottom="16dp">
 
                 <TextView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:text="📊 Premium Breakdown"
-                    android:textSize="16sp"
+                    android:textSize="18sp"
                     android:textStyle="bold"
                     android:textColor="@color/earth_text_primary"
-                    android:layout_marginBottom="12dp" />
+                    android:layout_marginBottom="16dp" />
 
-                <!-- Total Premium -->
+                <!-- Total Premium Card -->
                 <LinearLayout
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:orientation="horizontal"
-                    android:gravity="center_vertical"
-                    android:layout_marginBottom="8dp">
+                    android:orientation="vertical"
+                    android:background="@drawable/breakdown_item_background"
+                    android:padding="16dp"
+                    android:layout_marginBottom="12dp">
 
-                    <TextView
-                        android:layout_width="0dp"
-                        android:layout_weight="1"
+                    <LinearLayout
+                        android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:text="Total Premium"
-                        android:textSize="14sp"
-                        android:textColor="@color/earth_text_primary" />
+                        android:orientation="horizontal"
+                        android:gravity="center_vertical"
+                        android:layout_marginBottom="8dp">
+
+                        <TextView
+                            android:layout_width="24dp"
+                            android:layout_height="24dp"
+                            android:text="💳"
+                            android:textSize="16sp"
+                            android:gravity="center" />
+
+                        <TextView
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:text="Total Premium"
+                            android:textSize="16sp"
+                            android:textColor="@color/earth_text_primary"
+                            android:layout_marginStart="8dp" />
+                    </LinearLayout>
 
                     <TextView
                         android:id="@+id/certificateTotalPremium"
-                        android:layout_width="wrap_content"
+                        android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:text="₹7,690.93"
-                        android:textSize="16sp"
+                        android:textSize="18sp"
                         android:textStyle="bold"
                         android:textColor="#1976D2"
-                        android:background="@drawable/amount_badge_background"
-                        android:paddingHorizontal="8dp"
-                        android:paddingVertical="4dp" />
+                        android:background="@drawable/policy_id_badge_background"
+                        android:paddingHorizontal="12dp"
+                        android:paddingVertical="8dp"
+                        android:gravity="center" />
                 </LinearLayout>
 
-                <!-- Government Subsidy -->
+                <!-- Government Subsidy Card -->
                 <LinearLayout
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:orientation="horizontal"
-                    android:gravity="center_vertical"
-                    android:layout_marginBottom="8dp">
+                    android:orientation="vertical"
+                    android:background="@drawable/breakdown_item_background"
+                    android:padding="16dp"
+                    android:layout_marginBottom="12dp">
 
-                    <TextView
-                        android:layout_width="0dp"
-                        android:layout_weight="1"
+                    <LinearLayout
+                        android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:text="Government Subsidy"
-                        android:textSize="14sp"
-                        android:textColor="@color/earth_text_primary" />
+                        android:orientation="horizontal"
+                        android:gravity="center_vertical"
+                        android:layout_marginBottom="8dp">
+
+                        <TextView
+                            android:layout_width="24dp"
+                            android:layout_height="24dp"
+                            android:text="🏛️"
+                            android:textSize="16sp"
+                            android:gravity="center" />
+
+                        <TextView
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:text="Government Subsidy"
+                            android:textSize="16sp"
+                            android:textColor="@color/earth_text_primary"
+                            android:layout_marginStart="8dp" />
+                    </LinearLayout>
 
                     <TextView
                         android:id="@+id/certificateGovernmentSubsidy"
-                        android:layout_width="wrap_content"
+                        android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:text="₹7,248.50"
-                        android:textSize="16sp"
+                        android:textSize="18sp"
                         android:textStyle="bold"
                         android:textColor="#4CAF50"
-                        android:background="@drawable/subsidy_badge_background"
-                        android:paddingHorizontal="8dp"
-                        android:paddingVertical="4dp" />
+                        android:background="@drawable/company_name_background"
+                        android:paddingHorizontal="12dp"
+                        android:paddingVertical="8dp"
+                        android:gravity="center" />
                 </LinearLayout>
 
-                <!-- Your Contribution -->
+                <!-- Your Contribution Card -->
                 <LinearLayout
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:orientation="horizontal"
-                    android:gravity="center_vertical"
-                    android:background="@drawable/farmer_contribution_highlight_background"
-                    android:padding="8dp">
+                    android:orientation="vertical"
+                    android:background="@drawable/breakdown_item_background"
+                    android:padding="16dp">
 
-                    <TextView
-                        android:layout_width="0dp"
-                        android:layout_weight="1"
+                    <LinearLayout
+                        android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:text="Your Contribution"
-                        android:textSize="14sp"
-                        android:textStyle="bold"
-                        android:textColor="@color/earth_text_primary" />
+                        android:orientation="horizontal"
+                        android:gravity="center_vertical"
+                        android:layout_marginBottom="8dp">
+
+                        <TextView
+                            android:layout_width="24dp"
+                            android:layout_height="24dp"
+                            android:text="👨‍🌾"
+                            android:textSize="16sp"
+                            android:gravity="center" />
+
+                        <TextView
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:text="Your Contribution"
+                            android:textSize="16sp"
+                            android:textStyle="bold"
+                            android:textColor="@color/earth_text_primary"
+                            android:layout_marginStart="8dp" />
+                    </LinearLayout>
 
                     <TextView
                         android:id="@+id/certificateFarmerContribution"
-                        android:layout_width="wrap_content"
+                        android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:text="₹442.44"
-                        android:textSize="16sp"
+                        android:textSize="18sp"
                         android:textStyle="bold"
                         android:textColor="#FF5722"
-                        android:background="@drawable/farmer_amount_badge_background"
-                        android:paddingHorizontal="8dp"
-                        android:paddingVertical="4dp" />
+                        android:background="@drawable/farmer_name_background"
+                        android:paddingHorizontal="12dp"
+                        android:paddingVertical="8dp"
+                        android:gravity="center" />
                 </LinearLayout>
             </LinearLayout>
 
@@ -305,7 +354,9 @@
                         android:background="@drawable/policy_id_badge_background"
                         android:paddingHorizontal="12dp"
                         android:paddingVertical="8dp"
-                        android:gravity="center" />
+                        android:gravity="center"
+                        android:maxLines="1"
+                        android:ellipsize="end" />
                 </LinearLayout>
 
                 <!-- Insurance Company Card -->
@@ -351,7 +402,9 @@
                         android:background="@drawable/company_name_background"
                         android:paddingHorizontal="12dp"
                         android:paddingVertical="8dp"
-                        android:gravity="center" />
+                        android:gravity="center"
+                        android:maxLines="2"
+                        android:ellipsize="end" />
                 </LinearLayout>
 
                 <!-- Farmer Information Card -->
@@ -397,7 +450,9 @@
                         android:background="@drawable/farmer_name_background"
                         android:paddingHorizontal="12dp"
                         android:paddingVertical="8dp"
-                        android:gravity="center" />
+                        android:gravity="center"
+                        android:maxLines="1"
+                        android:ellipsize="end" />
                 </LinearLayout>
 
                 <!-- Crop Information Card -->
@@ -442,7 +497,9 @@
                         android:background="@drawable/crop_info_background"
                         android:paddingHorizontal="12dp"
                         android:paddingVertical="8dp"
-                        android:gravity="center" />
+                        android:gravity="center"
+                        android:maxLines="2"
+                        android:ellipsize="end" />
                 </LinearLayout>
             </LinearLayout>
         </LinearLayout>
@@ -537,13 +594,14 @@
                         android:padding="4dp" />
                 </LinearLayout>
 
-                <!-- PDF Preview Content -->
+                    <!-- PDF Preview Content -->
                 <LinearLayout
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:orientation="vertical"
                     android:background="@drawable/breakdown_item_background"
-                    android:padding="12dp">
+                    android:padding="12dp"
+                    android:minHeight="80dp">
 
                     <!-- Policy ID Preview -->
                     <LinearLayout
@@ -551,7 +609,8 @@
                         android:layout_height="wrap_content"
                         android:orientation="horizontal"
                         android:gravity="center_vertical"
-                        android:layout_marginBottom="8dp">
+                        android:layout_marginBottom="8dp"
+                        android:minHeight="32dp">
 
                         <TextView
                             android:layout_width="wrap_content"
@@ -576,7 +635,12 @@
                             android:textSize="12sp"
                             android:textStyle="bold"
                             android:textColor="@color/earth_text_primary"
-                            android:layout_marginStart="4dp" />
+                            android:layout_marginStart="4dp"
+                            android:maxLines="1"
+                            android:ellipsize="end"
+                            android:singleLine="true"
+                            android:scrollHorizontally="false"
+                            android:includeFontPadding="false" />
                     </LinearLayout>
 
                     <!-- Sum Insured Preview -->
@@ -585,7 +649,8 @@
                         android:layout_height="wrap_content"
                         android:orientation="horizontal"
                         android:gravity="center_vertical"
-                        android:layout_marginBottom="8dp">
+                        android:layout_marginBottom="8dp"
+                        android:minHeight="32dp">
 
                         <TextView
                             android:layout_width="wrap_content"
@@ -610,7 +675,9 @@
                             android:textSize="12sp"
                             android:textStyle="bold"
                             android:textColor="#4CAF50"
-                            android:layout_marginStart="4dp" />
+                            android:layout_marginStart="4dp"
+                            android:maxLines="1"
+                            android:ellipsize="end" />
                     </LinearLayout>
 
                     <!-- Premium Preview -->
@@ -618,7 +685,8 @@
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:orientation="horizontal"
-                        android:gravity="center_vertical">
+                        android:gravity="center_vertical"
+                        android:minHeight="32dp">
 
                         <TextView
                             android:layout_width="wrap_content"
@@ -643,7 +711,9 @@
                             android:textSize="12sp"
                             android:textStyle="bold"
                             android:textColor="#FF5722"
-                            android:layout_marginStart="4dp" />
+                            android:layout_marginStart="4dp"
+                            android:maxLines="1"
+                            android:ellipsize="end" />
                     </LinearLayout>
                 </LinearLayout>
             </LinearLayout>
@@ -708,6 +778,7 @@
     </LinearLayout>
 
 </androidx.cardview.widget.CardView>
+
 
 
 
