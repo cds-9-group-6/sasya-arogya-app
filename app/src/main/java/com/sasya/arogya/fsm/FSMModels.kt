@@ -133,7 +133,8 @@ data class InsuranceDetails(
     val governmentSubsidy: Double,
     val farmerContribution: Double,
     val disease: String? = null,
-    val companyName: String? = null
+    val companyName: String? = null,
+    val sumInsured: Double = 0.0
 )
 
 // Insurance certificate data from server

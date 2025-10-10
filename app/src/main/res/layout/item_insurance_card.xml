@@ -79,92 +79,197 @@
             android:layout_height="wrap_content"
             android:orientation="vertical"
             android:background="@drawable/premium_summary_background"
-            android:padding="16dp"
-            android:layout_marginBottom="16dp">
+            android:padding="20dp"
+            android:layout_marginBottom="20dp">
 
-            <!-- Total Premium (Most Important) -->
+            <!-- Sum Insured (Coverage Amount) - Most Important -->
             <LinearLayout
+                android:id="@+id/sumInsuredContainer"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:orientation="horizontal"
-                android:gravity="center_vertical"
-                android:layout_marginBottom="12dp">
+                android:orientation="vertical"
+                android:background="@drawable/sum_insured_card_background"
+                android:padding="16dp"
+                android:layout_marginBottom="16dp"
+                android:visibility="gone">
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="horizontal"
+                    android:gravity="center_vertical"
+                    android:layout_marginBottom="8dp">
+
+                    <TextView
+                        android:layout_width="0dp"
+                        android:layout_weight="1"
+                        android:layout_height="wrap_content"
+                        android:text="💰 Sum Insured"
+                        android:textSize="16sp"
+                        android:textStyle="bold"
+                        android:textColor="@color/clean_white" />
+
+                    <TextView
+                        android:id="@+id/sumInsuredAmount"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="₹42,085.60"
+                        android:textSize="24sp"
+                        android:textStyle="bold"
+                        android:textColor="@color/clean_white" />
+                </LinearLayout>
 
                 <TextView
-                    android:layout_width="0dp"
-                    android:layout_weight="1"
+                    android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:text="Total Premium"
-                    android:textSize="18sp"
-                    android:textStyle="bold"
-                    android:textColor="@color/earth_text_primary" />
-
-                <TextView
-                    android:id="@+id/totalPremiumAmount"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:text="₹40,702.76"
-                    android:textSize="20sp"
-                    android:textStyle="bold"
-                    android:textColor="#1976D2"
-                    android:background="@drawable/amount_highlight_background"
-                    android:padding="8dp" />
+                    android:text="Total coverage amount for your crop"
+                    android:textSize="12sp"
+                    android:textColor="@color/clean_white"
+                    android:alpha="0.8" />
             </LinearLayout>
 
-            <!-- Government Subsidy -->
+            <!-- Financial Breakdown Grid -->
             <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:orientation="horizontal"
-                android:gravity="center_vertical"
-                android:layout_marginBottom="8dp">
+                android:orientation="vertical"
+                android:background="@drawable/financial_breakdown_background"
+                android:padding="16dp">
 
-                <TextView
-                    android:layout_width="0dp"
-                    android:layout_weight="1"
+                <!-- Total Premium Row -->
+                <LinearLayout
+                    android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:text="🏛️ Government Subsidy"
-                    android:textSize="15sp"
-                    android:textColor="@color/earth_text_primary" />
+                    android:orientation="horizontal"
+                    android:gravity="center_vertical"
+                    android:layout_marginBottom="12dp">
 
-                <TextView
-                    android:id="@+id/subsidyAmount"
-                    android:layout_width="wrap_content"
+                    <LinearLayout
+                        android:layout_width="0dp"
+                        android:layout_weight="1"
+                        android:layout_height="wrap_content"
+                        android:orientation="horizontal"
+                        android:gravity="center_vertical">
+
+                        <TextView
+                            android:layout_width="24dp"
+                            android:layout_height="24dp"
+                            android:text="💳"
+                            android:textSize="16sp"
+                            android:gravity="center" />
+
+                        <TextView
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:text="Total Premium"
+                            android:textSize="16sp"
+                            android:textStyle="bold"
+                            android:textColor="@color/earth_text_primary"
+                            android:layout_marginStart="8dp" />
+                    </LinearLayout>
+
+                    <TextView
+                        android:id="@+id/totalPremiumAmount"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="₹7,690.93"
+                        android:textSize="18sp"
+                        android:textStyle="bold"
+                        android:textColor="#1976D2"
+                        android:background="@drawable/amount_badge_background"
+                        android:paddingHorizontal="12dp"
+                        android:paddingVertical="6dp" />
+                </LinearLayout>
+
+                <!-- Government Subsidy Row -->
+                <LinearLayout
+                    android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:text="₹36,632.48"
-                    android:textSize="16sp"
-                    android:textStyle="bold"
-                    android:textColor="#4CAF50" />
-            </LinearLayout>
+                    android:orientation="horizontal"
+                    android:gravity="center_vertical"
+                    android:layout_marginBottom="12dp">
 
-            <!-- Farmer Contribution (What farmer pays) -->
-            <LinearLayout
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:orientation="horizontal"
-                android:gravity="center_vertical"
-                android:background="@drawable/farmer_contribution_background"
-                android:padding="12dp">
+                    <LinearLayout
+                        android:layout_width="0dp"
+                        android:layout_weight="1"
+                        android:layout_height="wrap_content"
+                        android:orientation="horizontal"
+                        android:gravity="center_vertical">
 
-                <TextView
-                    android:layout_width="0dp"
-                    android:layout_weight="1"
+                        <TextView
+                            android:layout_width="24dp"
+                            android:layout_height="24dp"
+                            android:text="🏛️"
+                            android:textSize="16sp"
+                            android:gravity="center" />
+
+                        <TextView
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:text="Government Subsidy"
+                            android:textSize="16sp"
+                            android:textColor="@color/earth_text_primary"
+                            android:layout_marginStart="8dp" />
+                    </LinearLayout>
+
+                    <TextView
+                        android:id="@+id/subsidyAmount"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="₹7,248.50"
+                        android:textSize="16sp"
+                        android:textStyle="bold"
+                        android:textColor="#4CAF50"
+                        android:background="@drawable/subsidy_badge_background"
+                        android:paddingHorizontal="12dp"
+                        android:paddingVertical="6dp" />
+                </LinearLayout>
+
+                <!-- Farmer Contribution Row (Highlighted) -->
+                <LinearLayout
+                    android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:text="👨‍🌾 Your Contribution"
-                    android:textSize="16sp"
-                    android:textStyle="bold"
-                    android:textColor="@color/earth_text_primary" />
+                    android:orientation="horizontal"
+                    android:gravity="center_vertical"
+                    android:background="@drawable/farmer_contribution_highlight_background"
+                    android:padding="12dp">
 
-                <TextView
-                    android:id="@+id/farmerContributionAmount"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:text="₹4,070.28"
-                    android:textSize="18sp"
-                    android:textStyle="bold"
-                    android:textColor="#FF5722"
-                    android:background="@drawable/farmer_amount_highlight"
-                    android:padding="8dp" />
+                    <LinearLayout
+                        android:layout_width="0dp"
+                        android:layout_weight="1"
+                        android:layout_height="wrap_content"
+                        android:orientation="horizontal"
+                        android:gravity="center_vertical">
+
+                        <TextView
+                            android:layout_width="24dp"
+                            android:layout_height="24dp"
+                            android:text="👨‍🌾"
+                            android:textSize="16sp"
+                            android:gravity="center" />
+
+                        <TextView
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:text="Your Contribution"
+                            android:textSize="16sp"
+                            android:textStyle="bold"
+                            android:textColor="@color/earth_text_primary"
+                            android:layout_marginStart="8dp" />
+                    </LinearLayout>
+
+                    <TextView
+                        android:id="@+id/farmerContributionAmount"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="₹442.44"
+                        android:textSize="18sp"
+                        android:textStyle="bold"
+                        android:textColor="#FF5722"
+                        android:background="@drawable/farmer_amount_badge_background"
+                        android:paddingHorizontal="12dp"
+                        android:paddingVertical="6dp" />
+                </LinearLayout>
             </LinearLayout>
         </LinearLayout>
 
@@ -173,121 +278,210 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:orientation="vertical"
+            android:background="@drawable/detailed_breakdown_background"
+            android:padding="16dp"
             android:layout_marginBottom="16dp">
 
-            <TextView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="📊 Premium Breakdown"
-                android:textSize="14sp"
-                android:textStyle="bold"
-                android:textColor="@color/earth_text_primary"
-                android:layout_marginBottom="12dp" />
-
-            <!-- Area Information -->
             <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:orientation="horizontal"
-                android:layout_marginBottom="8dp">
+                android:gravity="center_vertical"
+                android:layout_marginBottom="16dp">
 
                 <TextView
-                    android:layout_width="100dp"
-                    android:layout_height="wrap_content"
-                    android:text="Area:"
-                    android:textSize="14sp"
-                    android:textColor="@color/earth_text_secondary" />
+                    android:layout_width="24dp"
+                    android:layout_height="24dp"
+                    android:text="📊"
+                    android:textSize="16sp"
+                    android:gravity="center" />
 
                 <TextView
-                    android:id="@+id/areaDetails"
-                    android:layout_width="0dp"
-                    android:layout_weight="1"
+                    android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:text="3.0 hectares"
-                    android:textSize="14sp"
-                    android:textStyle="bold"
-                    android:textColor="@color/earth_text_primary" />
-            </LinearLayout>
-
-            <!-- Premium per hectare -->
-            <LinearLayout
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:orientation="horizontal"
-                android:layout_marginBottom="8dp">
-
-                <TextView
-                    android:layout_width="100dp"
-                    android:layout_height="wrap_content"
-                    android:text="Rate:"
-                    android:textSize="14sp"
-                    android:textColor="@color/earth_text_secondary" />
-
-                <TextView
-                    android:id="@+id/premiumPerHectare"
-                    android:layout_width="0dp"
-                    android:layout_weight="1"
-                    android:layout_height="wrap_content"
-                    android:text="₹13,567.59 per hectare"
-                    android:textSize="14sp"
-                    android:textStyle="bold"
-                    android:textColor="@color/earth_text_primary" />
-            </LinearLayout>
-
-            <!-- Insurance Company -->
-            <LinearLayout
-                android:id="@+id/companyInfoContainer"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:orientation="horizontal"
-                android:layout_marginBottom="8dp"
-                android:visibility="gone">
-
-                <TextView
-                    android:layout_width="100dp"
-                    android:layout_height="wrap_content"
-                    android:text="Company:"
-                    android:textSize="14sp"
-                    android:textColor="@color/earth_text_secondary" />
-
-                <TextView
-                    android:id="@+id/insuranceCompanyName"
-                    android:layout_width="0dp"
-                    android:layout_weight="1"
-                    android:layout_height="wrap_content"
-                    android:text="BHARTI AXA GENERAL INSURANCE COMPANY LTD."
-                    android:textSize="14sp"
+                    android:text="Premium Breakdown"
+                    android:textSize="16sp"
                     android:textStyle="bold"
                     android:textColor="@color/earth_text_primary"
-                    android:singleLine="true"
-                    android:ellipsize="end" />
+                    android:layout_marginStart="8dp" />
             </LinearLayout>
 
-            <!-- Disease Context -->
+            <!-- Breakdown Items Grid -->
             <LinearLayout
-                android:id="@+id/diseaseInfoContainer"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:orientation="horizontal"
-                android:layout_marginBottom="8dp"
-                android:visibility="gone">
+                android:orientation="vertical">
 
-                <TextView
-                    android:layout_width="100dp"
+                <!-- Area Information -->
+                <LinearLayout
+                    android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:text="Disease:"
-                    android:textSize="14sp"
-                    android:textColor="@color/earth_text_secondary" />
+                    android:orientation="horizontal"
+                    android:gravity="center_vertical"
+                    android:background="@drawable/breakdown_item_background"
+                    android:padding="12dp"
+                    android:layout_marginBottom="8dp">
 
-                <TextView
-                    android:id="@+id/diseaseContext"
-                    android:layout_width="0dp"
-                    android:layout_weight="1"
+                    <TextView
+                        android:layout_width="24dp"
+                        android:layout_height="24dp"
+                        android:text="📏"
+                        android:textSize="14sp"
+                        android:gravity="center" />
+
+                    <LinearLayout
+                        android:layout_width="0dp"
+                        android:layout_weight="1"
+                        android:layout_height="wrap_content"
+                        android:orientation="vertical"
+                        android:layout_marginStart="12dp">
+
+                        <TextView
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:text="Coverage Area"
+                            android:textSize="12sp"
+                            android:textColor="@color/earth_text_secondary" />
+
+                        <TextView
+                            android:id="@+id/areaDetails"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:text="0.4 hectares"
+                            android:textSize="14sp"
+                            android:textStyle="bold"
+                            android:textColor="@color/earth_text_primary" />
+                    </LinearLayout>
+                </LinearLayout>
+
+                <!-- Premium per hectare -->
+                <LinearLayout
+                    android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:text="Mosaic Virus"
-                    android:textSize="14sp"
-                    android:textStyle="bold"
-                    android:textColor="#FF5722" />
+                    android:orientation="horizontal"
+                    android:gravity="center_vertical"
+                    android:background="@drawable/breakdown_item_background"
+                    android:padding="12dp"
+                    android:layout_marginBottom="8dp">
+
+                    <TextView
+                        android:layout_width="24dp"
+                        android:layout_height="24dp"
+                        android:text="💰"
+                        android:textSize="14sp"
+                        android:gravity="center" />
+
+                    <LinearLayout
+                        android:layout_width="0dp"
+                        android:layout_weight="1"
+                        android:layout_height="wrap_content"
+                        android:orientation="vertical"
+                        android:layout_marginStart="12dp">
+
+                        <TextView
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:text="Rate per Hectare"
+                            android:textSize="12sp"
+                            android:textColor="@color/earth_text_secondary" />
+
+                        <TextView
+                            android:id="@+id/premiumPerHectare"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:text="₹19,227.33 per hectare"
+                            android:textSize="14sp"
+                            android:textStyle="bold"
+                            android:textColor="@color/earth_text_primary" />
+                    </LinearLayout>
+                </LinearLayout>
+
+                <!-- Insurance Company -->
+                <LinearLayout
+                    android:id="@+id/companyInfoContainer"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="horizontal"
+                    android:gravity="center_vertical"
+                    android:background="@drawable/breakdown_item_background"
+                    android:padding="12dp"
+                    android:layout_marginBottom="8dp"
+                    android:visibility="gone">
+
+                    <TextView
+                        android:layout_width="24dp"
+                        android:layout_height="24dp"
+                        android:text="🏢"
+                        android:textSize="14sp"
+                        android:gravity="center" />
+
+                    <LinearLayout
+                        android:layout_width="0dp"
+                        android:layout_weight="1"
+                        android:layout_height="wrap_content"
+                        android:orientation="vertical"
+                        android:layout_marginStart="12dp">
+
+                        <TextView
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:text="Insurance Provider"
+                            android:textSize="12sp"
+                            android:textColor="@color/earth_text_secondary" />
+
+                        <TextView
+                            android:id="@+id/insuranceCompanyName"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:text="SBI GENERAL INSURANCE"
+                            android:textSize="14sp"
+                            android:textStyle="bold"
+                            android:textColor="@color/earth_text_primary" />
+                    </LinearLayout>
+                </LinearLayout>
+
+                <!-- Disease Context -->
+                <LinearLayout
+                    android:id="@+id/diseaseInfoContainer"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="horizontal"
+                    android:gravity="center_vertical"
+                    android:background="@drawable/disease_breakdown_item_background"
+                    android:padding="12dp"
+                    android:visibility="gone">
+
+                    <TextView
+                        android:layout_width="24dp"
+                        android:layout_height="24dp"
+                        android:text="🦠"
+                        android:textSize="14sp"
+                        android:gravity="center" />
+
+                    <LinearLayout
+                        android:layout_width="0dp"
+                        android:layout_weight="1"
+                        android:layout_height="wrap_content"
+                        android:orientation="vertical"
+                        android:layout_marginStart="12dp">
+
+                        <TextView
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:text="Disease Detected"
+                            android:textSize="12sp"
+                            android:textColor="@color/earth_text_secondary" />
+
+                        <TextView
+                            android:id="@+id/diseaseContext"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:text="Mosaic Virus"
+                            android:textSize="14sp"
+                            android:textStyle="bold"
+                            android:textColor="#FF5722" />
+                    </LinearLayout>
+                </LinearLayout>
             </LinearLayout>
         </LinearLayout>
 

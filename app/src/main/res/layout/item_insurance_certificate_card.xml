@@ -81,216 +81,636 @@
             android:layout_height="wrap_content"
             android:orientation="vertical"
             android:background="@drawable/premium_summary_background"
-            android:padding="16dp"
-            android:layout_marginBottom="16dp">
+            android:padding="20dp"
+            android:layout_marginBottom="20dp">
+
+            <!-- Sum Insured (Coverage Amount) - Most Important -->
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="vertical"
+                android:background="@drawable/sum_insured_card_background"
+                android:padding="16dp"
+                android:layout_marginBottom="16dp">
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="horizontal"
+                    android:gravity="center_vertical"
+                    android:layout_marginBottom="4dp">
+
+                    <TextView
+                        android:layout_width="24dp"
+                        android:layout_height="24dp"
+                        android:text="💰"
+                        android:textSize="16sp"
+                        android:gravity="center" />
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="Sum Insured"
+                        android:textSize="16sp"
+                        android:textStyle="bold"
+                        android:textColor="@color/clean_white"
+                        android:layout_marginStart="8dp" />
+                </LinearLayout>
+
+                <TextView
+                    android:id="@+id/certificateSumInsured"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:text="₹42,085.60"
+                    android:textSize="24sp"
+                    android:textStyle="bold"
+                    android:textColor="@color/clean_white"
+                    android:layout_marginTop="4dp" />
+
+                <TextView
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:text="Total coverage amount for your crop"
+                    android:textSize="12sp"
+                    android:textColor="@color/clean_white"
+                    android:alpha="0.8"
+                    android:layout_marginTop="2dp" />
+            </LinearLayout>
+
+            <!-- Financial Breakdown -->
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="vertical"
+                android:background="@drawable/financial_breakdown_background"
+                android:padding="16dp"
+                android:layout_marginBottom="16dp">
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="📊 Premium Breakdown"
+                    android:textSize="16sp"
+                    android:textStyle="bold"
+                    android:textColor="@color/earth_text_primary"
+                    android:layout_marginBottom="12dp" />
+
+                <!-- Total Premium -->
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="horizontal"
+                    android:gravity="center_vertical"
+                    android:layout_marginBottom="8dp">
+
+                    <TextView
+                        android:layout_width="0dp"
+                        android:layout_weight="1"
+                        android:layout_height="wrap_content"
+                        android:text="Total Premium"
+                        android:textSize="14sp"
+                        android:textColor="@color/earth_text_primary" />
+
+                    <TextView
+                        android:id="@+id/certificateTotalPremium"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="₹7,690.93"
+                        android:textSize="16sp"
+                        android:textStyle="bold"
+                        android:textColor="#1976D2"
+                        android:background="@drawable/amount_badge_background"
+                        android:paddingHorizontal="8dp"
+                        android:paddingVertical="4dp" />
+                </LinearLayout>
+
+                <!-- Government Subsidy -->
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="horizontal"
+                    android:gravity="center_vertical"
+                    android:layout_marginBottom="8dp">
+
+                    <TextView
+                        android:layout_width="0dp"
+                        android:layout_weight="1"
+                        android:layout_height="wrap_content"
+                        android:text="Government Subsidy"
+                        android:textSize="14sp"
+                        android:textColor="@color/earth_text_primary" />
+
+                    <TextView
+                        android:id="@+id/certificateGovernmentSubsidy"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="₹7,248.50"
+                        android:textSize="16sp"
+                        android:textStyle="bold"
+                        android:textColor="#4CAF50"
+                        android:background="@drawable/subsidy_badge_background"
+                        android:paddingHorizontal="8dp"
+                        android:paddingVertical="4dp" />
+                </LinearLayout>
+
+                <!-- Your Contribution -->
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="horizontal"
+                    android:gravity="center_vertical"
+                    android:background="@drawable/farmer_contribution_highlight_background"
+                    android:padding="8dp">
+
+                    <TextView
+                        android:layout_width="0dp"
+                        android:layout_weight="1"
+                        android:layout_height="wrap_content"
+                        android:text="Your Contribution"
+                        android:textSize="14sp"
+                        android:textStyle="bold"
+                        android:textColor="@color/earth_text_primary" />
+
+                    <TextView
+                        android:id="@+id/certificateFarmerContribution"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="₹442.44"
+                        android:textSize="16sp"
+                        android:textStyle="bold"
+                        android:textColor="#FF5722"
+                        android:background="@drawable/farmer_amount_badge_background"
+                        android:paddingHorizontal="8dp"
+                        android:paddingVertical="4dp" />
+                </LinearLayout>
+            </LinearLayout>
 
             <!-- Policy Information -->
             <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:orientation="horizontal"
-                android:gravity="center_vertical"
-                android:layout_marginBottom="12dp">
-
-                <TextView
-                    android:layout_width="0dp"
-                    android:layout_weight="1"
-                    android:layout_height="wrap_content"
-                    android:text="Policy ID"
-                    android:textSize="15sp"
-                    android:textColor="@color/earth_text_primary" />
-
-                <TextView
-                    android:id="@+id/certificatePolicyIdValue"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:text="POL-AB8E7A02"
-                    android:textSize="15sp"
-                    android:textStyle="bold"
-                    android:textColor="#1976D2" />
-            </LinearLayout>
-
-            <!-- Company Information -->
-            <LinearLayout
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
                 android:orientation="vertical"
-                android:layout_marginBottom="8dp">
+                android:background="@drawable/detailed_breakdown_background"
+                android:padding="20dp">
 
                 <TextView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:text="🏢 Insurance Company"
-                    android:textSize="15sp"
-                    android:textColor="@color/earth_text_primary"
-                    android:layout_marginBottom="4dp" />
-
-                <TextView
-                    android:id="@+id/certificateCompanyName"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:text="Tamil Nadu Crop Insurance Ltd"
-                    android:textSize="15sp"
-                    android:textStyle="bold"
-                    android:textColor="@color/earth_text_primary"
-                    android:singleLine="true"
-                    android:ellipsize="end" />
-            </LinearLayout>
-
-            <!-- Coverage Amount -->
-            <LinearLayout
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:orientation="horizontal"
-                android:gravity="center_vertical"
-                android:background="@drawable/farmer_contribution_background"
-                android:padding="12dp">
-
-                <TextView
-                    android:layout_width="0dp"
-                    android:layout_weight="1"
-                    android:layout_height="wrap_content"
-                    android:text="💰 Total Coverage"
-                    android:textSize="16sp"
-                    android:textStyle="bold"
-                    android:textColor="@color/earth_text_primary" />
-
-                <TextView
-                    android:id="@+id/certificateTotalCoverage"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:text="₹18,211.50"
+                    android:text="📋 Policy Details"
                     android:textSize="18sp"
                     android:textStyle="bold"
-                    android:textColor="#4CAF50"
-                    android:background="@drawable/farmer_amount_highlight"
-                    android:padding="8dp" />
+                    android:textColor="@color/earth_text_primary"
+                    android:layout_marginBottom="16dp" />
+
+                <!-- Policy ID Card -->
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="vertical"
+                    android:background="@drawable/breakdown_item_background"
+                    android:padding="16dp"
+                    android:layout_marginBottom="12dp">
+
+                    <LinearLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:orientation="horizontal"
+                        android:gravity="center_vertical"
+                        android:layout_marginBottom="8dp">
+
+                        <TextView
+                            android:layout_width="24dp"
+                            android:layout_height="24dp"
+                            android:text="🆔"
+                            android:textSize="16sp"
+                            android:gravity="center" />
+
+                        <TextView
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:text="Policy ID"
+                            android:textSize="16sp"
+                            android:textColor="@color/earth_text_primary"
+                            android:layout_marginStart="8dp" />
+                    </LinearLayout>
+
+                    <TextView
+                        android:id="@+id/certificatePolicyIdValue"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:text="POL-AB8E7A02"
+                        android:textSize="18sp"
+                        android:textStyle="bold"
+                        android:textColor="#1976D2"
+                        android:background="@drawable/policy_id_badge_background"
+                        android:paddingHorizontal="12dp"
+                        android:paddingVertical="8dp"
+                        android:gravity="center" />
+                </LinearLayout>
+
+                <!-- Insurance Company Card -->
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="vertical"
+                    android:background="@drawable/breakdown_item_background"
+                    android:padding="16dp"
+                    android:layout_marginBottom="12dp">
+
+                    <LinearLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:orientation="horizontal"
+                        android:gravity="center_vertical"
+                        android:layout_marginBottom="8dp">
+
+                        <TextView
+                            android:layout_width="24dp"
+                            android:layout_height="24dp"
+                            android:text="🏢"
+                            android:textSize="16sp"
+                            android:gravity="center" />
+
+                        <TextView
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:text="Insurance Company"
+                            android:textSize="16sp"
+                            android:textColor="@color/earth_text_primary"
+                            android:layout_marginStart="8dp" />
+                    </LinearLayout>
+
+                    <TextView
+                        android:id="@+id/certificateCompanyName"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:text="SBI GENERAL INSURANCE"
+                        android:textSize="16sp"
+                        android:textStyle="bold"
+                        android:textColor="@color/earth_text_primary"
+                        android:background="@drawable/company_name_background"
+                        android:paddingHorizontal="12dp"
+                        android:paddingVertical="8dp"
+                        android:gravity="center" />
+                </LinearLayout>
+
+                <!-- Farmer Information Card -->
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="vertical"
+                    android:background="@drawable/breakdown_item_background"
+                    android:padding="16dp"
+                    android:layout_marginBottom="12dp">
+
+                    <LinearLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:orientation="horizontal"
+                        android:gravity="center_vertical"
+                        android:layout_marginBottom="8dp">
+
+                        <TextView
+                            android:layout_width="24dp"
+                            android:layout_height="24dp"
+                            android:text="👤"
+                            android:textSize="16sp"
+                            android:gravity="center" />
+
+                        <TextView
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:text="Farmer Name"
+                            android:textSize="16sp"
+                            android:textColor="@color/earth_text_primary"
+                            android:layout_marginStart="8dp" />
+                    </LinearLayout>
+
+                    <TextView
+                        android:id="@+id/certificateFarmerName"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:text="Farmer"
+                        android:textSize="18sp"
+                        android:textStyle="bold"
+                        android:textColor="@color/earth_text_primary"
+                        android:background="@drawable/farmer_name_background"
+                        android:paddingHorizontal="12dp"
+                        android:paddingVertical="8dp"
+                        android:gravity="center" />
+                </LinearLayout>
+
+                <!-- Crop Information Card -->
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="vertical"
+                    android:background="@drawable/breakdown_item_background"
+                    android:padding="16dp">
+
+                    <LinearLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:orientation="horizontal"
+                        android:gravity="center_vertical"
+                        android:layout_marginBottom="8dp">
+
+                        <TextView
+                            android:layout_width="24dp"
+                            android:layout_height="24dp"
+                            android:text="🌾"
+                            android:textSize="16sp"
+                            android:gravity="center" />
+
+                        <TextView
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:text="Crop and Location"
+                            android:textSize="16sp"
+                            android:textColor="@color/earth_text_primary"
+                            android:layout_marginStart="8dp" />
+                    </LinearLayout>
+
+                    <TextView
+                        android:id="@+id/certificateCropInfo"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:text="Tomato • Karnataka • 0.4 hectares"
+                        android:textSize="16sp"
+                        android:textStyle="bold"
+                        android:textColor="@color/earth_text_primary"
+                        android:background="@drawable/crop_info_background"
+                        android:paddingHorizontal="12dp"
+                        android:paddingVertical="8dp"
+                        android:gravity="center" />
+                </LinearLayout>
             </LinearLayout>
         </LinearLayout>
 
-        <!-- Detailed Breakdown -->
+
+        <!-- PDF Certificate Section -->
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:orientation="vertical"
-            android:layout_marginBottom="12dp">
+            android:background="@drawable/pdf_certificate_background"
+            android:padding="20dp"
+            android:layout_marginBottom="20dp">
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal"
+                android:gravity="center_vertical"
+                android:layout_marginBottom="16dp">
+
+                <TextView
+                    android:layout_width="24dp"
+                    android:layout_height="24dp"
+                    android:text="📄"
+                    android:textSize="20sp"
+                    android:gravity="center" />
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="Official Certificate"
+                    android:textSize="18sp"
+                    android:textStyle="bold"
+                    android:textColor="@color/earth_text_primary"
+                    android:layout_marginStart="8dp" />
+            </LinearLayout>
 
             <TextView
-                android:layout_width="wrap_content"
+                android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:text="📊 Certificate Details"
+                android:text="Your official insurance certificate is ready for download. This PDF contains all policy details and can be used for claims and verification."
                 android:textSize="14sp"
-                android:textStyle="bold"
-                android:textColor="@color/earth_text_primary"
-                android:layout_marginBottom="12dp" />
+                android:textColor="@color/earth_text_secondary"
+                android:lineSpacingExtra="2dp"
+                android:layout_marginBottom="16dp" />
 
-            <!-- Farmer Information -->
+            <!-- PDF Preview Container -->
             <LinearLayout
+                android:id="@+id/pdfPreviewContainer"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
+                android:background="@drawable/pdf_preview_background"
                 android:orientation="vertical"
-                android:layout_marginBottom="8dp">
+                android:padding="16dp"
+                android:layout_marginBottom="16dp"
+                android:visibility="gone">
 
-                <TextView
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:text="Farmer:"
-                    android:textSize="14sp"
-                    android:textColor="@color/earth_text_secondary"
-                    android:layout_marginBottom="2dp" />
-
-                <TextView
-                    android:id="@+id/certificateFarmerName"
+                <!-- PDF Preview Header -->
+                <LinearLayout
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:text="Farmer"
-                    android:textSize="14sp"
-                    android:textStyle="bold"
-                    android:textColor="@color/earth_text_primary" />
+                    android:orientation="horizontal"
+                    android:gravity="center_vertical"
+                    android:layout_marginBottom="12dp">
+
+                    <TextView
+                        android:layout_width="24dp"
+                        android:layout_height="24dp"
+                        android:text="📄"
+                        android:textSize="20sp"
+                        android:gravity="center" />
+
+                    <TextView
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="1"
+                        android:text="Certificate Preview"
+                        android:textSize="16sp"
+                        android:textStyle="bold"
+                        android:textColor="@color/earth_text_primary"
+                        android:layout_marginStart="8dp" />
+
+                    <!-- Tooltip Icon -->
+                    <TextView
+                        android:layout_width="24dp"
+                        android:layout_height="24dp"
+                        android:text="ℹ️"
+                        android:textSize="16sp"
+                        android:gravity="center"
+                        android:background="@drawable/tooltip_background"
+                        android:padding="4dp" />
+                </LinearLayout>
+
+                <!-- PDF Preview Content -->
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="vertical"
+                    android:background="@drawable/breakdown_item_background"
+                    android:padding="12dp">
+
+                    <!-- Policy ID Preview -->
+                    <LinearLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:orientation="horizontal"
+                        android:gravity="center_vertical"
+                        android:layout_marginBottom="8dp">
+
+                        <TextView
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:text="🆔"
+                            android:textSize="14sp" />
+
+                        <TextView
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:text="Policy ID:"
+                            android:textSize="12sp"
+                            android:textColor="@color/earth_text_secondary"
+                            android:layout_marginStart="6dp" />
+
+                        <TextView
+                            android:id="@+id/pdfPreviewPolicyId"
+                            android:layout_width="0dp"
+                            android:layout_height="wrap_content"
+                            android:layout_weight="1"
+                            android:text="POL-XXXXXXXX"
+                            android:textSize="12sp"
+                            android:textStyle="bold"
+                            android:textColor="@color/earth_text_primary"
+                            android:layout_marginStart="4dp" />
+                    </LinearLayout>
+
+                    <!-- Sum Insured Preview -->
+                    <LinearLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:orientation="horizontal"
+                        android:gravity="center_vertical"
+                        android:layout_marginBottom="8dp">
+
+                        <TextView
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:text="💰"
+                            android:textSize="14sp" />
+
+                        <TextView
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:text="Sum Insured:"
+                            android:textSize="12sp"
+                            android:textColor="@color/earth_text_secondary"
+                            android:layout_marginStart="6dp" />
+
+                        <TextView
+                            android:id="@+id/pdfPreviewSumInsured"
+                            android:layout_width="0dp"
+                            android:layout_height="wrap_content"
+                            android:layout_weight="1"
+                            android:text="₹0.00"
+                            android:textSize="12sp"
+                            android:textStyle="bold"
+                            android:textColor="#4CAF50"
+                            android:layout_marginStart="4dp" />
+                    </LinearLayout>
+
+                    <!-- Premium Preview -->
+                    <LinearLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:orientation="horizontal"
+                        android:gravity="center_vertical">
+
+                        <TextView
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:text="💳"
+                            android:textSize="14sp" />
+
+                        <TextView
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:text="Your Contribution:"
+                            android:textSize="12sp"
+                            android:textColor="@color/earth_text_secondary"
+                            android:layout_marginStart="6dp" />
+
+                        <TextView
+                            android:id="@+id/pdfPreviewFarmerContribution"
+                            android:layout_width="0dp"
+                            android:layout_height="wrap_content"
+                            android:layout_weight="1"
+                            android:text="₹0.00"
+                            android:textSize="12sp"
+                            android:textStyle="bold"
+                            android:textColor="#FF5722"
+                            android:layout_marginStart="4dp" />
+                    </LinearLayout>
+                </LinearLayout>
             </LinearLayout>
 
-            <!-- Crop Information -->
+            <!-- Action Buttons -->
             <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:orientation="vertical"
-                android:layout_marginBottom="8dp">
+                android:orientation="horizontal"
+                android:gravity="center"
+                android:weightSum="2">
 
-                <TextView
-                    android:layout_width="wrap_content"
+                <androidx.cardview.widget.CardView
+                    android:layout_width="0dp"
+                    android:layout_weight="1"
                     android:layout_height="wrap_content"
-                    android:text="Crop:"
-                    android:textSize="14sp"
-                    android:textColor="@color/earth_text_secondary"
-                    android:layout_marginBottom="2dp" />
+                    app:cardCornerRadius="25dp"
+                    app:cardElevation="4dp"
+                    android:layout_marginEnd="6dp">
 
-                <TextView
-                    android:id="@+id/certificateCropInfo"
-                    android:layout_width="match_parent"
+                    <TextView
+                        android:id="@+id/viewCertificateButton"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:text="📄 View"
+                        android:textSize="14sp"
+                        android:textStyle="bold"
+                        android:textColor="@color/clean_white"
+                        android:background="@drawable/primary_button_background"
+                        android:padding="14dp"
+                        android:gravity="center"
+                        android:clickable="true"
+                        android:focusable="true" />
+                </androidx.cardview.widget.CardView>
+
+                <androidx.cardview.widget.CardView
+                    android:layout_width="0dp"
+                    android:layout_weight="1"
                     android:layout_height="wrap_content"
-                    android:text="Potato • Tamil Nadu • 0.4 hectares"
-                    android:textSize="14sp"
-                    android:textStyle="bold"
-                    android:textColor="@color/earth_text_primary" />
-            </LinearLayout>
+                    app:cardCornerRadius="25dp"
+                    app:cardElevation="4dp"
+                    android:layout_marginStart="6dp">
 
-            <!-- Premium Breakdown -->
-            <LinearLayout
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:orientation="vertical"
-                android:layout_marginBottom="8dp">
-
-                <TextView
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:text="Premium:"
-                    android:textSize="14sp"
-                    android:textColor="@color/earth_text_secondary"
-                    android:layout_marginBottom="2dp" />
-
-                <TextView
-                    android:id="@+id/certificatePremiumBreakdown"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:text="₹1,517.62 (Farmer) + ₹4,552.88 (Government)"
-                    android:textSize="14sp"
-                    android:textStyle="bold"
-                    android:textColor="@color/earth_text_primary" />
+                    <TextView
+                        android:id="@+id/downloadCertificateButton"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:text="⬇️ Download"
+                        android:textSize="14sp"
+                        android:textStyle="bold"
+                        android:textColor="@color/clean_white"
+                        android:background="@drawable/secondary_button_background"
+                        android:padding="14dp"
+                        android:gravity="center"
+                        android:clickable="true"
+                        android:focusable="true" />
+                </androidx.cardview.widget.CardView>
             </LinearLayout>
         </LinearLayout>
 
-        <!-- Action Button -->
-        <LinearLayout
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:orientation="horizontal"
-            android:gravity="center"
-            android:layout_marginTop="8dp"
-            android:layout_marginBottom="16dp">
-
-            <androidx.cardview.widget.CardView
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                app:cardCornerRadius="25dp"
-                app:cardElevation="4dp">
-
-                <TextView
-                    android:id="@+id/viewCertificateButton"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:text="📄 View Certificate"
-                    android:textSize="16sp"
-                    android:textStyle="bold"
-                    android:textColor="@color/clean_white"
-                    android:background="@drawable/primary_button_background"
-                    android:padding="16dp"
-                    android:gravity="center"
-                    android:clickable="true"
-                    android:focusable="true" />
-            </androidx.cardview.widget.CardView>
-        </LinearLayout>
 
     </LinearLayout>
 
 </androidx.cardview.widget.CardView>
+
+
+
+
+
+

@@ -245,6 +245,8 @@ class ChatAdapter(
         private val diseaseContext: TextView? = try { itemView.findViewById(R.id.diseaseContext) } catch (e: Exception) { null }
         private val insuranceCompanyName: TextView? = try { itemView.findViewById(R.id.insuranceCompanyName) } catch (e: Exception) { null }
         private val companyInfoContainer: LinearLayout? = try { itemView.findViewById(R.id.companyInfoContainer) } catch (e: Exception) { null }
+        private val sumInsuredAmount: TextView? = try { itemView.findViewById(R.id.sumInsuredAmount) } catch (e: Exception) { null }
+        private val sumInsuredContainer: LinearLayout? = try { itemView.findViewById(R.id.sumInsuredContainer) } catch (e: Exception) { null }
         private val diseaseInfoContainer: LinearLayout? = try { itemView.findViewById(R.id.diseaseInfoContainer) } catch (e: Exception) { null }
         private val applyInsuranceButton: TextView? = try { itemView.findViewById(R.id.applyInsuranceButton) } catch (e: Exception) { null }
         
@@ -252,11 +254,18 @@ class ChatAdapter(
         private val certificatePolicyId: TextView? = try { itemView.findViewById(R.id.certificatePolicyId) } catch (e: Exception) { null }
         private val certificatePolicyIdValue: TextView? = try { itemView.findViewById(R.id.certificatePolicyIdValue) } catch (e: Exception) { null }
         private val certificateCompanyName: TextView? = try { itemView.findViewById(R.id.certificateCompanyName) } catch (e: Exception) { null }
-        private val certificateTotalCoverage: TextView? = try { itemView.findViewById(R.id.certificateTotalCoverage) } catch (e: Exception) { null }
+        private val certificateSumInsured: TextView? = try { itemView.findViewById(R.id.certificateSumInsured) } catch (e: Exception) { null }
+        private val certificateTotalPremium: TextView? = try { itemView.findViewById(R.id.certificateTotalPremium) } catch (e: Exception) { null }
+        private val certificateGovernmentSubsidy: TextView? = try { itemView.findViewById(R.id.certificateGovernmentSubsidy) } catch (e: Exception) { null }
+        private val certificateFarmerContribution: TextView? = try { itemView.findViewById(R.id.certificateFarmerContribution) } catch (e: Exception) { null }
         private val certificateFarmerName: TextView? = try { itemView.findViewById(R.id.certificateFarmerName) } catch (e: Exception) { null }
         private val certificateCropInfo: TextView? = try { itemView.findViewById(R.id.certificateCropInfo) } catch (e: Exception) { null }
-        private val certificatePremiumBreakdown: TextView? = try { itemView.findViewById(R.id.certificatePremiumBreakdown) } catch (e: Exception) { null }
         private val viewCertificateButton: TextView? = try { itemView.findViewById(R.id.viewCertificateButton) } catch (e: Exception) { null }
+        private val downloadCertificateButton: TextView? = try { itemView.findViewById(R.id.downloadCertificateButton) } catch (e: Exception) { null }
+        private val pdfPreviewContainer: LinearLayout? = try { itemView.findViewById(R.id.pdfPreviewContainer) } catch (e: Exception) { null }
+        private val pdfPreviewPolicyId: TextView? = try { itemView.findViewById(R.id.pdfPreviewPolicyId) } catch (e: Exception) { null }
+        private val pdfPreviewSumInsured: TextView? = try { itemView.findViewById(R.id.pdfPreviewSumInsured) } catch (e: Exception) { null }
+        private val pdfPreviewFarmerContribution: TextView? = try { itemView.findViewById(R.id.pdfPreviewFarmerContribution) } catch (e: Exception) { null }
         
         private val diseaseSeverity: TextView = itemView.findViewById(R.id.diseaseSeverity)
         private val diseaseContent: TextView = itemView.findViewById(R.id.diseaseContent)
@@ -837,9 +846,18 @@ class ChatAdapter(
                 // Set company name
                 certificateCompanyName?.text = certificateDetails.companyName
                 
-                // Set total coverage amount - use parsed total premium if available
-                val totalCoverage = if (certificateDetails.totalPremium > 0) certificateDetails.totalPremium else certificateDetails.totalSumInsured
-                certificateTotalCoverage?.text = "₹${formatCurrencyAmount(totalCoverage)}"
+                // Set sum insured amount - this should be the actual sum insured, not total premium
+                val sumInsured = certificateDetails.totalSumInsured
+                certificateSumInsured?.text = "₹${formatCurrencyAmount(sumInsured)}"
+                
+                // Set premium breakdown amounts
+                val totalPremium = certificateDetails.totalPremium
+                val governmentSubsidy = certificateDetails.governmentSubsidy
+                val farmerContribution = certificateDetails.farmerContribution
+                
+                certificateTotalPremium?.text = "₹${formatCurrencyAmount(totalPremium)}"
+                certificateGovernmentSubsidy?.text = "₹${formatCurrencyAmount(governmentSubsidy)}"
+                certificateFarmerContribution?.text = "₹${formatCurrencyAmount(farmerContribution)}"
                 
                 // Set farmer name
                 certificateFarmerName?.text = certificateDetails.farmerName
@@ -847,10 +865,33 @@ class ChatAdapter(
                 // Set crop information
                 certificateCropInfo?.text = "${certificateDetails.crop} • ${certificateDetails.state} • ${String.format("%.1f", certificateDetails.area)} hectares"
                 
-                // Set premium breakdown - use parsed premium details if available
-                val farmerPremium = if (certificateDetails.farmerContribution > 0) certificateDetails.farmerContribution else certificateDetails.premiumPaidByFarmer
-                val govtPremium = if (certificateDetails.governmentSubsidy > 0) certificateDetails.governmentSubsidy else certificateDetails.premiumPaidByGovt
-                certificatePremiumBreakdown?.text = "₹${formatCurrencyAmount(farmerPremium)} (Farmer) + ₹${formatCurrencyAmount(govtPremium)} (Government)"
+                // Show PDF preview if available
+                if (certificateDetails.pdfBase64 != null) {
+                    pdfPreviewContainer?.visibility = View.VISIBLE
+                    
+                    // Populate PDF preview with key information
+                    pdfPreviewPolicyId?.text = certificateDetails.policyId
+                    pdfPreviewSumInsured?.text = "₹${String.format("%.2f", certificateDetails.totalSumInsured)}"
+                    pdfPreviewFarmerContribution?.text = "₹${String.format("%.2f", certificateDetails.farmerContribution)}"
+                    
+                    // Make PDF preview clickable to open full PDF viewer
+                    pdfPreviewContainer?.setOnClickListener {
+                        try {
+                            showPdfViewer(certificateDetails.pdfBase64, certificateDetails.policyId)
+                        } catch (e: Exception) {
+                            Log.e("ChatAdapter", "Error opening PDF viewer from preview: ${e.message}")
+                            onFollowUpClick("Please regenerate the insurance certificate PDF")
+                        }
+                    }
+                    
+                    // Add long press listener for tooltip
+                    pdfPreviewContainer?.setOnLongClickListener {
+                        showTooltip(pdfPreviewContainer, "Tap to view full PDF")
+                        true // Consume the long press event
+                    }
+                } else {
+                    pdfPreviewContainer?.visibility = View.GONE
+                }
                 
                 // Set up PDF viewer button click handler
                 viewCertificateButton?.setOnClickListener {
@@ -863,6 +904,20 @@ class ChatAdapter(
                         }
                     } catch (e: Exception) {
                         Log.e("ChatAdapter", "Error in viewCertificateButton click: ${e.message}")
+                    }
+                }
+                
+                // Set up PDF download button click handler
+                downloadCertificateButton?.setOnClickListener {
+                    try {
+                        if (certificateDetails.pdfBase64 != null) {
+                            downloadPdfCertificate(certificateDetails.pdfBase64, certificateDetails.policyId)
+                        } else {
+                            Log.w("ChatAdapter", "No PDF data available for certificate download")
+                            onFollowUpClick("Please regenerate the insurance certificate PDF")
+                        }
+                    } catch (e: Exception) {
+                        Log.e("ChatAdapter", "Error in downloadCertificateButton click: ${e.message}")
                     }
                 }
                 
@@ -1281,6 +1336,178 @@ class ChatAdapter(
         }
         
         /**
+         * Show tooltip for PDF preview
+         */
+        private fun showTooltip(view: View, message: String) {
+            try {
+                val context = itemView.context
+                
+                // Create a custom tooltip popup
+                val popupWindow = android.widget.PopupWindow(context)
+                
+                // Create tooltip layout
+                val tooltipLayout = android.widget.LinearLayout(context).apply {
+                    orientation = android.widget.LinearLayout.HORIZONTAL
+                    setPadding(16, 12, 16, 12)
+                    setBackgroundColor(android.graphics.Color.parseColor("#E0F2F1"))
+                }
+                
+                // Add icon
+                val icon = android.widget.TextView(context).apply {
+                    text = "ℹ️"
+                    textSize = 16f
+                    setTextColor(android.graphics.Color.parseColor("#00695C"))
+                }
+                
+                // Add message
+                val messageText = android.widget.TextView(context).apply {
+                    text = message
+                    textSize = 14f
+                    setTextColor(android.graphics.Color.parseColor("#00695C"))
+                    setPadding(8, 0, 0, 0)
+                }
+                
+                tooltipLayout.addView(icon)
+                tooltipLayout.addView(messageText)
+                
+                // Create drawable for tooltip background
+                val drawable = android.graphics.drawable.GradientDrawable().apply {
+                    shape = android.graphics.drawable.GradientDrawable.RECTANGLE
+                    setColor(android.graphics.Color.parseColor("#E0F2F1"))
+                    cornerRadius = 8f
+                    setStroke(2, android.graphics.Color.parseColor("#4DB6AC"))
+                }
+                tooltipLayout.background = drawable
+                
+                popupWindow.contentView = tooltipLayout
+                popupWindow.width = android.widget.LinearLayout.LayoutParams.WRAP_CONTENT
+                popupWindow.height = android.widget.LinearLayout.LayoutParams.WRAP_CONTENT
+                popupWindow.isFocusable = false
+                popupWindow.isOutsideTouchable = true
+                
+                // Show tooltip above the view
+                val location = IntArray(2)
+                view.getLocationOnScreen(location)
+                popupWindow.showAtLocation(view, android.view.Gravity.NO_GRAVITY, 
+                    location[0] + view.width / 2 - 100, location[1] - 100)
+                
+                // Auto-dismiss after 2 seconds
+                android.os.Handler(android.os.Looper.getMainLooper()).postDelayed({
+                    if (popupWindow.isShowing) {
+                        popupWindow.dismiss()
+                    }
+                }, 2000)
+                
+            } catch (e: Exception) {
+                Log.e("ChatAdapter", "Error showing tooltip: ${e.message}")
+                // Fallback: Show toast
+                android.widget.Toast.makeText(
+                    itemView.context,
+                    message,
+                    android.widget.Toast.LENGTH_SHORT
+                ).show()
+            }
+        }
+        
+        /**
+         * Download PDF certificate to device storage
+         */
+        private fun downloadPdfCertificate(pdfBase64: String, policyId: String) {
+            try {
+                Log.d("ChatAdapter", "⬇️ Downloading PDF certificate: $policyId, PDF size: ${pdfBase64.length} chars")
+                
+                val context = itemView.context
+                
+                // Show downloading toast
+                android.widget.Toast.makeText(
+                    context,
+                    "📥 Downloading certificate...",
+                    android.widget.Toast.LENGTH_SHORT
+                ).show()
+                
+                // Decode base64 PDF data
+                val pdfBytes = android.util.Base64.decode(pdfBase64, android.util.Base64.DEFAULT)
+                
+                // Create filename with timestamp
+                val timestamp = java.text.SimpleDateFormat("yyyyMMdd_HHmmss", java.util.Locale.getDefault()).format(java.util.Date())
+                val filename = "Insurance_Certificate_${policyId}_${timestamp}.pdf"
+                
+                // Try multiple storage locations for better compatibility
+                val file = try {
+                    // First try: External files directory (most accessible)
+                    val downloadsDir = java.io.File(context.getExternalFilesDir(null), "Downloads")
+                    if (!downloadsDir.exists()) {
+                        downloadsDir.mkdirs()
+                    }
+                    java.io.File(downloadsDir, filename)
+                } catch (e: Exception) {
+                    Log.w("ChatAdapter", "External storage not available, using internal storage: ${e.message}")
+                    // Fallback: Internal files directory
+                    val internalDir = java.io.File(context.filesDir, "Downloads")
+                    if (!internalDir.exists()) {
+                        internalDir.mkdirs()
+                    }
+                    java.io.File(internalDir, filename)
+                }
+                
+                // Write PDF to file
+                java.io.FileOutputStream(file).use { fos ->
+                    fos.write(pdfBytes)
+                }
+                
+                Log.d("ChatAdapter", "✅ PDF certificate downloaded successfully: ${file.absolutePath}")
+                
+                // Show success message with file location
+                android.widget.Toast.makeText(
+                    context,
+                    "📄 Certificate saved successfully!\nLocation: ${file.parentFile?.name}/$filename",
+                    android.widget.Toast.LENGTH_LONG
+                ).show()
+                
+                // Try to open the file with a PDF viewer
+                try {
+                    val intent = android.content.Intent(android.content.Intent.ACTION_VIEW)
+                    val uri = androidx.core.content.FileProvider.getUriForFile(
+                        context,
+                        "${context.packageName}.fileprovider",
+                        file
+                    )
+                    intent.setDataAndType(uri, "application/pdf")
+                    intent.addFlags(android.content.Intent.FLAG_GRANT_READ_URI_PERMISSION)
+                    intent.addFlags(android.content.Intent.FLAG_ACTIVITY_NEW_TASK)
+                    
+                    // Check if there's an app that can handle PDFs
+                    if (intent.resolveActivity(context.packageManager) != null) {
+                        context.startActivity(intent)
+                    } else {
+                        // No PDF viewer available, show a message
+                        android.widget.Toast.makeText(
+                            context,
+                            "📱 No PDF viewer found. File saved to: ${file.absolutePath}",
+                            android.widget.Toast.LENGTH_LONG
+                        ).show()
+                    }
+                } catch (e: Exception) {
+                    Log.w("ChatAdapter", "Could not open PDF viewer: ${e.message}")
+                    // File is still saved, show location
+                    android.widget.Toast.makeText(
+                        context,
+                        "📄 File saved but couldn't open automatically.\nLocation: ${file.absolutePath}",
+                        android.widget.Toast.LENGTH_LONG
+                    ).show()
+                }
+                
+            } catch (e: Exception) {
+                Log.e("ChatAdapter", "❌ Error downloading PDF certificate: ${e.message}", e)
+                android.widget.Toast.makeText(
+                    itemView.context,
+                    "Unable to download certificate. Please try again.",
+                    android.widget.Toast.LENGTH_LONG
+                ).show()
+            }
+        }
+        
+        /**
          * Populate insurance premium card with calculated details (with crash prevention)
          */
         private fun populateInsuranceCard(insuranceDetails: InsuranceDetails) {
@@ -1295,6 +1522,14 @@ class ChatAdapter(
                 
                 // Format crop information with null safety
                 insuranceCropInfo?.text = "${insuranceDetails.crop} • ${insuranceDetails.state} • ${String.format("%.1f", insuranceDetails.area)} hectares"
+                
+                // Handle sum insured if present
+                if (insuranceDetails.sumInsured > 0) {
+                    sumInsuredContainer?.visibility = View.VISIBLE
+                    sumInsuredAmount?.text = "₹${formatCurrencyAmount(insuranceDetails.sumInsured)}"
+                } else {
+                    sumInsuredContainer?.visibility = View.GONE
+                }
                 
                 // Format total premium amount with proper currency formatting
                 totalPremiumAmount?.text = "₹${formatCurrencyAmount(insuranceDetails.totalPremium)}"

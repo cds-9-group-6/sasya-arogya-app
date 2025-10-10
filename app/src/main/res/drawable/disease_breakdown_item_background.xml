@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="utf-8"?>
+<shape xmlns:android="http://schemas.android.com/apk/res/android"
+    android:shape="rectangle">
+    
+    <!-- Light red background for disease items -->
+    <solid android:color="#FFEBEE" />
+    
+    <!-- Rounded corners -->
+    <corners android:radius="8dp" />
+    
+    <!-- Red border for disease warning -->
+    <stroke 
+        android:width="1dp" 
+        android:color="#FFCDD2" />
+        
+</shape>

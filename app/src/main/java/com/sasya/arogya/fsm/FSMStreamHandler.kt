@@ -338,6 +338,7 @@ class FSMStreamHandler {
             var governmentSubsidy = 0.0
             var farmerContribution = 0.0
             var extractedCompanyName = ""
+            var extractedSumInsured = 0.0
             
             // Generate policy ID and company name if not provided
             val generatedPolicyId = certificate.policyId ?: "POL-${(10000000 + (System.currentTimeMillis() % 90000000)).toString().uppercase()}"
@@ -347,6 +348,7 @@ class FSMStreamHandler {
                 Log.d(TAG, "Extracting premium details from certificate: $premiumText")
                 
                 // Extract amounts using regex patterns
+                val sumInsuredMatch = "Sum insured: ₹([\\d,]+\\.\\d+)".toRegex().find(premiumText)
                 val premiumPerHectareMatch = "Premium per hectare: ₹([\\d,]+\\.\\d+)".toRegex().find(premiumText)
                 val totalPremiumMatch = "Total premium: ₹([\\d,]+\\.\\d+)".toRegex().find(premiumText)
                 val subsidyMatch = "Government subsidy: ₹([\\d,]+\\.\\d+)".toRegex().find(premiumText)
@@ -356,6 +358,9 @@ class FSMStreamHandler {
                 val companyMatch = "Insurance Company: (.+?)(?:\n|$)".toRegex().find(premiumText)
                 extractedCompanyName = companyMatch?.groupValues?.get(1)?.trim() ?: ""
                 
+                extractedSumInsured = sumInsuredMatch?.groupValues?.get(1)?.replace(",", "")?.toDoubleOrNull() ?: 0.0
+                
+                Log.d(TAG, "Certificate sum insured extraction: match=${sumInsuredMatch?.value}, extracted=₹$extractedSumInsured")
                 premiumPerHectare = premiumPerHectareMatch?.groupValues?.get(1)?.replace(",", "")?.toDoubleOrNull() ?: 0.0
                 totalPremium = totalPremiumMatch?.groupValues?.get(1)?.replace(",", "")?.toDoubleOrNull() ?: 0.0
                 governmentSubsidy = subsidyMatch?.groupValues?.get(1)?.replace(",", "")?.toDoubleOrNull() ?: 0.0
@@ -379,7 +384,7 @@ class FSMStreamHandler {
                 companyName = finalCompanyName,
                 premiumPaidByFarmer = certificate.premiumPaidByFarmer ?: farmerContribution,
                 premiumPaidByGovt = certificate.premiumPaidByGovt ?: governmentSubsidy,
-                totalSumInsured = certificate.totalSumInsured ?: totalPremium,
+                totalSumInsured = if (extractedSumInsured > 0) extractedSumInsured else (certificate.totalSumInsured ?: 0.0),
                 certificateDetails = certificate.certificateDetails ?: "",
                 pdfBase64 = pdfBase64,
                 premiumPerHectare = premiumPerHectare,
@@ -405,6 +410,7 @@ class FSMStreamHandler {
             val premiumText = premiumDetails.premiumDetails ?: return null
             
             // Extract amounts using regex patterns
+            val sumInsuredMatch = "Sum insured: ₹([\\d,]+\\.\\d+)".toRegex().find(premiumText)
             val premiumPerHectareMatch = "Premium per hectare: ₹([\\d,]+\\.\\d+)".toRegex().find(premiumText)
             val totalPremiumMatch = "Total premium: ₹([\\d,]+\\.\\d+)".toRegex().find(premiumText)
             val subsidyMatch = "Government subsidy: ₹([\\d,]+\\.\\d+)".toRegex().find(premiumText)
@@ -413,6 +419,9 @@ class FSMStreamHandler {
             // Extract company name
             val companyMatch = "Insurance Company: (.+?)(?:\n|$)".toRegex().find(premiumText)
             val extractedCompanyName = companyMatch?.groupValues?.get(1)?.trim() ?: ""
+            
+            val sumInsured = sumInsuredMatch?.groupValues?.get(1)?.replace(",", "")?.toDoubleOrNull() ?: 0.0
+            Log.d(TAG, "Premium details sum insured extraction: match=${sumInsuredMatch?.value}, extracted=₹$sumInsured")
             
             InsuranceDetails(
                 crop = context.crop ?: premiumDetails.crop ?: "Unknown",
@@ -423,7 +432,8 @@ class FSMStreamHandler {
                 governmentSubsidy = subsidyMatch?.groupValues?.get(1)?.replace(",", "")?.toDoubleOrNull() ?: 0.0,
                 farmerContribution = contributionMatch?.groupValues?.get(1)?.replace(",", "")?.toDoubleOrNull() ?: 0.0,
                 disease = context.disease,
-                companyName = if (extractedCompanyName.isNotEmpty()) extractedCompanyName else null
+                companyName = if (extractedCompanyName.isNotEmpty()) extractedCompanyName else null,
+                sumInsured = sumInsured
             )
         } catch (e: Exception) {
             Log.e(TAG, "Error parsing insurance details: ${e.message}")
