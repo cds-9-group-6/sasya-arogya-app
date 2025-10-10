@@ -243,6 +243,8 @@ class ChatAdapter(
         private val areaDetails: TextView? = try { itemView.findViewById(R.id.areaDetails) } catch (e: Exception) { null }
         private val premiumPerHectare: TextView? = try { itemView.findViewById(R.id.premiumPerHectare) } catch (e: Exception) { null }
         private val diseaseContext: TextView? = try { itemView.findViewById(R.id.diseaseContext) } catch (e: Exception) { null }
+        private val insuranceCompanyName: TextView? = try { itemView.findViewById(R.id.insuranceCompanyName) } catch (e: Exception) { null }
+        private val companyInfoContainer: LinearLayout? = try { itemView.findViewById(R.id.companyInfoContainer) } catch (e: Exception) { null }
         private val diseaseInfoContainer: LinearLayout? = try { itemView.findViewById(R.id.diseaseInfoContainer) } catch (e: Exception) { null }
         private val applyInsuranceButton: TextView? = try { itemView.findViewById(R.id.applyInsuranceButton) } catch (e: Exception) { null }
         
@@ -326,7 +328,12 @@ class ChatAdapter(
                             healthyCardContainer.visibility = View.GONE
                             
                             messageText.visibility = View.VISIBLE
-                            messageText.text = TextFormattingUtil.formatWhatsAppStyle("🛡️ **Insurance Premium Calculated**\n\nCrop: ${message.insuranceDetails.crop}\nArea: ${message.insuranceDetails.area} hectares\nTotal Premium: ₹${String.format("%.2f", message.insuranceDetails.totalPremium)}\nYour Contribution: ₹${String.format("%.2f", message.insuranceDetails.farmerContribution)}", itemView.context)
+                            val companyInfo = if (!message.insuranceDetails.companyName.isNullOrBlank()) {
+                                "\nInsurance Company: ${message.insuranceDetails.companyName}"
+                            } else {
+                                ""
+                            }
+                            messageText.text = TextFormattingUtil.formatWhatsAppStyle("🛡️ **Insurance Premium Calculated**\n\nCrop: ${message.insuranceDetails.crop}\nArea: ${message.insuranceDetails.area} hectares\nTotal Premium: ₹${String.format("%.2f", message.insuranceDetails.totalPremium)}\nYour Contribution: ₹${String.format("%.2f", message.insuranceDetails.farmerContribution)}$companyInfo", itemView.context)
                         }
                     } catch (e: Exception) {
                         Log.e("ChatAdapter", "Critical error displaying insurance card: ${e.message}", e)
@@ -830,8 +837,9 @@ class ChatAdapter(
                 // Set company name
                 certificateCompanyName?.text = certificateDetails.companyName
                 
-                // Set total coverage amount
-                certificateTotalCoverage?.text = "₹${formatCurrencyAmount(certificateDetails.totalSumInsured)}"
+                // Set total coverage amount - use parsed total premium if available
+                val totalCoverage = if (certificateDetails.totalPremium > 0) certificateDetails.totalPremium else certificateDetails.totalSumInsured
+                certificateTotalCoverage?.text = "₹${formatCurrencyAmount(totalCoverage)}"
                 
                 // Set farmer name
                 certificateFarmerName?.text = certificateDetails.farmerName
@@ -839,8 +847,10 @@ class ChatAdapter(
                 // Set crop information
                 certificateCropInfo?.text = "${certificateDetails.crop} • ${certificateDetails.state} • ${String.format("%.1f", certificateDetails.area)} hectares"
                 
-                // Set premium breakdown
-                certificatePremiumBreakdown?.text = "₹${formatCurrencyAmount(certificateDetails.premiumPaidByFarmer)} (Farmer) + ₹${formatCurrencyAmount(certificateDetails.premiumPaidByGovt)} (Government)"
+                // Set premium breakdown - use parsed premium details if available
+                val farmerPremium = if (certificateDetails.farmerContribution > 0) certificateDetails.farmerContribution else certificateDetails.premiumPaidByFarmer
+                val govtPremium = if (certificateDetails.governmentSubsidy > 0) certificateDetails.governmentSubsidy else certificateDetails.premiumPaidByGovt
+                certificatePremiumBreakdown?.text = "₹${formatCurrencyAmount(farmerPremium)} (Farmer) + ₹${formatCurrencyAmount(govtPremium)} (Government)"
                 
                 // Set up PDF viewer button click handler
                 viewCertificateButton?.setOnClickListener {
@@ -1300,6 +1310,14 @@ class ChatAdapter(
                 
                 // Format premium per hectare
                 premiumPerHectare?.text = "₹${formatCurrencyAmount(insuranceDetails.premiumPerHectare)} per hectare"
+                
+                // Handle company name if present
+                if (!insuranceDetails.companyName.isNullOrBlank()) {
+                    companyInfoContainer?.visibility = View.VISIBLE
+                    insuranceCompanyName?.text = insuranceDetails.companyName
+                } else {
+                    companyInfoContainer?.visibility = View.GONE
+                }
                 
                 // Handle disease context if present
                 if (!insuranceDetails.disease.isNullOrBlank()) {

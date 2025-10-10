@@ -132,7 +132,8 @@ data class InsuranceDetails(
     val totalPremium: Double,
     val governmentSubsidy: Double,
     val farmerContribution: Double,
-    val disease: String? = null
+    val disease: String? = null,
+    val companyName: String? = null
 )
 
 // Insurance certificate data from server
@@ -145,12 +146,14 @@ data class InsuranceCertificate(
     @SerializedName("crop") val crop: String? = null,
     @SerializedName("area_hectare") val areaHectare: Double? = null,
     @SerializedName("state") val state: String? = null,
+    @SerializedName("disease") val disease: String? = null,
     @SerializedName("company_name") val companyName: String? = null,
     @SerializedName("premium_paid_by_farmer") val premiumPaidByFarmer: Double? = null,
     @SerializedName("premium_paid_by_govt") val premiumPaidByGovt: Double? = null,
     @SerializedName("total_sum_insured") val totalSumInsured: Double? = null,
     @SerializedName("pdf_generated") val pdfGenerated: Boolean? = null,
     @SerializedName("certificate_details") val certificateDetails: String? = null,
+    @SerializedName("premium_details") val premiumDetails: String? = null,
     @SerializedName("raw_mcp_response") val rawMcpResponse: RawMcpResponse? = null
 )
 
@@ -178,5 +181,10 @@ data class InsuranceCertificateDetails(
     val premiumPaidByGovt: Double,
     val totalSumInsured: Double,
     val certificateDetails: String,
-    val pdfBase64: String? = null
+    val pdfBase64: String? = null,
+    // Additional premium details parsed from premium_details field
+    val premiumPerHectare: Double = 0.0,
+    val totalPremium: Double = 0.0,
+    val governmentSubsidy: Double = 0.0,
+    val farmerContribution: Double = 0.0
 )

@@ -29,24 +29,14 @@
         android:shadowDy="2"
         android:shadowRadius="4" />
 
-    <!-- Farmer Image Container -->
-    <androidx.cardview.widget.CardView
+    <!-- Farmer Image - No Circle -->
+    <ImageView
+        android:id="@+id/farmerImage"
         android:layout_width="200dp"
         android:layout_height="200dp"
-        app:cardCornerRadius="100dp"
-        app:cardElevation="8dp"
-        android:layout_marginBottom="32dp"
-        app:cardBackgroundColor="#FFFFFF">
-
-        <ImageView
-            android:id="@+id/farmerImage"
-            android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:src="@drawable/farmer_welcome_image"
-            android:scaleType="centerInside"
-            android:padding="10dp" />
-
-    </androidx.cardview.widget.CardView>
+        android:src="@drawable/farmer_bitmap_drawable"
+        android:scaleType="centerInside"
+        android:layout_marginBottom="32dp" />
 
     <!-- Welcome Message -->
     <TextView

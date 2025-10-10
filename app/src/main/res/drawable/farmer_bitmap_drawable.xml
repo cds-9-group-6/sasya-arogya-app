@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- 
+    BitmapDrawable for real farmer images (PNG/JPG)
+    
+    Now using actual PNG bitmap images for all densities
+-->
+<bitmap xmlns:android="http://schemas.android.com/apk/res/android"
+    android:src="@drawable/farmer_image"
+    android:gravity="center"
+    android:filter="true" />

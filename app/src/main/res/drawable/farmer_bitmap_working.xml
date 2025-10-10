@@ -1,0 +1,27 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- 
+    Working BitmapDrawable for real farmer images
+    
+    To use this with real images:
+    1. Add farmer_image.png to drawable-mdpi/, drawable-hdpi/, etc.
+    2. Change this file to use <bitmap> instead of <shape>
+    3. Update layout to use @drawable/farmer_bitmap_working
+-->
+<shape xmlns:android="http://schemas.android.com/apk/res/android"
+    android:shape="oval">
+    
+    <gradient
+        android:type="radial"
+        android:centerX="0.5"
+        android:centerY="0.3"
+        android:gradientRadius="100"
+        android:startColor="#E8F5E8"
+        android:endColor="#4CAF50" />
+    
+    <size
+        android:width="200dp"
+        android:height="200dp" />
+        
+</shape>
+
+

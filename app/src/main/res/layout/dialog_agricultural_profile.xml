@@ -113,8 +113,9 @@
                 <ImageView
                     android:layout_width="32dp"
                     android:layout_height="32dp"
-                    android:src="@drawable/ic_local_florist"
+                    android:src="@drawable/crop_care_bitmap"
                     android:layout_marginEnd="12dp"
+                    android:scaleType="centerCrop"
                     android:tint="#4CAF50" />
                 
                 <TextView

@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- 
+    BitmapDrawable for crop-care.png
+    High quality bitmap image for all screen densities
+-->
+<bitmap xmlns:android="http://schemas.android.com/apk/res/android"
+    android:src="@drawable/crop_care"
+    android:gravity="center"
+    android:filter="true" />
+
+

@@ -332,19 +332,60 @@ class FSMStreamHandler {
                 it.type == "resource" && it.uri?.startsWith("data:application/pdf;base64,") == true 
             }?.uri?.substringAfter("data:application/pdf;base64,")
             
+            // Extract premium details from premium_details field
+            var premiumPerHectare = 0.0
+            var totalPremium = 0.0
+            var governmentSubsidy = 0.0
+            var farmerContribution = 0.0
+            var extractedCompanyName = ""
+            
+            // Generate policy ID and company name if not provided
+            val generatedPolicyId = certificate.policyId ?: "POL-${(10000000 + (System.currentTimeMillis() % 90000000)).toString().uppercase()}"
+            val defaultCompanyName = "Crop Insurance Corporation of India"
+            
+            certificate.premiumDetails?.let { premiumText ->
+                Log.d(TAG, "Extracting premium details from certificate: $premiumText")
+                
+                // Extract amounts using regex patterns
+                val premiumPerHectareMatch = "Premium per hectare: ₹([\\d,]+\\.\\d+)".toRegex().find(premiumText)
+                val totalPremiumMatch = "Total premium: ₹([\\d,]+\\.\\d+)".toRegex().find(premiumText)
+                val subsidyMatch = "Government subsidy: ₹([\\d,]+\\.\\d+)".toRegex().find(premiumText)
+                val contributionMatch = "Farmer contribution: ₹([\\d,]+\\.\\d+)".toRegex().find(premiumText)
+                
+                // Extract company name
+                val companyMatch = "Insurance Company: (.+?)(?:\n|$)".toRegex().find(premiumText)
+                extractedCompanyName = companyMatch?.groupValues?.get(1)?.trim() ?: ""
+                
+                premiumPerHectare = premiumPerHectareMatch?.groupValues?.get(1)?.replace(",", "")?.toDoubleOrNull() ?: 0.0
+                totalPremium = totalPremiumMatch?.groupValues?.get(1)?.replace(",", "")?.toDoubleOrNull() ?: 0.0
+                governmentSubsidy = subsidyMatch?.groupValues?.get(1)?.replace(",", "")?.toDoubleOrNull() ?: 0.0
+                farmerContribution = contributionMatch?.groupValues?.get(1)?.replace(",", "")?.toDoubleOrNull() ?: 0.0
+            }
+            
+            // Use extracted company name if available, otherwise use server value or default
+            val finalCompanyName = if (extractedCompanyName.isNotEmpty()) {
+                extractedCompanyName
+            } else {
+                certificate.companyName ?: defaultCompanyName
+            }
+            
             InsuranceCertificateDetails(
-                policyId = certificate.policyId ?: "N/A",
+                policyId = generatedPolicyId,
                 farmerName = certificate.farmerName ?: "N/A",
                 farmerId = certificate.farmerId ?: "N/A",
                 crop = certificate.crop ?: "N/A",
                 area = certificate.areaHectare ?: 0.0,
                 state = certificate.state ?: "N/A",
-                companyName = certificate.companyName ?: "N/A",
-                premiumPaidByFarmer = certificate.premiumPaidByFarmer ?: 0.0,
-                premiumPaidByGovt = certificate.premiumPaidByGovt ?: 0.0,
-                totalSumInsured = certificate.totalSumInsured ?: 0.0,
+                companyName = finalCompanyName,
+                premiumPaidByFarmer = certificate.premiumPaidByFarmer ?: farmerContribution,
+                premiumPaidByGovt = certificate.premiumPaidByGovt ?: governmentSubsidy,
+                totalSumInsured = certificate.totalSumInsured ?: totalPremium,
                 certificateDetails = certificate.certificateDetails ?: "",
-                pdfBase64 = pdfBase64
+                pdfBase64 = pdfBase64,
+                premiumPerHectare = premiumPerHectare,
+                totalPremium = totalPremium,
+                governmentSubsidy = governmentSubsidy,
+                farmerContribution = farmerContribution
             )
         } catch (e: Exception) {
             Log.e(TAG, "Error parsing insurance certificate: ${e.message}")
@@ -369,6 +410,10 @@ class FSMStreamHandler {
             val subsidyMatch = "Government subsidy: ₹([\\d,]+\\.\\d+)".toRegex().find(premiumText)
             val contributionMatch = "Farmer contribution: ₹([\\d,]+\\.\\d+)".toRegex().find(premiumText)
             
+            // Extract company name
+            val companyMatch = "Insurance Company: (.+?)(?:\n|$)".toRegex().find(premiumText)
+            val extractedCompanyName = companyMatch?.groupValues?.get(1)?.trim() ?: ""
+            
             InsuranceDetails(
                 crop = context.crop ?: premiumDetails.crop ?: "Unknown",
                 state = context.state ?: premiumDetails.state ?: "Unknown",
@@ -377,11 +422,13 @@ class FSMStreamHandler {
                 totalPremium = totalPremiumMatch?.groupValues?.get(1)?.replace(",", "")?.toDoubleOrNull() ?: 0.0,
                 governmentSubsidy = subsidyMatch?.groupValues?.get(1)?.replace(",", "")?.toDoubleOrNull() ?: 0.0,
                 farmerContribution = contributionMatch?.groupValues?.get(1)?.replace(",", "")?.toDoubleOrNull() ?: 0.0,
-                disease = context.disease
+                disease = context.disease,
+                companyName = if (extractedCompanyName.isNotEmpty()) extractedCompanyName else null
             )
         } catch (e: Exception) {
             Log.e(TAG, "Error parsing insurance details: ${e.message}")
             null
         }
     }
+    
 }
